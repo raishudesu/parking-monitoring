@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  ADMIN
+  SUPERADMIN
+}
+
+enum AduitAction {
+  CREATE
+  INSERT
+  UPDATE
+  DELETE
+}
+
+enum AuditTable {
+  ADMIN
+  ACCOUNT
+  VISITORACCOUNT
+  PARKINGSPACE
+  COLLEGE
+}
+
+enum ParkingSpaceType {
+  MOTORCYCLE
+  TRICYCLE
+  FOURWHEEL
+  HYBRID
+  PWD
+  VIP
+}
+
+enum AccountType {
+  FACULTY
+  STUDENT
+  STAFF
+}
+
+enum SessionStatus {
+  ONGOING
+  ENDED
+}
+
+model GPOAccount {
+  id             String         @id @default(uuid())
+  gatePassNumber String         @unique
+  password       String
+  accountType    AccountType
+  collegeName    College?       @relation(fields: [collegeId], references: [id])
+  collegeId      Int
+  department     String?
+  isVIP          Boolean        @default(false)
+  isPWD          Boolean        @default(false)
+  imageLink      String?
+  gpoSessions    GPOSession[]
+  violations     GPOViolation[]
+  creditScore    Int?           @default(0)
+  isActive       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model GPOSession {
+  id             String        @id @default(uuid())
+  parkingSpace   ParkingSpace  @relation(fields: [parkingSpaceId], references: [id])
+  parkingSpaceId String
+  accountParked  GPOAccount    @relation(fields: [accountId], references: [id])
+  accountId      String
+  startTime      DateTime      @default(now())
+  endTime        DateTime
+  status         SessionStatus
+  endedProperly  Boolean
+}
+
+model GPOViolation {
+  id                String     @id @default(uuid())
+  accountViolator   GPOAccount @relation(fields: [accountViolatorId], references: [id])
+  accountViolatorId String
+  violationDate     DateTime   @default(now())
+  violationType     String
+  pointsDeducted    Int
+}
+
+model VisitorAccount {
+  id              String             @id @default(uuid())
+  email           String
+  gatePassNumber  String?            @unique
+  password        String
+  isPWD           Boolean            @default(false)
+  imageLink       String?
+  visitorSessions VisitorSession[]
+  violations      VisitorViolation[]
+  creditScore     Int
+  isActive        Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model VisitorSession {
+  id                   String         @id @default(uuid())
+  parkingSpace         ParkingSpace   @relation(fields: [parkingSpaceId], references: [id])
+  parkingSpaceId       String
+  visitorAccountParked VisitorAccount @relation(fields: [visitorAccountId], references: [id])
+  visitorAccountId     String
+  startTime            DateTime       @default(now())
+  endTime              DateTime
+  status               SessionStatus
+  endedProperly        Boolean
+}
+
+model VisitorViolation {
+  id                String         @id @default(uuid())
+  accountViolator   VisitorAccount @relation(fields: [accountViolatorId], references: [id])
+  accountViolatorId String
+  violationDate     DateTime       @default(now())
+  violationType     String
+  pointsDeducted    Int
+}
+
+model ParkingSpace {
+  id              String           @id @default(uuid())
+  name            String
+  description     String
+  longitude       String
+  latitude        String
+  spaceType       ParkingSpaceType
+  currCapacity    Int
+  maxCapacity     Int?
+  imageUrl        String?
+  gpoSessions     GPOSession[]
+  visitorSessions VisitorSession[]
+  addedAt         DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  isActive        Boolean          @default(true)
+}
+
+model Admin {
+  id                   String                @id @default(uuid())
+  firstName            String
+  lastName             String
+  corpEmail            String                @unique
+  password             String
+  isActive             Boolean               @default(true)
+  role                 AdminRole             @default(ADMIN)
+  logs                 AuditLog[]
+  reportGenerationLogs ReportGenerationLog[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+}
+
+model AuditLog {
+  id           String      @id @default(uuid())
+  action       AduitAction
+  tableChanged AuditTable
+  admin        Admin       @relation(fields: [adminId], references: [id])
+  adminId      String
+  createdAt    DateTime    @default(now())
+}
+
+model ReportGenerationLog {
+  id                 String   @id @default(uuid())
+  generatedBy        Admin    @relation(fields: [generatedByAdminId], references: [id])
+  generatedByAdminId String
+  reportDescription  String
+  generatedAt        DateTime @default(now())
+}
+
+model College {
+  id          Int          @id @default(autoincrement())
+  collegeName String
+  accounts    GPOAccount[]
+}
