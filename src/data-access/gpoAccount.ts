@@ -3,7 +3,7 @@ import prisma from "../lib/db";
 import { gpoAccountSchema } from "../lib/zod";
 import { hash } from "bcrypt";
 
-export const createGPOAccount = async (
+export const createGpoAccount = async (
   data: z.infer<typeof gpoAccountSchema>
 ) => {
   const validatedData = gpoAccountSchema.parse(data);
@@ -21,4 +21,14 @@ export const createGPOAccount = async (
   const { password: newUserPassword, ...filteredGPOAccount } = gpoAccount;
 
   return filteredGPOAccount;
+};
+
+export const getGpoByGatePassNumber = async (gatePassNumber: string) => {
+  const gpo = await prisma.gPOAccount.findUnique({
+    where: {
+      gatePassNumber,
+    },
+  });
+
+  return gpo;
 };

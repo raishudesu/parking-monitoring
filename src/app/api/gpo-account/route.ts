@@ -1,4 +1,4 @@
-import { createGPOAccount } from "@/app/data-access/gpoAccount";
+import { createGpoAccount } from "@/data-access/gpoAccount";
 import { NextResponse } from "next/server";
 
 // INCLUDE SESSION AUTH FOR ADMIN
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
   try {
-    const gpoAccount = await createGPOAccount(body);
+    const gpoAccount = await createGpoAccount(body);
 
     return NextResponse.json(
       { ok: true, gpoAccount: gpoAccount },

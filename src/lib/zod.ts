@@ -10,5 +10,5 @@ export const gpoAccountSchema = z.object({
   isPWD: z.boolean(),
   imageLink: z.string(),
   creditScore: z.number().optional(),
-  isActive: z.boolean(),
+  isActive: z.boolean().optional(),
 });
