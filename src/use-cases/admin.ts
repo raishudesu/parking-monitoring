@@ -5,8 +5,6 @@ import { compare } from "bcrypt";
 export const adminLoginUseCase = async (email: string, password: string) => {
   const admin = await getAdmin(email);
 
-  console.log(admin);
-
   if (!admin) throw new LoginError();
 
   //   const passwordMatched = await compare(password, admin.password);

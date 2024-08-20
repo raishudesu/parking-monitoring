@@ -1,4 +1,4 @@
-import { createGpoAccount } from "@/data-access/gpoAccount";
+import { createGpoAccount } from "@/data-access/gpo-users";
 import { NextResponse } from "next/server";
 
 // INCLUDE SESSION AUTH FOR ADMIN

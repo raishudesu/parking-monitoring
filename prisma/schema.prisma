@@ -73,9 +73,9 @@ model GPOSession {
   accountParked  GPOAccount    @relation(fields: [accountId], references: [id])
   accountId      String
   startTime      DateTime      @default(now())
-  endTime        DateTime
-  status         SessionStatus
-  endedProperly  Boolean
+  endTime        DateTime?
+  status         SessionStatus @default(ONGOING)
+  endedProperly  Boolean?
 }
 
 model GPOViolation {
