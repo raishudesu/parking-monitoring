@@ -12,6 +12,11 @@ enum AdminRole {
   SUPERADMIN
 }
 
+enum UserRole {
+  GPO
+  VISITOR
+}
+
 enum AduitAction {
   CREATE
   INSERT
@@ -60,6 +65,7 @@ model GPOAccount {
   imageLink      String?
   gpoSessions    GPOSession[]
   violations     GPOViolation[]
+  role           UserRole       @default(GPO)
   creditScore    Int?           @default(0)
   isActive       Boolean        @default(true)
   createdAt      DateTime       @default(now())
@@ -97,6 +103,7 @@ model VisitorAccount {
   visitorSessions VisitorSession[]
   violations      VisitorViolation[]
   creditScore     Int
+  role            UserRole           @default(VISITOR)
   isActive        Boolean            @default(true)
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt

@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
 
+// LIMITED TO ONE PARKING SESSION
 // GPO SESSION CREATION
 export const createGpoSession = async (
   parkingSpaceId: string,
@@ -37,7 +38,7 @@ export const getAllGpoSessions = async () => {
 };
 
 // GET ALL SESSIONS OF A GPO
-export const getGpoSessionsById = async (accountId: string) => {
+export const getGpoSessionsByGpoId = async (accountId: string) => {
   const gpoSessions = await prisma.gPOSession.findMany({
     where: {
       accountId,
@@ -49,23 +50,13 @@ export const getGpoSessionsById = async (accountId: string) => {
 
 // ENDING A GPO SESSION
 export const endGpoSession = async (
-  accountId: string,
+  gpoSessionId: string,
   endedProperly: boolean
 ) => {
-  // GET THE LATEST GPO SESSION FIRST
-  const lastGpoSession = await getCurrentGpoSession(accountId);
-
-  if (!lastGpoSession)
-    throw Error(`No GPO Session found for accountId: ${accountId}`);
-
-  // CHECK IF THE LATEST SESSION ALREADY ENDED
-  if (lastGpoSession?.status === "ENDED")
-    throw Error("Last GPO Session has ended.");
-
   // UPDATE GPO SESSION'S END TIME, STATUS, AND IF ENDED PROPERLY
   const gpoSession = await prisma.gPOSession.update({
     where: {
-      id: lastGpoSession?.id,
+      id: gpoSessionId,
     },
     data: {
       endTime: new Date(),
