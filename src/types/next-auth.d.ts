@@ -1,8 +1,16 @@
 import NextAuth from "next-auth";
-import type { GPOAccount as UserPrisma } from "@prisma/client";
+import type {
+  Admin as AdminPrisma,
+  GPOAccount as UserPrisma,
+} from "@prisma/client";
 declare module "next-auth" {
   // just extend the User's type from Prisma lol xd
-  interface User extends Omit<UserPrisma, "password"> {
+
+  type SystemUsers =
+    | Omit<UserPrisma, "password">
+    | Omit<AdminPrisma, "password">;
+
+  interface User extends SystemUsers {
     error: string | null;
   }
 

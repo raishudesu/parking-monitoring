@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "./db";
 import { gpoLoginUseCase } from "../use-cases/gpo-users";
+import { adminLoginUseCase } from "@/use-cases/admin";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -10,16 +11,18 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  pages: {
-    signIn: "/sign-in",
-  },
+  // pages: {
+  //   signIn: "/sign-in",
+  // },
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      id: "gpo",
+      name: "gpo",
       credentials: {
         gatePassNumber: { label: "Gate Pass Number", type: "text" },
         plainTextPassword: { label: "Password", type: "password" },
       },
+
       async authorize(credentials) {
         try {
           if (!credentials?.gatePassNumber || !credentials?.plainTextPassword)
@@ -39,6 +42,31 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
+    CredentialsProvider({
+      id: "admin",
+      name: "admin",
+      credentials: {
+        email: { label: "Administrator Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        try {
+          if (!credentials?.email || !credentials?.password) return null;
+
+          const admin = await adminLoginUseCase(
+            credentials.email,
+            credentials.password
+          );
+
+          return {
+            ...admin,
+            error: null,
+          };
+        } catch (error) {
+          throw error;
+        }
+      },
+    }),
   ],
   callbacks: {
     jwt: async ({ user, token, trigger, session }) => {
@@ -46,14 +74,6 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           ...user,
-          //   gatePassNumber: user.gatePassNumber,
-          //   id: user.id,
-          //   firstName: user.firstName,
-          //   lastName: user.lastName,
-          //   imageLink: user.imageLink,
-          //   bio: user.bio,
-          //   links: user.links,
-          //   isAvailableForWork: user.isAvailableForWork,
         };
       }
 
@@ -69,14 +89,6 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           ...token,
-          //   gatePassNumber: token.gatePassNumber,
-          //   lastName: token.lastName,
-          //   username: token.username,
-          //   id: token.id,
-          //   imageLink: token.imageLink,
-          //   bio: token.bio,
-          //   links: token.links,
-          //   isAvailableForWork: token.isAvailableForWork,
         },
       };
     },

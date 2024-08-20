@@ -15,26 +15,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
 
-const SigninPage = () => {
+const AdminSignInPage = () => {
   const loginSchema = z.object({
-    gatePassNumber: z.string(),
-    plainTextPassword: z.string().min(8),
+    email: z.string().email(),
+    password: z.string().min(8),
   });
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      gatePassNumber: "",
-      plainTextPassword: "",
+      email: "",
+      password: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       // Cant use signIn in server-side because it is needed on the client to process tokens and sessions
-      const res = await signIn("gpo", {
-        gatePassNumber: values.gatePassNumber,
-        plainTextPassword: values.plainTextPassword,
+      const res = await signIn("admin", {
+        email: values.email,
+        password: values.password,
         redirect: false,
       });
 
@@ -50,7 +50,7 @@ const SigninPage = () => {
       // searchParams ? router.push(searchParams) : router.push("/projects");
 
       toast({
-        title: "Let's Go!",
+        title: "Welcome Admin!",
         description: "Enjoy your session",
       });
     } catch (error) {
@@ -63,7 +63,7 @@ const SigninPage = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="gatePassNumber"
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -71,7 +71,7 @@ const SigninPage = () => {
                 <Input
                   {...field}
                   className="w-full"
-                  placeholder="Enter your Gate Pass Number"
+                  placeholder="Email"
                   type="text"
                 />
               </FormControl>
@@ -82,7 +82,7 @@ const SigninPage = () => {
 
         <FormField
           control={form.control}
-          name="plainTextPassword"
+          name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
@@ -110,10 +110,10 @@ const SigninPage = () => {
         {/* <LoaderButton isLoading={isPending} className="w-full" type="submit">
           Sign In
         </LoaderButton> */}
-        <button type="submit">Sign in</button>
+        <button type="submit">Admin Sign in</button>
       </form>
     </Form>
   );
 };
 
-export default SigninPage;
+export default AdminSignInPage;
