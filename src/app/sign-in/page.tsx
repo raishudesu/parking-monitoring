@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
+import SignInForm from "./form";
+import SampleArray from "./sample-array";
 
 const SigninPage = () => {
   const loginSchema = z.object({
@@ -59,47 +61,51 @@ const SigninPage = () => {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="gatePassNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter your Gate Pass Number"
-                  type="text"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div>
+      <SampleArray />
+      <h1>Sign In Page</h1>
+      <SignInForm />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="gatePassNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    className="w-full"
+                    placeholder="Enter your Gate Pass Number"
+                    type="text"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="plainTextPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter your password"
-                  type="password"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="plainTextPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    className="w-full"
+                    placeholder="Enter your password"
+                    type="password"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* {error && (
+          {/* {error && (
           <Alert variant="destructive">
             <Terminal className="h-4 w-4" />
             <AlertTitle>Uh-oh, we couldn&apos;t log you in</AlertTitle>
@@ -107,12 +113,13 @@ const SigninPage = () => {
           </Alert>
         )} */}
 
-        {/* <LoaderButton isLoading={isPending} className="w-full" type="submit">
+          {/* <LoaderButton isLoading={isPending} className="w-full" type="submit">
           Sign In
         </LoaderButton> */}
-        <button type="submit">Sign in</button>
-      </form>
-    </Form>
+          <button type="submit">Sign in</button>
+        </form>
+      </Form>
+    </div>
   );
 };
 
