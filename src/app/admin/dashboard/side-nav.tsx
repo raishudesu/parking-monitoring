@@ -1,13 +1,20 @@
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Bell,
+  Building2,
   ChevronDown,
   CreditCard,
+  History,
   House,
   IdCard,
   LayoutGrid,
+  Logs,
   MapPin,
   Settings,
+  Shield,
+  SquareParking,
+  Users,
 } from "lucide-react";
 
 const SideNav = () => {
@@ -47,12 +54,28 @@ const SideNav = () => {
                 Dashboard
               </li>
               <li className="p-3 flex gap-3 items-center">
-                <MapPin />
-                Establishments
+                <SquareParking />
+                Parking Spaces
               </li>
               <li className="p-3 flex gap-3 items-center">
-                <Bell />
-                Notifications
+                <Users />
+                Accounts
+              </li>
+              <li className="p-3 flex gap-3 items-center">
+                <Shield />
+                Administrators
+              </li>
+              <li className="p-3 flex gap-3 items-center">
+                <History />
+                Transactions
+              </li>
+              <li className="p-3 flex gap-3 items-center">
+                <Logs />
+                Audit Logs
+              </li>
+              <li className="p-3 flex gap-3 items-center">
+                <Building2 />
+                Colleges
               </li>
               <li className="p-3 flex gap-3 items-center">
                 <Settings />
@@ -63,10 +86,10 @@ const SideNav = () => {
         </div>
         <div className="w-full hover:border p-3 flex justify-between items-center rounded-xl">
           <div className="flex gap-2 items-center">
-            {/* <Avatar>
+            <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
-            </Avatar> */}
+            </Avatar>
             <div className="flex flex-col">
               <span className="font-semibold">John Doe</span>
               <small className="text-muted-foreground">johndoe@gmail.com</small>

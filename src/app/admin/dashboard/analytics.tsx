@@ -39,7 +39,7 @@ const chartConfig = {
 
 const AnalyticsSection = () => {
   return (
-    <Card className="shadow-md">
+    <Card className="shadow-md h-full">
       <CardHeader>
         <CardTitle>Campus Parking Usage</CardTitle>
         <CardDescription>January - June 2024</CardDescription>

@@ -14,9 +14,11 @@ const AdminDashboard = () => {
       </div>
       <Overview />
       <div className=" mt-6 ">
-        <div className="h-full grid md:grid-cols-2 gap-4">
-          <AnalyticsSection />
-          <div className="shadow-md overflow-y-scroll p-6 border rounded-xl flex flex-col gap-6">
+        <div className="h-full grid xl:grid-cols-2 gap-4 ">
+          <div className="max-h-[65vh]">
+            <AnalyticsSection />
+          </div>
+          <div className="max-h-[65vh] shadow-md overflow-y-scroll p-6 border rounded-lg overflow-clip flex flex-col gap-6">
             <span className="text-lg font-semibold">Recent Sessions</span>
             <RecentTransactions />
           </div>
