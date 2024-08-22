@@ -1,12 +1,12 @@
 import { z } from "zod";
 import prisma from "../lib/db";
 import { gpoAccountSchema } from "../lib/zod";
-import { hash } from "bcrypt";
 
 // GPO ACCOUNT CREATION
 export const createGpoAccount = async (
   data: z.infer<typeof gpoAccountSchema>
 ) => {
+  console.log(data);
   const gpo = await prisma.gPOAccount.create({
     data,
   });

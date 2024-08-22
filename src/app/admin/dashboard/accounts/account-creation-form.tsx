@@ -1,0 +1,245 @@
+"use client";
+
+import { toast } from "@/components/ui/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { accountCreationSchema } from "@/lib/zod";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { createGpoAccountAction } from "./actions";
+import { useServerAction } from "zsa-react";
+
+const AccountCreationForm = () => {
+  const { isPending, execute } = useServerAction(createGpoAccountAction);
+
+  const form = useForm<z.infer<typeof accountCreationSchema>>({
+    resolver: zodResolver(accountCreationSchema),
+    defaultValues: {
+      gatePassNumber: "",
+      password: "",
+      accountType: "FACULTY",
+      collegeId: undefined,
+      isVIP: false,
+      isPWD: false,
+      department: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof accountCreationSchema>) => {
+    console.log(values);
+    const [data, err] = await execute(values);
+
+    if (err) {
+      const parsedErrorData = await JSON.parse(err?.data);
+
+      if (parsedErrorData.code === "P2002") {
+        // Handle unique constraint violation
+        const target = parsedErrorData.meta?.target as [];
+
+        toast({
+          title: "Something went wrong.",
+          variant: "destructive",
+          description: `Unique constraint failed on the fields: ${
+            target ? target.join(", ") : "unknown"
+          }`,
+        });
+
+        console.error(
+          `Unique constraint failed on the fields: ${
+            target ? target.join(", ") : "unknown"
+          }`
+        );
+      }
+    }
+
+    if (data) {
+      toast({
+        title: "Account created successfully!",
+      });
+
+      form.reset();
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="h-full space-y-6">
+        <FormField
+          control={form.control}
+          name="gatePassNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gate Pass Number</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full"
+                  placeholder="Enter your Gate Pass Number"
+                  type="text"
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full"
+                  placeholder="Enter your password"
+                  type="password"
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="accountType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Account Type</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isPending}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Account Type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="FACULTY">FACULTY</SelectItem>
+                  <SelectItem value="STUDENT">STUDENT</SelectItem>
+                  <SelectItem value="STAFF">STAFF</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="collegeId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>College</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isPending}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select college affiliation" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="0">...</SelectItem>
+                  <SelectItem value="1">CS</SelectItem>
+                  <SelectItem value="2">CEAT</SelectItem>
+                  <SelectItem value="3">CTE</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="department"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Department</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full"
+                  placeholder="e.g. College of Sciences"
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isVIP"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">isVIP?</FormLabel>
+                <FormDescription>
+                  Enable if the account owner is VIP.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isPending}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isPWD"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">isPWD?</FormLabel>
+                <FormDescription>
+                  Enable if the account owner is a PWD.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isPending}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={isPending}>
+          Create
+        </Button>
+      </form>
+    </Form>
+  );
+};
+
+export default AccountCreationForm;

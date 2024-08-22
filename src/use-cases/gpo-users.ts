@@ -8,7 +8,7 @@ import {
 } from "../data-access/gpo-users";
 import { LoginError } from "./errors";
 import { z } from "zod";
-import { gpoAccountSchema } from "@/lib/zod";
+import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
 
 // USE CASE FOR GPO LOG IN
 export const gpoLoginUseCase = async (
@@ -38,8 +38,8 @@ export const getAllGpoAccountsUseCase = async () => {
 };
 
 // GPO ACCOUNT CREATION USE CASE
-export const gpoCreateAccountUseCase = async (
-  data: z.infer<typeof gpoAccountSchema>
+export const createGpoAccountUseCase = async (
+  data: z.infer<typeof accountCreationSchema>
 ) => {
   // VALIDATE THE DATA FIRST
   const validatedData = gpoAccountSchema.parse(data);
@@ -48,6 +48,10 @@ export const gpoCreateAccountUseCase = async (
   const hashedPwd = await hash(validatedData.password, 10);
 
   validatedData.password = hashedPwd;
+
+  if (validatedData.collegeId === 0) {
+    validatedData.collegeId = null;
+  }
 
   const gpo = await createGpoAccount(validatedData);
 

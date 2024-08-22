@@ -4,7 +4,7 @@ import NavLinks from "./nav-links";
 
 const SideNav = () => {
   return (
-    <aside className="p-3 py-6 hidden lg:flex flex-col gap-3 border-r min-h-screen w-80">
+    <aside className="p-3 py-6 hidden lg:flex flex-col gap-3 border-r w-80">
       <div className="flex items-center gap-2 p-3 py-6 rounded-xl shadow-sm">
         <svg
           fill="#FE7D55"

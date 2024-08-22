@@ -43,6 +43,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { College, GPOAccount } from "@prisma/client";
+import AccountCreationDialog from "./account-creation-dialog";
 
 export type GPOAccountData = Omit<GPOAccount, "password"> & {
   collegeName: College;
@@ -88,9 +89,11 @@ export const columns: ColumnDef<GPOAccountData>[] = [
     header: "College",
     cell: ({ row }) => (
       <div className="capitalize">
-        {row.original.collegeName
-          ? row.original.collegeName.collegeName
-          : "N/A"}
+        {row.original.collegeName ? (
+          row.original.collegeName.collegeName
+        ) : (
+          <span className="text-destructive font-semibold">N/A</span>
+        )}
       </div>
     ),
   },
@@ -98,7 +101,13 @@ export const columns: ColumnDef<GPOAccountData>[] = [
     accessorKey: "department",
     header: "Department",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("department")}</div>
+      <div className="capitalize">
+        {row.original.department ? (
+          row.original.department
+        ) : (
+          <span className="text-destructive font-semibold">N/A</span>
+        )}
+      </div>
     ),
   },
   {
@@ -181,10 +190,7 @@ export function AccountsTable({ data }: { data: GPOAccountData[] }) {
   return (
     <div className="w-full">
       <div className="flex items-center gap-4 py-4">
-        <Button className="flex gap-2">
-          Create Account
-          <CirclePlus size={18} />
-        </Button>
+        <AccountCreationDialog />
         <Input
           placeholder="Filter by Gate Pass Number..."
           value={
