@@ -58,7 +58,7 @@ model GPOAccount {
   password       String
   accountType    AccountType
   collegeName    College?       @relation(fields: [collegeId], references: [id])
-  collegeId      Int
+  collegeId      Int?
   department     String?
   isVIP          Boolean        @default(false)
   isPWD          Boolean        @default(false)

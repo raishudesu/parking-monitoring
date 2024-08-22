@@ -1,27 +1,11 @@
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Bell,
-  Building2,
-  ChevronDown,
-  CreditCard,
-  History,
-  House,
-  IdCard,
-  LayoutGrid,
-  Logs,
-  MapPin,
-  Settings,
-  Shield,
-  SquareParking,
-  Users,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import NavLinks from "./nav-links";
 
 const SideNav = () => {
   return (
     <aside className="p-3 py-6 hidden lg:flex flex-col gap-3 border-r min-h-screen w-80">
       <div className="flex items-center gap-2 p-3 py-6 rounded-xl shadow-sm">
-        {/* <IdCard className="text-yellow-500" /> */}
         <svg
           fill="#FE7D55"
           viewBox="0 0 512 512"
@@ -30,11 +14,11 @@ const SideNav = () => {
           transform="rotate(270)"
           className="h-8 w-8"
         >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
           <g
             id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           ></g>
           <g id="SVGRepo_iconCarrier">
             <path d="M208,512a24.84,24.84,0,0,1-23.34-16l-39.84-103.6a16.06,16.06,0,0,0-9.19-9.19L32,343.34a25,25,0,0,1,0-46.68l103.6-39.84a16.06,16.06,0,0,0,9.19-9.19L184.66,144a25,25,0,0,1,46.68,0l39.84,103.6a16.06,16.06,0,0,0,9.19,9.19l103,39.63A25.49,25.49,0,0,1,400,320.52a24.82,24.82,0,0,1-16,22.82l-103.6,39.84a16.06,16.06,0,0,0-9.19,9.19L231.34,496A24.84,24.84,0,0,1,208,512Zm66.85-254.84h0Z"></path>
@@ -42,45 +26,14 @@ const SideNav = () => {
             <path d="M400,256a16,16,0,0,1-14.93-10.26l-22.84-59.37a8,8,0,0,0-4.6-4.6l-59.37-22.84a16,16,0,0,1,0-29.86l59.37-22.84a8,8,0,0,0,4.6-4.6L384.9,42.68a16.45,16.45,0,0,1,13.17-10.57,16,16,0,0,1,16.86,10.15l22.84,59.37a8,8,0,0,0,4.6,4.6l59.37,22.84a16,16,0,0,1,0,29.86l-59.37,22.84a8,8,0,0,0-4.6,4.6l-22.84,59.37A16,16,0,0,1,400,256Z"></path>
           </g>
         </svg>
-        <h1 className="text-[#FE7D55] text-xl">ParkSU</h1>
+        <h1 className="text-primary text-xl">ParkSU</h1>
       </div>
       <div className="text-muted-foreground flex flex-col justify-between gap-3 h-full">
         <div className="flex flex-col gap-3">
           <span className="font-mono">Navigate</span>
           <nav>
             <ul className="flex flex-col gap-3">
-              <li className="p-3 flex gap-3 items-center">
-                <LayoutGrid />
-                Dashboard
-              </li>
-              <li className="p-3 flex gap-3 items-center">
-                <SquareParking />
-                Parking Spaces
-              </li>
-              <li className="p-3 flex gap-3 items-center">
-                <Users />
-                Accounts
-              </li>
-              <li className="p-3 flex gap-3 items-center">
-                <Shield />
-                Administrators
-              </li>
-              <li className="p-3 flex gap-3 items-center">
-                <History />
-                Transactions
-              </li>
-              <li className="p-3 flex gap-3 items-center">
-                <Logs />
-                Audit Logs
-              </li>
-              <li className="p-3 flex gap-3 items-center">
-                <Building2 />
-                Colleges
-              </li>
-              <li className="p-3 flex gap-3 items-center">
-                <Settings />
-                Settings
-              </li>
+              <NavLinks />
             </ul>
           </nav>
         </div>

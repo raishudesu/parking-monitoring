@@ -14,6 +14,16 @@ export const createGpoAccount = async (
   return gpo;
 };
 
+export const getAllGpoAccounts = async () => {
+  const gpoAccounts = await prisma.gPOAccount.findMany({
+    include: {
+      collegeName: true,
+    },
+  });
+
+  return gpoAccounts;
+};
+
 // GET GPO ACCOUNT BY GATE PASS NUMBER
 export const getGpoByGatePassNumber = async (gatePassNumber: string) => {
   const gpo = await prisma.gPOAccount.findUnique({

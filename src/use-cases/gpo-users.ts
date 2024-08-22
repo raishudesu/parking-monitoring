@@ -2,6 +2,7 @@ import { compare, hash } from "bcrypt";
 import {
   createGpoAccount,
   deleteGpoAccount,
+  getAllGpoAccounts,
   getGpoByGatePassNumber,
   updateGpoAccount,
 } from "../data-access/gpo-users";
@@ -27,6 +28,13 @@ export const gpoLoginUseCase = async (
   const { password: newUserPassword, ...sanitizedGpo } = gpo; // DTO to exclude the password property upon sending the user details back
 
   return sanitizedGpo;
+};
+
+// GET ALL GPO ACCOUNTS
+export const getAllGpoAccountsUseCase = async () => {
+  const gpoAccounts = await getAllGpoAccounts();
+
+  return gpoAccounts;
 };
 
 // GPO ACCOUNT CREATION USE CASE
