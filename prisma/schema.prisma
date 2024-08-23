@@ -55,6 +55,7 @@ enum SessionStatus {
 model GPOAccount {
   id             String         @id @default(uuid())
   gatePassNumber String         @unique
+  email          String?        @unique
   password       String
   accountType    AccountType
   collegeName    College?       @relation(fields: [collegeId], references: [id])

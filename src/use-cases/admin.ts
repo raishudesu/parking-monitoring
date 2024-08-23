@@ -1,16 +1,15 @@
 import { getAdmin } from "@/data-access/admin";
-import { LoginError } from "./errors";
-import { compare } from "bcrypt";
+import { AdminLoginError } from "./errors";
 
 export const adminLoginUseCase = async (email: string, password: string) => {
   const admin = await getAdmin(email);
 
-  if (!admin) throw new LoginError();
+  if (!admin) throw new AdminLoginError();
 
   //   const passwordMatched = await compare(password, admin.password);
   const passwordMatched = admin.password === password;
 
-  if (!passwordMatched) throw new LoginError();
+  if (!passwordMatched) throw new AdminLoginError();
 
   const { password: newAdminPassword, ...sanitizedAdmin } = admin; // DTO to exclude the password property upon sending the user details back
 

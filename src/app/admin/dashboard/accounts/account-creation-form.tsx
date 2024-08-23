@@ -26,6 +26,27 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { createGpoAccountAction } from "./actions";
 import { useServerAction } from "zsa-react";
+import { generateSecurePassword } from "@/lib/utils";
+import emailjs from "@emailjs/browser";
+
+const sendAccountDetailsToGpoEmail = async (
+  email: string,
+  gatePassNumber: string,
+  password: string
+) => {
+  try {
+    const emailRes = await emailjs.send(
+      process.env.NEXT_PUBLIC_SERVICE_KEY as string,
+      process.env.NEXT_PUBLIC_TEMPLATE_ID as string,
+      { to: email, gatePassNumber, password },
+      process.env.NEXT_PUBLIC_EMAILJS_API_KEY
+    );
+
+    return emailRes;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
 
 const AccountCreationForm = () => {
   const { isPending, execute } = useServerAction(createGpoAccountAction);
@@ -33,6 +54,7 @@ const AccountCreationForm = () => {
   const form = useForm<z.infer<typeof accountCreationSchema>>({
     resolver: zodResolver(accountCreationSchema),
     defaultValues: {
+      email: "",
       gatePassNumber: "",
       password: "",
       accountType: "FACULTY",
@@ -44,7 +66,10 @@ const AccountCreationForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof accountCreationSchema>) => {
+    values.password = generateSecurePassword(values.gatePassNumber);
+
     console.log(values);
+
     const [data, err] = await execute(values);
 
     if (err) {
@@ -73,15 +98,43 @@ const AccountCreationForm = () => {
     if (data) {
       toast({
         title: "Account created successfully!",
+        description: "Account details sent to the user.",
       });
 
       form.reset();
+
+      const res = await sendAccountDetailsToGpoEmail(
+        data?.email as string,
+        data?.gatePassNumber as string,
+        values.password
+      );
+
+      console.log(res);
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full space-y-6">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Corporate Email</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full"
+                  placeholder="e.g 2020-6-6969@psu.palawan.edu.ph"
+                  type="text"
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="gatePassNumber"
@@ -92,7 +145,7 @@ const AccountCreationForm = () => {
                 <Input
                   {...field}
                   className="w-full"
-                  placeholder="Enter your Gate Pass Number"
+                  placeholder="e.g GP-2024-6969"
                   type="text"
                   disabled={isPending}
                 />
@@ -107,13 +160,13 @@ const AccountCreationForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              {/* <FormLabel>Password</FormLabel> */}
               <FormControl>
                 <Input
                   {...field}
                   className="w-full"
                   placeholder="Enter your password"
-                  type="password"
+                  type="hidden"
                   disabled={isPending}
                 />
               </FormControl>

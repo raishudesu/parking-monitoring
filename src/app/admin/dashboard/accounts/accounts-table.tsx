@@ -78,6 +78,11 @@ export const columns: ColumnDef<GPOAccountData>[] = [
     ),
   },
   {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+  },
+  {
     accessorKey: "accountType",
     header: "Type",
     cell: ({ row }) => (

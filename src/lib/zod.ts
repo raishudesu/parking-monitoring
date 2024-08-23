@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 export const gpoAccountSchema = z.object({
+  email: z.string().email(),
   gatePassNumber: z.string().min(5),
-  password: z.string().min(8),
+  password: z.string(),
   accountType: z.enum(["FACULTY", "STUDENT", "STAFF"]),
   collegeId: z
     .string()
@@ -22,3 +23,8 @@ const overrideSchema = z.object({
 });
 
 export const accountCreationSchema = gpoAccountSchema.merge(overrideSchema);
+
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});

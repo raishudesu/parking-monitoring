@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
+import { loginSchema } from "@/lib/zod";
+import { useRouter } from "next/navigation";
 
 const AdminSignInPage = () => {
-  const loginSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(8),
-  });
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -53,6 +52,8 @@ const AdminSignInPage = () => {
         title: "Welcome Admin!",
         description: "Enjoy your session",
       });
+
+      router.push("/admin/dashboard");
     } catch (error) {
       console.error(error);
     }
@@ -98,18 +99,6 @@ const AdminSignInPage = () => {
             </FormItem>
           )}
         />
-
-        {/* {error && (
-          <Alert variant="destructive">
-            <Terminal className="h-4 w-4" />
-            <AlertTitle>Uh-oh, we couldn&apos;t log you in</AlertTitle>
-            <AlertDescription>{error.message}</AlertDescription>
-          </Alert>
-        )} */}
-
-        {/* <LoaderButton isLoading={isPending} className="w-full" type="submit">
-          Sign In
-        </LoaderButton> */}
         <button type="submit">Admin Sign in</button>
       </form>
     </Form>
