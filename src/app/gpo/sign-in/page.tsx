@@ -1,14 +1,14 @@
 import Logo from "@/components/logo";
-import AdminSignInForm from "./admin-signin-form";
+import GpoSignInForm from "./form";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-const AdminSignInPage = async () => {
+const SignInPage = async () => {
   const session = await getServerSession(authOptions);
 
-  if (session?.user.role === "ADMIN") {
-    redirect("/admin/dashboard");
+  if (session?.user.role === "GPO") {
+    redirect("/gpo/dashboard");
   }
 
   return (
@@ -23,13 +23,13 @@ const AdminSignInPage = async () => {
           </div>
 
           <h1 className="text-center scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-3xl">
-            Administrator Login
+            Login to ParkSU
           </h1>
-          <AdminSignInForm />
+          <GpoSignInForm />
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminSignInPage;
+export default SignInPage;

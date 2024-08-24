@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-const DashboardLayout = async ({ children }: { children: ReactNode }) => {
+const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getServerSession(authOptions);
 
   if (!(session?.user.role === "ADMIN")) {
@@ -19,4 +19,4 @@ const DashboardLayout = async ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default DashboardLayout;
+export default AdminDashboardLayout;
