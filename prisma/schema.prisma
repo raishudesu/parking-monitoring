@@ -139,7 +139,7 @@ model ParkingSpace {
   latitude        String
   spaceType       ParkingSpaceType
   currCapacity    Int
-  maxCapacity     Int?
+  maxCapacity     Int
   imageUrl        String?
   gpoSessions     GPOSession[]
   visitorSessions VisitorSession[]

@@ -1,21 +1,18 @@
+import AvailableParkingSpaces from "./available-parking-spaces";
+import Overview from "./overview";
+
 const GpoDashboardPage = () => {
   return (
-    <div className="w-full flex flex-col p-6">
+    <div className="w-full flex flex-col py-6 px-3 md:px-6">
       <div className="pb-6 flex flex-col gap-3">
-        <div className="text-lg text-muted-foreground">Dashboard</div>
+        <div className="text-lg text-muted-foreground">Parking Spaces</div>
         <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
           Welcome!
         </h1>
       </div>
-      {/* <div className=" mt-6 ">
-        <div className="h-full grid xl:grid-cols-2 gap-4 ">
-          <div className="max-h-[65vh]"><AnalyticsSection /></div>
-          <div className="max-h-[65vh] shadow-md overflow-y-scroll p-6 border rounded-lg overflow-clip flex flex-col gap-6">
-            <span className="text-lg font-semibold">Recent Sessions</span>
-            <RecentTransactions />
-          </div>
-        </div>
-      </div> */}
+      <div className="w-full flex flex-col mt-6">
+        <AvailableParkingSpaces />
+      </div>
     </div>
   );
 };
