@@ -13,6 +13,17 @@ export const createGpoSession = async (
     },
   });
 
+  await prisma.parkingSpace.update({
+    where: {
+      id: parkingSpaceId,
+    },
+    data: {
+      currCapacity: {
+        increment: 1,
+      },
+    },
+  });
+
   return gpoSession;
 };
 
