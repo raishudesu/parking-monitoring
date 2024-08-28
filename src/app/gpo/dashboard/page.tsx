@@ -1,4 +1,5 @@
 import AvailableParkingSpaces from "./available-parking-spaces";
+import CurrentSession from "./current-session";
 
 const GpoDashboardPage = () => {
   return (
@@ -14,6 +15,9 @@ const GpoDashboardPage = () => {
         <h2 className="text-muted-foreground scroll-m-20 font-semibold pb-2 text-2xl tracking-tight transition-colors first:mt-0">
           My Sessions
         </h2>
+        <div className="grid lg:grid-cols-3 gap-4">
+          <CurrentSession />
+        </div>
       </div>
       <div className="w-full flex flex-col mt-6">
         <AvailableParkingSpaces />

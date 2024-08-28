@@ -26,10 +26,8 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <main className="px-4">
-            {children}
-            <Toaster />
-          </main>
+          <main>{children}</main>
+          <Toaster />
         </AuthProvider>
       </body>
     </html>

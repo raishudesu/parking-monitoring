@@ -24,6 +24,31 @@ export const getAllGpoAccounts = async () => {
   return gpoAccounts;
 };
 
+export const getCurrentGpoSessionByGpoId = async (gpoAccountId: string) => {
+  const gpo = await prisma.gPOAccount.findUnique({
+    where: {
+      id: gpoAccountId,
+    },
+    include: {
+      gpoSessions: {
+        where: {
+          status: "ONGOING",
+        },
+        include: {
+          parkingSpace: true,
+        },
+        orderBy: {
+          startTime: "desc",
+        },
+      },
+    },
+  });
+
+  const currentSession = gpo?.gpoSessions[0];
+
+  return currentSession;
+};
+
 // GET GPO ACCOUNT BY GATE PASS NUMBER
 export const getGpoByGatePassNumber = async (gatePassNumber: string) => {
   const gpo = await prisma.gPOAccount.findUnique({

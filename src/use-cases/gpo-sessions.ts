@@ -71,10 +71,7 @@ export const endGpoSessionUseCase = async (
   if (lastGpoSession?.status === "ENDED")
     throw Error("Last GPO Session has ended.");
 
-  const endedGpoSession = await endGpoSession(
-    lastGpoSession.accountId,
-    endedProperly
-  );
+  const endedGpoSession = await endGpoSession(lastGpoSession.id, endedProperly);
 
   return endedGpoSession;
 };

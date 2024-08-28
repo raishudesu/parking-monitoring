@@ -34,6 +34,9 @@ export const getOngoingGpoSession = async (accountId: string) => {
       accountId,
       status: "ONGOING",
     },
+    include: {
+      parkingSpace: true,
+    },
     orderBy: {
       startTime: "desc",
     },
@@ -76,6 +79,17 @@ export const endGpoSession = async (
       endTime: new Date(),
       status: "ENDED",
       endedProperly,
+    },
+  });
+
+  await prisma.parkingSpace.update({
+    where: {
+      id: gpoSession.parkingSpaceId,
+    },
+    data: {
+      currCapacity: {
+        decrement: 1,
+      },
     },
   });
 

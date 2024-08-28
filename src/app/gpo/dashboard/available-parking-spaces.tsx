@@ -13,13 +13,13 @@ const AvailableParkingSpaces = async () => {
 
   return (
     <>
-      <div className="w-full h-full gap-4 ">
+      <div className="w-full h-full gap-4">
         <small className="text-green-500 font-bold">
           Available Parking Spaces
         </small>
         <Tabs defaultValue="overview" className="w-full space-y-4">
           <TabsContent value="overview" className="w-full space-y-4">
-            <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {availableParkingSpaces.length === 0 ? (
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -65,7 +65,7 @@ const AvailableParkingSpaces = async () => {
         </small>
         <Tabs defaultValue="overview" className="w-full space-y-4">
           <TabsContent value="overview" className="w-full space-y-4">
-            <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {unavailableParkingSpaces.length === 0 ? (
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

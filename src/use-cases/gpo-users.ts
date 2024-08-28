@@ -3,6 +3,7 @@ import {
   createGpoAccount,
   deleteGpoAccount,
   getAllGpoAccounts,
+  getCurrentGpoSessionByGpoId,
   getGpoByGatePassNumber,
   updateGpoAccount,
 } from "../data-access/gpo-users";
@@ -85,4 +86,10 @@ export const deleteGpoAccountUseCase = async (gatePassNumber: string) => {
   await deleteGpoAccount(gatePassNumber);
 
   return;
+};
+
+export const getCurrentGpoSessionUseCase = async (gpoAccountId: string) => {
+  const currentSession = await getCurrentGpoSessionByGpoId(gpoAccountId);
+
+  return currentSession;
 };
