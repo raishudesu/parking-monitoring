@@ -10,6 +10,8 @@ export const createGpoAccountAction = createServerAction()
   .handler(async ({ input }) => {
     const res = await createGpoAccountUseCase(input);
 
+    console.log(res);
+
     if (res) revalidatePath("/admin/dashboard/accounts");
 
     return res;

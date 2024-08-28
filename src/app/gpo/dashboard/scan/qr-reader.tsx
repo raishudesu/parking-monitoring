@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useServerAction } from "zsa-react";
 import { createGpoSessionAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
+import { error } from "console";
 
 const QrReader = ({
   setOpen,
@@ -28,43 +29,124 @@ const QrReader = ({
 
   const { isPending, execute } = useServerAction(createGpoSessionAction);
 
-  const onScanSuccess = useCallback(async (result: QrScanner.ScanResult) => {
-    setScannedResult(result?.data || "");
+  // const onScanSuccess = useCallback(async (result: QrScanner.ScanResult) => {
+  //   setScannedResult(result?.data || "");
 
-    // Stop the scanner immediately after a successful scan
-    if (scannerRef.current) {
-      scannerRef.current.stop();
-    }
+  //   // Stop the scanner immediately after a successful scan
+  //   if (scannerRef.current) {
+  //     scannerRef.current.stop();
+  //   }
 
-    const handleScan = async (result: string) => {
-      console.log(result);
+  //   const handleScan = async (result: string) => {
+  //     const [data, err] = await execute({
+  //       parkingSpaceId: result,
+  //       gpoAccountID: session.data?.user.id as string,
+  //     });
 
-      const [data, err] = await execute({
-        parkingSpaceId: result,
-        gpoAccountID: session.data?.user.id as string,
-      });
+  //     if (err) {
+  //       const parsedErrorData = await JSON.parse(err?.data);
 
-      if (err) {
-        const parsedErrorData = await JSON.parse(err?.data);
+  //       toast({
+  //         title: "Something went wrong.",
+  //         variant: "destructive",
+  //         description: parsedErrorData,
+  //       });
 
+  //       return;
+  //     }
+
+  //     if (data) {
+  //       toast({
+  //         title: "Parking session created",
+  //       });
+
+  //       console.log(data);
+  //       router.push("scan/scan-success");
+  //     }
+  //   };
+
+  //   await handleScan(result.data);
+  //   setOpen(false);
+  // }, []);
+
+  const onScanSuccess = useCallback(
+    async (result: QrScanner.ScanResult) => {
+      setScannedResult(result?.data || "");
+
+      // Stop the scanner immediately after a successful scan
+      if (scannerRef.current) {
+        scannerRef.current.stop();
+      }
+
+      const handleScan = async (result: string) => {
+        try {
+          const [data, err] = await execute({
+            parkingSpaceId: result,
+            gpoAccountID: session.data?.user.id as string,
+          });
+
+          if (err) {
+            let errorMessage = "An unknown error occurred";
+            if (typeof err.data === "string") {
+              try {
+                const parsedErrorData = JSON.parse(err.data);
+                errorMessage =
+                  parsedErrorData.message || JSON.stringify(parsedErrorData);
+              } catch (parseError) {
+                console.error("Error parsing error data:", parseError);
+                errorMessage = err.data;
+              }
+            } else if (err.data && typeof err.data === "object") {
+              errorMessage = JSON.stringify(err.data);
+            }
+
+            toast({
+              title: "Something went wrong.",
+              variant: "destructive",
+              description: err.message,
+            });
+            return;
+          }
+
+          if (data) {
+            toast({
+              title: "Parking session created",
+            });
+
+            console.log(data);
+            router.push("scan/scan-success");
+          }
+        } catch (error) {
+          console.error("Error in handleScan:", error);
+          toast({
+            title: "An unexpected error occurred",
+            variant: "destructive",
+            description:
+              error instanceof Error
+                ? error.message
+                : "Please try again later.",
+          });
+        }
+      };
+
+      try {
+        await handleScan(result.data);
+      } catch (error) {
+        console.error("Error handling scan:", error);
         toast({
-          title: "Something went wrong.",
+          title: "Error processing scan",
           variant: "destructive",
-          description: parsedErrorData,
+          description:
+            error instanceof Error
+              ? error.message
+              : "An unexpected error occurred while processing the scan.",
         });
+      } finally {
+        setOpen(false);
       }
-
-      if (data) {
-        toast({
-          title: "Parking session created",
-        });
-        router.push("scan/scan-success");
-      }
-    };
-
-    await handleScan(result.data);
-    setOpen(false);
-  }, []);
+    },
+    [execute, router, session.data?.user.id, setOpen]
+  );
 
   const onScanFail = useCallback((error: string | Error) => {
     console.error("QR scan failed:", error);

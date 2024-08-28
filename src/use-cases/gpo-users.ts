@@ -53,8 +53,6 @@ export const createGpoAccountUseCase = async (
     validatedData.collegeId = null;
   }
 
-  console.log(validatedData);
-
   const gpo = await createGpoAccount(validatedData);
 
   if (!gpo) throw Error("Creating an GPO Account failed.");

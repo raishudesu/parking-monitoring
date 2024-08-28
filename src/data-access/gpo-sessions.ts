@@ -27,16 +27,19 @@ export const createGpoSession = async (
   return gpoSession;
 };
 
-// GET CURRENT GPO'S SESSION
-export const getCurrentGpoSession = async (accountId: string) => {
+// GET CURRENT/ONGOING GPO'S SESSION
+export const getOngoingGpoSession = async (accountId: string) => {
   const currentGpoSession = await prisma.gPOSession.findFirst({
     where: {
       accountId,
+      // status: "ONGOING",
     },
     orderBy: {
       startTime: "desc",
     },
   });
+
+  console.log(currentGpoSession);
 
   return currentGpoSession;
 };

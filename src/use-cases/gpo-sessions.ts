@@ -2,7 +2,7 @@ import {
   createGpoSession,
   endGpoSession,
   getAllGpoSessions,
-  getCurrentGpoSession,
+  getOngoingGpoSession,
   getGpoSessionsByGpoId,
 } from "@/data-access/gpo-sessions";
 import { authOptions } from "@/lib/auth";
@@ -20,6 +20,13 @@ export const createGpoSessionUseCase = async (
 
   if (!isGpo) throw Error("Unauthorized.");
 
+  const isParkingSessionOngoing = await getOngoingGpoSession(gpoAccountId);
+
+  console.log(isParkingSessionOngoing);
+
+  if (isParkingSessionOngoing)
+    throw Error("There is currently an ongoing parking session.");
+
   const createdGpoSession = await createGpoSession(
     parkingSpaceId,
     gpoAccountId
@@ -30,7 +37,7 @@ export const createGpoSessionUseCase = async (
 
 // GET CURRENT GPO'S SESSION USE CASE
 export const getCurrentGpoSessionUseCase = async (accountId: string) => {
-  const currentGpoSession = await getCurrentGpoSession(accountId);
+  const currentGpoSession = await getOngoingGpoSession(accountId);
 
   if (!currentGpoSession)
     throw Error(`No current session found for account ID: ${accountId}`);
@@ -51,7 +58,7 @@ export const endGpoSessionUseCase = async (
   endedProperly: boolean
 ) => {
   // GET THE LATEST GPO SESSION FIRST
-  const lastGpoSession = await getCurrentGpoSession(accountId);
+  const lastGpoSession = await getOngoingGpoSession(accountId);
 
   if (!lastGpoSession)
     throw Error(`No GPO Session found for accountId: ${accountId}`);
