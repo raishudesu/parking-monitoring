@@ -23,8 +23,6 @@ export const createGpoSessionUseCase = async (
 
   const isParkingSessionOngoing = await getOngoingGpoSession(gpoAccountId);
 
-  console.log(isParkingSessionOngoing);
-
   if (isParkingSessionOngoing)
     throw Error("There is currently an ongoing parking session.");
 

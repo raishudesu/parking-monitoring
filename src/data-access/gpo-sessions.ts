@@ -32,7 +32,7 @@ export const getOngoingGpoSession = async (accountId: string) => {
   const currentGpoSession = await prisma.gPOSession.findFirst({
     where: {
       accountId,
-      // status: "ONGOING",
+      status: "ONGOING",
     },
     orderBy: {
       startTime: "desc",
