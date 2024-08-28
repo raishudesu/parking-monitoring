@@ -1,9 +1,9 @@
-import { CircleParking, MapPin, ScanLine, Settings } from "lucide-react";
+import { LayoutGrid, MapPin, ScanLine, Settings } from "lucide-react";
 
 export const gpoNavLinks = [
   {
-    name: "Parking Spaces",
-    icon: <CircleParking />,
+    name: "Dashboard",
+    icon: <LayoutGrid />,
     link: "/gpo/dashboard",
   },
   {

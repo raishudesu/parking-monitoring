@@ -5,6 +5,7 @@ import {
   getOngoingGpoSession,
   getGpoSessionsByGpoId,
 } from "@/data-access/gpo-sessions";
+import { getParkingSpaceById } from "@/data-access/parking-spaces";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
@@ -26,6 +27,11 @@ export const createGpoSessionUseCase = async (
 
   if (isParkingSessionOngoing)
     throw Error("There is currently an ongoing parking session.");
+
+  const currentParkingSpace = await getParkingSpaceById(parkingSpaceId);
+
+  if (currentParkingSpace?.currCapacity === currentParkingSpace?.maxCapacity)
+    throw Error("Current Parking Space is full.");
 
   const createdGpoSession = await createGpoSession(
     parkingSpaceId,
