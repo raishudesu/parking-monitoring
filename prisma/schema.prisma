@@ -77,7 +77,7 @@ model GPOSession {
   id             String        @id @default(uuid())
   parkingSpace   ParkingSpace  @relation(fields: [parkingSpaceId], references: [id])
   parkingSpaceId String
-  accountParked  GPOAccount    @relation(fields: [accountId], references: [id])
+  accountParked  GPOAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId      String
   startTime      DateTime      @default(now())
   endTime        DateTime?
@@ -87,7 +87,7 @@ model GPOSession {
 
 model GPOViolation {
   id                String     @id @default(uuid())
-  accountViolator   GPOAccount @relation(fields: [accountViolatorId], references: [id])
+  accountViolator   GPOAccount @relation(fields: [accountViolatorId], references: [id], onDelete: Cascade)
   accountViolatorId String
   violationDate     DateTime   @default(now())
   violationType     String

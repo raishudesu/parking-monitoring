@@ -5,7 +5,9 @@ import {
   getAllGpoAccounts,
   getCurrentGpoSessionByGpoId,
   getGpoByGatePassNumber,
+  getGpoById,
   updateGpoAccount,
+  updateGpoPassword,
 } from "../data-access/gpo-users";
 import { LoginError } from "./errors";
 import { z } from "zod";
@@ -92,4 +94,28 @@ export const getCurrentGpoSessionUseCase = async (gpoAccountId: string) => {
   const currentSession = await getCurrentGpoSessionByGpoId(gpoAccountId);
 
   return currentSession;
+};
+
+// UPDATE GPO PASSWORD
+export const updateGpoPasswordUseCase = async (
+  gpoAccountId: string,
+  newPassword: string,
+  oldPassword: string
+) => {
+  const currentGpo = await getGpoById(gpoAccountId);
+
+  if (!currentGpo) throw Error("GPO Account does not exist.");
+
+  const passwordMatched = await compare(oldPassword, currentGpo.password);
+
+  if (!passwordMatched)
+    throw Error("Old password does not match current password.");
+
+  const hashedPwd = await hash(newPassword, 10);
+
+  const gpo = await updateGpoPassword(gpoAccountId, hashedPwd);
+
+  const { password: filteredPassword, ...filteredGpoAccount } = gpo;
+
+  return filteredGpoAccount;
 };

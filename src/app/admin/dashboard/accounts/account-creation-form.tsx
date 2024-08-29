@@ -68,8 +68,6 @@ const AccountCreationForm = () => {
   const onSubmit = async (values: z.infer<typeof accountCreationSchema>) => {
     values.password = generateSecurePassword(values.gatePassNumber);
 
-    console.log(values);
-
     const [data, err] = await execute(values);
 
     if (err) {

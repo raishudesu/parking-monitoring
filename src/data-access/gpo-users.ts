@@ -60,6 +60,16 @@ export const getGpoByGatePassNumber = async (gatePassNumber: string) => {
   return gpo;
 };
 
+export const getGpoById = async (accountId: string) => {
+  const gpo = await prisma.gPOAccount.findUnique({
+    where: {
+      id: accountId,
+    },
+  });
+
+  return gpo;
+};
+
 // UPDATE GPO ACCOUNT BASED FROM GATE PASS NUMBER
 export const updateGpoAccount = async (
   gatePassNumber: string,
@@ -92,4 +102,20 @@ export const deleteGpoAccount = async (gatePassNumber: string) => {
   });
 
   return;
+};
+
+export const updateGpoPassword = async (
+  gpoAccountId: string,
+  newPassword: string
+) => {
+  const gpo = await prisma.gPOAccount.update({
+    where: {
+      id: gpoAccountId,
+    },
+    data: {
+      password: newPassword,
+    },
+  });
+
+  return gpo;
 };
