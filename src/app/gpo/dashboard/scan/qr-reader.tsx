@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { useServerAction } from "zsa-react";
 import { createGpoSessionAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
-import { error } from "console";
 
 const QrReader = ({
   setOpen,
@@ -28,46 +27,6 @@ const QrReader = ({
   const router = useRouter();
 
   const { isPending, execute } = useServerAction(createGpoSessionAction);
-
-  // const onScanSuccess = useCallback(async (result: QrScanner.ScanResult) => {
-  //   setScannedResult(result?.data || "");
-
-  //   // Stop the scanner immediately after a successful scan
-  //   if (scannerRef.current) {
-  //     scannerRef.current.stop();
-  //   }
-
-  //   const handleScan = async (result: string) => {
-  //     const [data, err] = await execute({
-  //       parkingSpaceId: result,
-  //       gpoAccountID: session.data?.user.id as string,
-  //     });
-
-  //     if (err) {
-  //       const parsedErrorData = await JSON.parse(err?.data);
-
-  //       toast({
-  //         title: "Something went wrong.",
-  //         variant: "destructive",
-  //         description: parsedErrorData,
-  //       });
-
-  //       return;
-  //     }
-
-  //     if (data) {
-  //       toast({
-  //         title: "Parking session created",
-  //       });
-
-  //       console.log(data);
-  //       router.push("scan/scan-success");
-  //     }
-  //   };
-
-  //   await handleScan(result.data);
-  //   setOpen(false);
-  // }, []);
 
   const onScanSuccess = useCallback(
     async (result: QrScanner.ScanResult) => {

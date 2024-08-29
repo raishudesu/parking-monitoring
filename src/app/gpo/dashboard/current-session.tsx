@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,8 +13,24 @@ import ToScanBtn from "./to-scan-btn";
 
 const CurrentSession = async () => {
   const serverSession = await getServerSession(authOptions);
+
+  if (!serverSession || !serverSession.user || !serverSession.user.id) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl font-medium">
+            Authentication Error
+          </CardTitle>
+          <CardDescription>
+            Unable to retrieve user session. Please try logging in again.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   const currentParkingSession = await getCurrentGpoSessionUseCase(
-    serverSession?.user.id as string
+    serverSession.user.id
   );
 
   const currentParkingSpace = currentParkingSession?.parkingSpace;
@@ -23,7 +38,7 @@ const CurrentSession = async () => {
   if (!currentParkingSpace) {
     return (
       <Card>
-        <CardHeader className="">
+        <CardHeader>
           <CardTitle className="text-2xl font-medium">
             No current parking session.
           </CardTitle>
@@ -42,15 +57,15 @@ const CurrentSession = async () => {
 
   return (
     <Card>
-      <CardHeader className="">
+      <CardHeader>
         <CardTitle className="text-4xl font-medium">
-          {currentParkingSpace?.name}
+          {currentParkingSpace.name}
         </CardTitle>
-        <CardDescription>{currentParkingSpace?.description}</CardDescription>
+        <CardDescription>{currentParkingSpace.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="w-full mt-6 flex flex-col">
-          <EndSessionBtn gpoAccountId={serverSession?.user.id as string} />
+          <EndSessionBtn gpoAccountId={serverSession.user.id} />
         </div>
       </CardContent>
     </Card>

@@ -7,9 +7,10 @@ import {
 import { CircleParking } from "lucide-react";
 
 const AvailableParkingSpaces = async () => {
-  const availableParkingSpaces = await getAvailableSpacesUseCase();
-
-  const unavailableParkingSpaces = await getUnavailableSpacesUseCase();
+  const [availableParkingSpaces, unavailableParkingSpaces] = await Promise.all([
+    getAvailableSpacesUseCase(),
+    getUnavailableSpacesUseCase(),
+  ]);
 
   return (
     <>
