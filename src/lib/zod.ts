@@ -28,3 +28,9 @@ export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 });
+
+export const updatePasswordSchema = z.object({
+  oldPassword: z.string(),
+  newPassword: z.string(),
+  accountId: z.string(),
+});
