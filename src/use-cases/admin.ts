@@ -11,8 +11,7 @@ export const adminLoginUseCase = async (email: string, password: string) => {
 
   if (!admin) throw new AdminLoginError();
 
-  //   const passwordMatched = await compare(password, admin.password);
-  const passwordMatched = admin.password === password;
+  const passwordMatched = await compare(password, admin.password);
 
   if (!passwordMatched) throw new AdminLoginError();
 
