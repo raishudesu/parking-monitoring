@@ -60,6 +60,12 @@ export const getGpoSessionsByGpoId = async (accountId: string) => {
     where: {
       accountId,
     },
+    include: {
+      parkingSpace: true,
+    },
+    orderBy: {
+      startTime: "desc",
+    },
   });
 
   return gpoSessions;

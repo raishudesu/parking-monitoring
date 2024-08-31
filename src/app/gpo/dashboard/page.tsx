@@ -1,5 +1,8 @@
+import RecentTransactions from "@/app/admin/dashboard/recent-transactions";
 import AvailableParkingSpaces from "./available-parking-spaces";
 import CurrentSession from "./current-session";
+import { RecentSales } from "./recent-sales";
+import SessionHistory from "./session-history";
 
 const GpoDashboardPage = () => {
   return (
@@ -11,16 +14,27 @@ const GpoDashboardPage = () => {
         </h1>
       </div>
 
-      <div className="mt-6">
-        <h2 className="text-muted-foreground scroll-m-20 font-semibold pb-2 text-2xl tracking-tight transition-colors first:mt-0">
-          My Sessions
-        </h2>
-        <div className="grid lg:grid-cols-3 gap-4">
-          <CurrentSession />
+      <div className="w-full grid md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 w-full mt-6">
+          <h2 className="text-muted-foreground scroll-m-20 font-semibold pb-2 text-xl tracking-tight transition-colors first:mt-0">
+            My Sessions
+          </h2>
+          <div className=" gap-4">
+            <CurrentSession />
+          </div>
+          <div className=" mt-6">
+            <AvailableParkingSpaces />
+          </div>
         </div>
-      </div>
-      <div className="w-full flex flex-col mt-6">
-        <AvailableParkingSpaces />
+        <div className="mt-6 w-full">
+          <h2 className="text-muted-foreground scroll-m-20 font-semibold pb-2 text-xl tracking-tight transition-colors first:mt-0">
+            History
+          </h2>
+          <div className="w-full border rounded-xl p-6">
+            {/* <RecentTransactions /> */}
+            <SessionHistory />
+          </div>
+        </div>
       </div>
     </div>
   );
