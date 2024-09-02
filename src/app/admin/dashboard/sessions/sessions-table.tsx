@@ -4,8 +4,11 @@ import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
+  FilterFn,
+  Row,
   SortingState,
   VisibilityState,
+  createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -49,6 +52,17 @@ type SessionData = GPOSession & {
   accountParked: GPOAccount;
 };
 
+const columnHelper = createColumnHelper();
+
+const emailFilterFn: FilterFn<any> = (
+  row: Row<any>,
+  columnId: string,
+  filterValue: string
+) => {
+  const email = (row.getValue(columnId) as { email?: string })?.email ?? "";
+  return email.toLowerCase().includes(filterValue.toLowerCase());
+};
+
 export const columns: ColumnDef<SessionData>[] = [
   {
     id: "select",
@@ -81,6 +95,7 @@ export const columns: ColumnDef<SessionData>[] = [
     accessorKey: "accountParked",
     header: "Account Parked",
     cell: ({ row }) => <div>{row.original.accountParked.email}</div>,
+    filterFn: emailFilterFn,
   },
   {
     accessorKey: "startTime",
@@ -160,10 +175,10 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
         <Input
           placeholder="Filter by Corporate Email"
           value={
-            (table.getColumn("corpEmail")?.getFilterValue() as string) ?? ""
+            (table.getColumn("accountParked")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("corpEmail")?.setFilterValue(event.target.value)
+            table.getColumn("accountParked")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

@@ -54,6 +54,9 @@ export const getAllGpoSessions = async () => {
       parkingSpace: true,
       accountParked: true,
     },
+    orderBy: {
+      startTime: "desc",
+    },
   });
 
   return allGpoSessions;
