@@ -7,7 +7,9 @@ import { redirect } from "next/navigation";
 const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getServerSession(authOptions);
 
-  if (!(session?.user.role === "ADMIN")) {
+  if (
+    !(session?.user.role === "ADMIN" || session?.user.role === "SUPERADMIN")
+  ) {
     redirect("/admin/sign-in  ");
   }
 

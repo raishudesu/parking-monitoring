@@ -49,7 +49,12 @@ export const getOngoingGpoSession = async (accountId: string) => {
 
 // GETTING ALL GPO SESSIONS
 export const getAllGpoSessions = async () => {
-  const allGpoSessions = await prisma.gPOSession.findMany();
+  const allGpoSessions = await prisma.gPOSession.findMany({
+    include: {
+      parkingSpace: true,
+      accountParked: true,
+    },
+  });
 
   return allGpoSessions;
 };

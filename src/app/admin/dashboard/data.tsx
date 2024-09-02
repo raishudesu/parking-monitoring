@@ -31,9 +31,9 @@ export const sideNavLinks = [
     link: "/admin/dashboard/administrators",
   },
   {
-    name: "Transactions",
+    name: "Sessions",
     icon: <History />,
-    link: "/admin/dashboard/transactions",
+    link: "/admin/dashboard/sessions",
   },
   {
     name: "Audit Logs",
