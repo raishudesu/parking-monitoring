@@ -1,10 +1,32 @@
 import {
+  createAdmin,
   getAdminByEmail,
   getAdminById,
+  getAdmins,
   updateAdminPassword,
 } from "@/data-access/admin";
 import { AdminLoginError } from "./errors";
 import { compare, hash } from "bcrypt";
+import { z } from "zod";
+import { adminAccountSchema } from "@/lib/zod";
+
+export const createAdminUseCase = async (
+  data: z.infer<typeof adminAccountSchema>
+) => {
+  const hashedPwd = await hash(data.password, 10);
+
+  data.password = hashedPwd;
+
+  const admin = await createAdmin(data);
+
+  return admin;
+};
+
+export const getAdminsUseCase = async () => {
+  const admins = await getAdmins();
+
+  return admins;
+};
 
 export const adminLoginUseCase = async (email: string, password: string) => {
   const admin = await getAdminByEmail(email);

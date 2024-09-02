@@ -34,3 +34,11 @@ export const updatePasswordSchema = z.object({
   newPassword: z.string(),
   accountId: z.string(),
 });
+
+export const adminAccountSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  corpEmail: z.string(),
+  password: z.string().min(8),
+  role: z.enum(["ADMIN", "SUPERADMIN"]),
+});
