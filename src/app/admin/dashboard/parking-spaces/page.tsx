@@ -1,8 +1,8 @@
-import { AccountsTable, GPOAccountData } from "./accounts-table";
-import { getAllGpoAccountsUseCase } from "@/use-cases/gpo-users";
+import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
+import { ParkingSpaceTable } from "./parking-space-table";
 
-const AccountsPage = async () => {
-  const gpoAccounts = await getAllGpoAccountsUseCase();
+const ParkingSpacesPage = async () => {
+  const parkingSpaces = await getAllParkingSpacesUseCase();
 
   return (
     <div className="w-full flex flex-col p-6">
@@ -11,14 +11,14 @@ const AccountsPage = async () => {
           Administrator Dashboard
         </div>
         <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Accounts 🧍
+          Parking Spaces
         </h1>
       </div>
       <div>
-        <AccountsTable data={gpoAccounts as GPOAccountData[]} />
+        <ParkingSpaceTable data={parkingSpaces} />
       </div>
     </div>
   );
 };
 
-export default AccountsPage;
+export default ParkingSpacesPage;

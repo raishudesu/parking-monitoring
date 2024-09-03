@@ -138,8 +138,8 @@ model ParkingSpace {
   description     String
   longitude       String
   latitude        String
-  spaceType       ParkingSpaceType
-  currCapacity    Int
+  spaceType       ParkingSpaceType @default(HYBRID)
+  currCapacity    Int?             @default(0)
   maxCapacity     Int
   imageUrl        String?
   gpoSessions     GPOSession[]

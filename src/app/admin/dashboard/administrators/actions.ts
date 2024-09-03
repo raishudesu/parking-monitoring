@@ -7,10 +7,8 @@ import { createServerAction } from "zsa";
 
 export const createAdminAction = createServerAction()
   .input(adminAccountSchema)
-  .handler(async (input) => {
-    const data = input.input;
-
-    const res = await createAdminUseCase(data);
+  .handler(async ({ input }) => {
+    const res = await createAdminUseCase(input);
 
     revalidatePath("/admin/dashboard/administrators");
 

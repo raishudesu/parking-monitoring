@@ -42,3 +42,37 @@ export const adminAccountSchema = z.object({
   password: z.string().min(8),
   role: z.enum(["ADMIN", "SUPERADMIN"]),
 });
+
+export const parkingSpaceSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  longitude: z.string(),
+  latitude: z.string(),
+  spaceType: z.enum([
+    "MOTORCYCLE",
+    "TRICYCLE",
+    "FOURWHEEL",
+    "HYBRID",
+    "PWD",
+    "VIP",
+  ]),
+  maxCapacity: z.number(),
+  imageUrl: z.string().optional(),
+});
+
+export const parkingSpaceFormSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  longitude: z.string(),
+  latitude: z.string(),
+  spaceType: z.enum([
+    "MOTORCYCLE",
+    "TRICYCLE",
+    "FOURWHEEL",
+    "HYBRID",
+    "PWD",
+    "VIP",
+  ]),
+  maxCapacity: z.string(),
+  imageUrl: z.string().optional(),
+});
