@@ -3,6 +3,7 @@ import SideNav from "./side-nav";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import SideSheet from "./side-sheet";
 
 const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getServerSession(authOptions);
@@ -16,7 +17,12 @@ const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full flex h-screen">
       <SideNav />
-      <div className="w-full h-full overflow-y-scroll ">{children}</div>
+      <div className="w-full h-full overflow-y-scroll ">
+        <div className="p-6 pb-3 md:hidden">
+          <SideSheet />
+        </div>
+        {children}
+      </div>
     </div>
   );
 };

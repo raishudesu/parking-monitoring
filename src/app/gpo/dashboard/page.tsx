@@ -1,12 +1,10 @@
-import RecentTransactions from "@/app/admin/dashboard/recent-transactions";
 import AvailableParkingSpaces from "./available-parking-spaces";
 import CurrentSession from "./current-session";
-import { RecentSales } from "./recent-sales";
 import SessionHistory from "./session-history";
 
 const GpoDashboardPage = () => {
   return (
-    <div className="w-full flex flex-col py-6 px-3 md:px-6">
+    <div className="w-full flex flex-col p-6">
       <div className="pb-6 flex flex-col gap-3">
         <div className="text-lg text-muted-foreground">Dashboard</div>
         <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
@@ -31,7 +29,6 @@ const GpoDashboardPage = () => {
             History
           </h2>
           <div className="w-full border rounded-xl p-6">
-            {/* <RecentTransactions /> */}
             <SessionHistory />
           </div>
         </div>

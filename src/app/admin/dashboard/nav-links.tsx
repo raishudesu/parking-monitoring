@@ -3,14 +3,29 @@
 import Link from "next/link";
 import { sideNavLinks } from "./data";
 import { usePathname } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
 
-const NavLinks = () => {
+const NavLinks = ({
+  open,
+  setOpen,
+}: {
+  open?: boolean;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
+}) => {
   const path = usePathname();
+
+  const handleClick = () => {
+    if (open && setOpen) {
+      setOpen(!open);
+    }
+  };
+
   return (
     <>
       {sideNavLinks.map(({ name, icon, link }) => (
         <li key={name}>
           <Link
+            onClick={handleClick}
             href={link}
             className={`p-3 flex gap-3 items-center rounded-xl ${
               path === link
