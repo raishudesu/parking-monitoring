@@ -68,7 +68,7 @@ model GPOAccount {
   gpoSessions    GPOSession[]
   violations     GPOViolation[]
   role           UserRole       @default(GPO)
-  creditScore    Int?           @default(0)
+  creditScore    Int?           @default(100)
   isActive       Boolean        @default(true)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -81,6 +81,7 @@ model GPOSession {
   accountParked  GPOAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId      String
   startTime      DateTime      @default(now())
+  shouldEndAt    DateTime?
   endTime        DateTime?
   status         SessionStatus @default(ONGOING)
   endedProperly  Boolean?

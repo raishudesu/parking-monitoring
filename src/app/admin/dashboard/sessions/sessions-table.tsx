@@ -103,6 +103,11 @@ export const columns: ColumnDef<SessionData>[] = [
     cell: ({ row }) => <div>{`${row.getValue("startTime")}`}</div>,
   },
   {
+    accessorKey: "shouldEndAt",
+    header: "Should End At",
+    cell: ({ row }) => <div>{`${row.getValue("shouldEndAt")}`}</div>,
+  },
+  {
     accessorKey: "endTime",
     header: "End time",
     cell: ({ row }) => <div>{`${row.getValue("endTime")}`}</div>,

@@ -19,7 +19,7 @@ const GpoDashboardLayout = async ({ children }: { children: ReactNode }) => {
         <div className="p-6 pb-3 md:hidden">
           <SideSheet />
         </div>
-        {children}
+        <div className="bg-slate-50">{children}</div>
       </div>
     </div>
   );

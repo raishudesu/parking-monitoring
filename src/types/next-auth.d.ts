@@ -14,6 +14,7 @@ declare module "next-auth" {
 
   interface User extends SystemUsers {
     role: AdminRole | UserRole;
+    creditScore: number;
     error: string | null;
   }
 

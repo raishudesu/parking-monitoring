@@ -22,11 +22,11 @@ const mapContainerStyle: React.CSSProperties = {
   height: "50vh",
 };
 
-function DijkstraMap({
+const DijkstraMap = ({
   parkingSpaces,
 }: {
   parkingSpaces: ParkingSpace[];
-}): JSX.Element {
+}): JSX.Element => {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ["places"],
@@ -225,6 +225,6 @@ function DijkstraMap({
       </div>
     </div>
   );
-}
+};
 
 export default DijkstraMap;

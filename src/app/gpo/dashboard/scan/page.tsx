@@ -1,4 +1,3 @@
-import { ScanLine } from "lucide-react";
 import ScanQrDrawer from "./scan-qr-drawer";
 
 const ScanPage = () => {

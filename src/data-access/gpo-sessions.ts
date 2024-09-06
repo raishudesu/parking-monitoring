@@ -4,12 +4,14 @@ import prisma from "@/lib/db";
 // GPO SESSION CREATION
 export const createGpoSession = async (
   parkingSpaceId: string,
-  gpoAccountId: string
+  gpoAccountId: string,
+  shouldEndAt: Date
 ) => {
   const gpoSession = await prisma.gPOSession.create({
     data: {
       accountId: gpoAccountId,
       parkingSpaceId,
+      shouldEndAt,
     },
   });
 

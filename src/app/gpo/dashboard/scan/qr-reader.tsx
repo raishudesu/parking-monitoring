@@ -5,11 +5,7 @@ import QrScanner from "qr-scanner";
 import QrFrame from "@/assets/qr-frame.svg";
 import "@/styles/scanner.css";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useServerAction } from "zsa-react";
-import { createGpoSessionAction } from "./actions";
-import { toast } from "@/components/ui/use-toast";
 
 const QrReader = ({
   setOpen,
@@ -23,10 +19,7 @@ const QrReader = ({
   const [cameraStatus, setCameraStatus] = useState<string>("Initializing...");
   const [cameras, setCameras] = useState<QrScanner.Camera[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string>("");
-  const session = useSession();
   const router = useRouter();
-
-  const { isPending, execute } = useServerAction(createGpoSessionAction);
 
   const onScanSuccess = useCallback(
     async (result: QrScanner.ScanResult) => {
@@ -37,74 +30,9 @@ const QrReader = ({
         scannerRef.current.stop();
       }
 
-      const handleScan = async (result: string) => {
-        try {
-          const [data, err] = await execute({
-            parkingSpaceId: result,
-            gpoAccountID: session.data?.user.id as string,
-          });
-
-          if (err) {
-            let errorMessage = "An unknown error occurred";
-            if (typeof err.data === "string") {
-              try {
-                const parsedErrorData = JSON.parse(err.data);
-                errorMessage =
-                  parsedErrorData.message || JSON.stringify(parsedErrorData);
-              } catch (parseError) {
-                console.error("Error parsing error data:", parseError);
-                errorMessage = err.data;
-              }
-            } else if (err.data && typeof err.data === "object") {
-              errorMessage = JSON.stringify(err.data);
-            }
-
-            toast({
-              title: "Something went wrong.",
-              variant: "destructive",
-              description: err.message,
-            });
-            return;
-          }
-
-          if (data) {
-            toast({
-              title: "Parking session created",
-            });
-
-            console.log(data);
-            router.push("scan/scan-success");
-          }
-        } catch (error) {
-          console.error("Error in handleScan:", error);
-          toast({
-            title: "An unexpected error occurred",
-            variant: "destructive",
-            description:
-              error instanceof Error
-                ? error.message
-                : "Please try again later.",
-          });
-        }
-      };
-
-      try {
-        await handleScan(result.data);
-      } catch (error) {
-        console.error("Error handling scan:", error);
-        toast({
-          title: "Error processing scan",
-          variant: "destructive",
-          description:
-            error instanceof Error
-              ? error.message
-              : "An unexpected error occurred while processing the scan.",
-        });
-      } finally {
-        setOpen(false);
-      }
+      router.replace(`/gpo/dashboard/scan/${result.data}`);
     },
-    [execute, router, session.data?.user.id, setOpen]
+    [router]
   );
 
   const onScanFail = useCallback((error: string | Error) => {

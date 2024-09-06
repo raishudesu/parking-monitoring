@@ -1,5 +1,6 @@
 import { compare, hash } from "bcrypt";
 import {
+  addCreditScoreToGpo,
   createGpoAccount,
   deleteGpoAccount,
   getAllGpoAccounts,
@@ -118,4 +119,23 @@ export const updateGpoPasswordUseCase = async (
   const { password: filteredPassword, ...filteredGpoAccount } = gpo;
 
   return filteredGpoAccount;
+};
+
+// add credit score to gpo upon proper ending session
+export const addCreditScoreToGpoUseCase = async (accountId: string) => {
+  const gpo = await getGpoById(accountId);
+
+  let creditToAdd = 0;
+
+  if (!gpo) throw Error("GPO Account doesn't exist.");
+
+  if ((gpo.creditScore ?? 0) < 100) {
+    creditToAdd = 5;
+  }
+
+  const updatedGpo = await addCreditScoreToGpo(accountId, creditToAdd);
+
+  const { password: omittedPwd, ...filteredGpo } = updatedGpo;
+
+  return filteredGpo;
 };

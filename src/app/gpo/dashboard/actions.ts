@@ -9,7 +9,7 @@ export const endSessionAction = createServerAction()
   .input(z.string())
   .handler(async ({ input }) => {
     console.log(input);
-    const res = await endGpoSessionUseCase(input, true);
+    const res = await endGpoSessionUseCase(input);
 
     if (res) revalidatePath("/gpo/dashboard/parking-spaces");
 

@@ -1,8 +1,15 @@
 import { createGpoViolation } from "@/data-access/gpo-violations";
-import { GPOViolation } from "@prisma/client";
 
-export const createGpoViolationUseCase = async (data: GPOViolation) => {
-  const violation = await createGpoViolation(data);
+export const createGpoViolationUseCase = async (
+  accountId: string,
+  violationType: string,
+  pointsDeducted: number
+) => {
+  const violation = await createGpoViolation(
+    accountId,
+    violationType,
+    pointsDeducted
+  );
 
   return violation;
 };

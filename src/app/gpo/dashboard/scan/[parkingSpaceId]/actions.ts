@@ -8,6 +8,7 @@ import { createGpoSessionUseCase } from "@/use-cases/gpo-sessions";
 const gpoSessionCreationSchema = z.object({
   parkingSpaceId: z.string(),
   gpoAccountID: z.string(),
+  duration: z.string(),
 });
 
 export const createGpoSessionAction = createServerAction()
@@ -15,7 +16,8 @@ export const createGpoSessionAction = createServerAction()
   .handler(async ({ input }) => {
     const res = await createGpoSessionUseCase(
       input.parkingSpaceId,
-      input.gpoAccountID
+      input.gpoAccountID,
+      input.duration
     );
 
     if (res) revalidatePath("/gpo/dashboard/parking-spaces");
