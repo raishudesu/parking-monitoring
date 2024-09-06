@@ -12,7 +12,7 @@ const SessionHistory = async () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="max-h-80 space-y-6">
       {sessionHistory.map(({ status, parkingSpace }, index) => (
         <Fragment key={index}>
           <div className="flex flex-col md:flex-row md:items-center">

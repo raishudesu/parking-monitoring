@@ -33,7 +33,7 @@ const GpoDashboardPage = () => {
           <h2 className="mt-6 text-muted-foreground scroll-m-20 font-semibold pb-2 text-xl tracking-tight transition-colors first:mt-0">
             History
           </h2>
-          <div className="bg-card w-full border rounded-xl p-6">
+          <div className="overflow-y-scroll bg-card w-full border rounded-xl p-6">
             <SessionHistory />
           </div>
         </div>
