@@ -7,19 +7,25 @@ import {
   Marker,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { ParkingSpace } from "@prisma/client";
+import { Button } from "@/components/ui/button";
 
 interface LatLng {
   lat: number;
   lng: number;
 }
 
-const center: LatLng = { lat: 9.7787, lng: 118.7341 }; // Center map around IT1
+const center: LatLng = { lat: 9.7787, lng: 118.7341 }; // Default center around IT1
 const mapContainerStyle: React.CSSProperties = {
   width: "100%",
-  height: "80vh",
+  height: "50vh",
 };
 
-function DijkstraMap(): JSX.Element {
+function DijkstraMap({
+  parkingSpaces,
+}: {
+  parkingSpaces: ParkingSpace[];
+}): JSX.Element {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ["places"],
@@ -31,12 +37,6 @@ function DijkstraMap(): JSX.Element {
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
 
-  // Predefined parking spaces with labels
-  const parkingSpaces: { location: LatLng; label: string }[] = [
-    { location: { lat: 9.7787, lng: 118.7341 }, label: "IT1" }, // IT1
-    { location: { lat: 9.778333, lng: 118.734556 }, label: "CS1" }, // CS1
-  ];
-
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
   }, []);
@@ -45,7 +45,7 @@ function DijkstraMap(): JSX.Element {
     setMap(null);
   }, []);
 
-  // Use the Geolocation API to get the user's current location
+  // Get the user's current location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -53,7 +53,6 @@ function DijkstraMap(): JSX.Element {
           const { latitude, longitude } = position.coords;
           const currentLocation: LatLng = { lat: latitude, lng: longitude };
           setUserLocation(currentLocation);
-          findClosestPoint(currentLocation);
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -62,18 +61,23 @@ function DijkstraMap(): JSX.Element {
     }
   }, []);
 
-  // Find the closest parking space and calculate directions
+  // Find the closest parking space
   const findClosestPoint = useCallback(
     (userLocation: LatLng) => {
       let minDistance = Infinity;
       let closest = null;
 
-      // Find the closest parking space using distance calculation
       for (const point of parkingSpaces) {
-        const distance = calculateDistance(userLocation, point.location);
+        const distance = calculateDistance(userLocation, {
+          lat: parseFloat(point.latitude),
+          lng: parseFloat(point.longitude),
+        });
         if (distance < minDistance) {
           minDistance = distance;
-          closest = point.location;
+          closest = {
+            lat: parseFloat(point.latitude),
+            lng: parseFloat(point.longitude),
+          };
         }
       }
 
@@ -85,7 +89,7 @@ function DijkstraMap(): JSX.Element {
     [parkingSpaces]
   );
 
-  // Calculate driving or walking directions
+  // Calculate directions to a destination
   const calculateRoute = useCallback((origin: LatLng, destination: LatLng) => {
     if (!origin || !destination) return;
 
@@ -94,7 +98,7 @@ function DijkstraMap(): JSX.Element {
       {
         origin,
         destination,
-        travelMode: google.maps.TravelMode.DRIVING, // You can change this to WALKING if preferred
+        travelMode: google.maps.TravelMode.DRIVING,
       },
       (result, status) => {
         if (status === google.maps.DirectionsStatus.OK && result) {
@@ -125,12 +129,33 @@ function DijkstraMap(): JSX.Element {
     return R * c;
   };
 
+  // Focus the map on a specific parking space and calculate directions
+  const handleParkingSpaceClick = (parkingSpace: {
+    longitude: string;
+    latitude: string;
+  }) => {
+    if (map && userLocation) {
+      const destination: LatLng = {
+        lat: parseFloat(parkingSpace.latitude),
+        lng: parseFloat(parkingSpace.longitude),
+      };
+      map.panTo(destination);
+      calculateRoute(userLocation, destination);
+    }
+  };
+
+  const handleShowClosestClick = () => {
+    if (userLocation) {
+      findClosestPoint(userLocation);
+    }
+  };
+
   const mapOptions = useMemo<google.maps.MapOptions>(
     () => ({
       disableDefaultUI: true,
       clickableIcons: false,
-      scrollwheel: true, // Allow zooming with scroll wheel
-      gestureHandling: "auto", // Enable gesture-based zooming
+      scrollwheel: true,
+      gestureHandling: "auto",
     }),
     []
   );
@@ -139,29 +164,65 @@ function DijkstraMap(): JSX.Element {
   if (!isLoaded) return <div>Loading maps</div>;
 
   return (
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      center={userLocation || center} // Center map on user location or fallback
-      zoom={18}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
-      options={mapOptions}
-    >
-      {/* Show markers for parking locations with labels */}
-      {parkingSpaces.map((marker, index) => (
-        <Marker key={index} position={marker.location} label={marker.label} />
-      ))}
-      {/* Show marker for user location with label */}
-      {userLocation && (
-        <Marker
-          position={userLocation}
-          label="You"
-          icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-        />
-      )}
-      {/* Render directions if calculated */}
-      {directions && <DirectionsRenderer directions={directions} />}
-    </GoogleMap>
+    <div>
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={userLocation || center} // Center map on user location or fallback
+        zoom={18}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+        options={mapOptions}
+      >
+        {parkingSpaces.map(({ id, name, latitude, longitude }, index) => (
+          <Marker
+            key={index}
+            position={{ lat: parseFloat(latitude), lng: parseFloat(longitude) }}
+            label={name}
+          />
+        ))}
+
+        {userLocation && (
+          <Marker
+            position={userLocation}
+            label="You"
+            icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+          />
+        )}
+
+        {directions && <DirectionsRenderer directions={directions} />}
+      </GoogleMap>
+
+      {/* Below the map: List of parking spaces with click handlers */}
+      <div className="mt-6 flex flex-col">
+        <div className="grid grid-cols-2 gap-3">
+          {parkingSpaces.map(
+            ({ id, name, currCapacity, maxCapacity, latitude, longitude }) => (
+              <div
+                key={id}
+                className="p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out"
+                onClick={() =>
+                  handleParkingSpaceClick({
+                    latitude,
+                    longitude,
+                  })
+                }
+              >
+                <h2>{name}</h2>
+                {(currCapacity ?? 0) < maxCapacity ? (
+                  <small className="text-green-500">Available</small>
+                ) : (
+                  <small className="text-red-500">Unavailable</small>
+                )}
+              </div>
+            )
+          )}
+        </div>
+
+        <Button className="md:self-start mt-6" onClick={handleShowClosestClick}>
+          Show closest parking space
+        </Button>
+      </div>
+    </div>
   );
 }
 
