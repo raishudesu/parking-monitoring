@@ -9,6 +9,7 @@ import {
 } from "@react-google-maps/api";
 import { ParkingSpace } from "@prisma/client";
 import { Button } from "@/components/ui/button";
+import MapLoader from "./map-loader";
 
 interface LatLng {
   lat: number;
@@ -161,7 +162,7 @@ function DijkstraMap({
   );
 
   if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <div>Loading maps</div>;
+  if (!isLoaded) return <MapLoader />;
 
   return (
     <div>
