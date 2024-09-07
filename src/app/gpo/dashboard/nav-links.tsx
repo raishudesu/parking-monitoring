@@ -27,7 +27,7 @@ const NavLinks = ({
           <Link
             onClick={handleClick}
             href={link}
-            className={`p-3 flex gap-3 items-center rounded-xl ${
+            className={`p-3 py-4 flex gap-3 items-center rounded-xl hover:bg-slate-50 transition-colors ease-in-out ${
               path === link
                 ? "bg-slate-100 text-primary font-semibold"
                 : "text-gray-700"

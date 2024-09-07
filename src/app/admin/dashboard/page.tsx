@@ -18,7 +18,7 @@ const AdminDashboardPage = () => {
           <div className="max-h-[65vh]">
             <AnalyticsSection />
           </div>
-          <div className="max-h-[65vh] shadow-md overflow-y-scroll p-6 border rounded-lg overflow-clip flex flex-col gap-6">
+          <div className="max-h-[65vh] bg-background shadow-md overflow-y-scroll p-6 border rounded-lg overflow-clip flex flex-col gap-6">
             <span className="text-lg font-semibold">Recent Sessions</span>
             <RecentTransactions />
           </div>

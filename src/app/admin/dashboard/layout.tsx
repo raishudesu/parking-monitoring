@@ -21,7 +21,7 @@ const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
         <div className="p-6 pb-3 md:hidden">
           <SideSheet />
         </div>
-        {children}
+        <div className="h-full bg-slate-50">{children}</div>
       </div>
     </div>
   );
