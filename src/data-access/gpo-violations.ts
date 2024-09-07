@@ -1,5 +1,4 @@
 import prisma from "@/lib/db";
-import { GPOViolation } from "@prisma/client";
 
 export const createGpoViolation = async (
   accountId: string,
@@ -27,4 +26,18 @@ export const createGpoViolation = async (
   });
 
   return { GatePassOwner: gpo, Violation: violation };
+};
+
+export const getAllGpoViolations = async () => {
+  const violations = await prisma.gPOViolation.findMany({
+    include: {
+      accountViolator: {
+        select: {
+          email: true,
+        },
+      },
+    },
+  });
+
+  return violations;
 };

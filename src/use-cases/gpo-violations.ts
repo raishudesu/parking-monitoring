@@ -1,4 +1,7 @@
-import { createGpoViolation } from "@/data-access/gpo-violations";
+import {
+  createGpoViolation,
+  getAllGpoViolations,
+} from "@/data-access/gpo-violations";
 
 export const createGpoViolationUseCase = async (
   accountId: string,
@@ -12,4 +15,10 @@ export const createGpoViolationUseCase = async (
   );
 
   return violation;
+};
+
+export const getAllGpoViolationsUseCase = async () => {
+  const violations = await getAllGpoViolations();
+
+  return violations;
 };

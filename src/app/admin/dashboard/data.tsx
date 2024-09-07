@@ -6,6 +6,7 @@ import {
   Settings,
   Shield,
   SquareParking,
+  TriangleAlert,
   Users,
 } from "lucide-react";
 
@@ -24,6 +25,11 @@ export const sideNavLinks = [
     name: "Accounts",
     icon: <Users />,
     link: "/admin/dashboard/accounts",
+  },
+  {
+    name: "Violations",
+    icon: <TriangleAlert />,
+    link: "/admin/dashboard/violations",
   },
   {
     name: "Administrators",
