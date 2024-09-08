@@ -10,6 +10,17 @@ import {
 import { ParkingSpace } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import MapLoader from "./map-loader";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { ChevronUp } from "lucide-react";
 
 interface LatLng {
   lat: number;
@@ -19,7 +30,7 @@ interface LatLng {
 const center: LatLng = { lat: 9.7787, lng: 118.7341 }; // Default center around IT1
 const mapContainerStyle: React.CSSProperties = {
   width: "100%",
-  height: "50vh",
+  height: "100vh",
 };
 
 const DijkstraMap = ({
@@ -32,6 +43,7 @@ const DijkstraMap = ({
     libraries: ["places"],
   });
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [userLocation, setUserLocation] = useState<LatLng | null>(null);
   const [closestPoint, setClosestPoint] = useState<LatLng | null>(null);
@@ -143,12 +155,15 @@ const DijkstraMap = ({
       map.panTo(destination);
       calculateRoute(userLocation, destination);
     }
+
+    setDrawerOpen(!drawerOpen);
   };
 
   const handleShowClosestClick = () => {
     if (userLocation) {
       findClosestPoint(userLocation);
     }
+    setDrawerOpen(!drawerOpen);
   };
 
   const mapOptions = useMemo<google.maps.MapOptions>(
@@ -165,7 +180,7 @@ const DijkstraMap = ({
   if (!isLoaded) return <MapLoader />;
 
   return (
-    <div>
+    <div className="relative w-full">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={userLocation || center} // Center map on user location or fallback
@@ -194,34 +209,65 @@ const DijkstraMap = ({
       </GoogleMap>
 
       {/* Below the map: List of parking spaces with click handlers */}
-      <div className="mt-6 flex flex-col">
-        <div className="grid grid-cols-2 gap-3">
-          {parkingSpaces.map(
-            ({ id, name, currCapacity, maxCapacity, latitude, longitude }) => (
-              <div
-                key={id}
-                className="p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out"
-                onClick={() =>
-                  handleParkingSpaceClick({
-                    latitude,
-                    longitude,
-                  })
-                }
-              >
-                <h2>{name}</h2>
-                {(currCapacity ?? 0) < maxCapacity ? (
-                  <small className="text-green-500">Available</small>
-                ) : (
-                  <small className="text-red-500">Unavailable</small>
-                )}
-              </div>
-            )
-          )}
-        </div>
+      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-10 mt-6 flex flex-col">
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+          <DrawerTrigger asChild>
+            <Button size={"lg"} className="rounded-full">
+              <ChevronUp />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="mx-auto w-full max-w-sm">
+              <DrawerHeader>
+                <DrawerTitle>Select Parking Space</DrawerTitle>
+                <DrawerDescription>
+                  You can also view the nearest parking space.
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 pb-0">
+                <div className="grid grid-cols-2 gap-3">
+                  {parkingSpaces.map(
+                    ({
+                      id,
+                      name,
+                      currCapacity,
+                      maxCapacity,
+                      latitude,
+                      longitude,
+                    }) => (
+                      <div
+                        key={id}
+                        className="p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out"
+                        onClick={() =>
+                          handleParkingSpaceClick({
+                            latitude,
+                            longitude,
+                          })
+                        }
+                      >
+                        <h2>{name}</h2>
+                        {(currCapacity ?? 0) < maxCapacity ? (
+                          <small className="text-green-500">Available</small>
+                        ) : (
+                          <small className="text-red-500">Unavailable</small>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
 
-        <Button className="md:self-start mt-6" onClick={handleShowClosestClick}>
-          Show closest parking space
-        </Button>
+                <DrawerFooter>
+                  <Button className="mt-6" onClick={handleShowClosestClick}>
+                    Show closest parking space
+                  </Button>
+                  <DrawerClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </div>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
     </div>
   );
