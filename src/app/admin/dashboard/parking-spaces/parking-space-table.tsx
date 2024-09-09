@@ -48,6 +48,7 @@ import {
 import type { GPOAccount, GPOSession, ParkingSpace } from "@prisma/client";
 import ParkingSpaceCreationDialog from "./parking-space-creation-dialog";
 import DeleteParkingSpaceDialog from "./delete-parking-space-dialog";
+import UpdateParkingSpaceDialog from "./parking-space-update-dialog";
 
 // type SessionData = GPOSession & {
 //   parkingSpace: ParkingSpace;
@@ -140,12 +141,21 @@ export const columns: ColumnDef<ParkingSpace>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const updateFormData = {
+        name: row.original.name,
+        description: row.original.description,
+        longitude: row.original.longitude,
+        latitude: row.original.latitude,
+        spaceType: row.original.spaceType,
+        maxCapacity: row.original.maxCapacity.toString(),
+        imageUrl: row.original.imageUrl as string,
+      };
       return (
         <div className="flex gap-2">
-          <Button className="flex gap-2">
-            Edit
-            <UserRoundPen size={15} />
-          </Button>
+          <UpdateParkingSpaceDialog
+            parkingSpaceId={row.original.id}
+            data={updateFormData}
+          />
           <DeleteParkingSpaceDialog parkingSpaceId={row.original.id} />
         </div>
       );
@@ -222,7 +232,7 @@ export function ParkingSpaceTable({ data }: { data: ParkingSpace[] }) {
           <ParkingSpaceCreationDialog />
         </div>
       </div>
-      <div className="rounded-md border overflow-clip">
+      <div className="rounded-md border overflow-clip bg-background">
         <Table>
           <TableHeader className="bg-orange-500 bg-opacity-25">
             {table.getHeaderGroups().map((headerGroup) => (

@@ -2,6 +2,7 @@ import {
   createParkingSpace,
   deleteParkingSpaceById,
   getAllParkingSpaces,
+  updateParkingSpaceById,
 } from "@/data-access/parking-spaces";
 import { parkingSpaceSchema } from "@/lib/zod";
 import { z } from "zod";
@@ -44,8 +45,17 @@ export const getUnavailableSpacesUseCase = async () => {
   return unavailableSpaces;
 };
 
-export const deleteParkingSpaceByIdUseCase = async (parkingSpaceId: string) => {
-  const responseMessage = await deleteParkingSpaceById(parkingSpaceId);
+export const updateParkingSpaceByIdUseCase = async (
+  parkingSpaceId: string,
+  data: z.infer<typeof parkingSpaceSchema>
+) => {
+  const parkingSpace = await updateParkingSpaceById(parkingSpaceId, data);
 
-  return responseMessage;
+  if (parkingSpace) return "Parking space updated successfully.";
+};
+
+export const deleteParkingSpaceByIdUseCase = async (parkingSpaceId: string) => {
+  const parkingSpace = await deleteParkingSpaceById(parkingSpaceId);
+
+  if (parkingSpace) return "Parking space deleted successfully.";
 };

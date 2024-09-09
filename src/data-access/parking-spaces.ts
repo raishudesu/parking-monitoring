@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
 import { parkingSpaceSchema } from "@/lib/zod";
+import { ParkingSpace } from "@prisma/client";
 import { z } from "zod";
 
 export const createParkingSpace = async (
@@ -28,6 +29,20 @@ export const getParkingSpaceById = async (parkingSpaceId: string) => {
   return parkingSpace;
 };
 
+export const updateParkingSpaceById = async (
+  parkingSpaceId: string,
+  data: z.infer<typeof parkingSpaceSchema>
+) => {
+  const parkingSpace = await prisma.parkingSpace.update({
+    where: {
+      id: parkingSpaceId,
+    },
+    data,
+  });
+
+  return parkingSpace;
+};
+
 export const deleteParkingSpaceById = async (parkingSpaceId: string) => {
   const parkingSpace = await prisma.parkingSpace.delete({
     where: {
@@ -35,5 +50,5 @@ export const deleteParkingSpaceById = async (parkingSpaceId: string) => {
     },
   });
 
-  if (parkingSpace) return "Parking space deleted successfully.";
+  return parkingSpace;
 };

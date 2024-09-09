@@ -1,9 +1,10 @@
 "use server";
 
-import { parkingSpaceSchema } from "@/lib/zod";
+import { parkingSpaceSchema, parkingSpaceUpdateFormSchema } from "@/lib/zod";
 import {
   createParkingSpaceUseCase,
   deleteParkingSpaceByIdUseCase,
+  updateParkingSpaceByIdUseCase,
 } from "@/use-cases/parking-spaces";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -17,6 +18,19 @@ export const createParkingSpaceAction = createServerAction()
     revalidatePath("/admin/dashboard/parking-spaces");
 
     return parkingSpace;
+  });
+
+export const updateParkingSpaceAction = createServerAction()
+  .input(parkingSpaceUpdateFormSchema)
+  .handler(async ({ input }) => {
+    const responseMessage = await updateParkingSpaceByIdUseCase(
+      input.parkingSpaceId,
+      input.data
+    );
+
+    revalidatePath("/admin/dashboard/parking-spaces");
+
+    return responseMessage;
   });
 
 export const deleteParkingSpaceAction = createServerAction()

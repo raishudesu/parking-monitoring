@@ -76,3 +76,8 @@ export const parkingSpaceFormSchema = z.object({
   maxCapacity: z.string(),
   imageUrl: z.string().optional(),
 });
+
+export const parkingSpaceUpdateFormSchema = z.object({
+  parkingSpaceId: z.string(),
+  data: parkingSpaceSchema,
+});
