@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/table";
 import type { GPOAccount, GPOSession, ParkingSpace } from "@prisma/client";
 import ParkingSpaceCreationDialog from "./parking-space-creation-dialog";
+import DeleteParkingSpaceDialog from "./delete-parking-space-dialog";
 
 // type SessionData = GPOSession & {
 //   parkingSpace: ParkingSpace;
@@ -145,9 +146,7 @@ export const columns: ColumnDef<ParkingSpace>[] = [
             Edit
             <UserRoundPen size={15} />
           </Button>
-          <Button variant={"destructive"} className="flex gap-2">
-            Delete <Trash2 size={18} />
-          </Button>
+          <DeleteParkingSpaceDialog parkingSpaceId={row.original.id} />
         </div>
       );
     },
@@ -185,14 +184,13 @@ export function ParkingSpaceTable({ data }: { data: ParkingSpace[] }) {
   return (
     <div className="w-full">
       <div className="flex items-center gap-4 py-4">
-        <ParkingSpaceCreationDialog />
         <Input
           placeholder="Filter by Name"
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm ml-auto"
+          className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -220,6 +218,9 @@ export function ParkingSpaceTable({ data }: { data: ParkingSpace[] }) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="ml-auto">
+          <ParkingSpaceCreationDialog />
+        </div>
       </div>
       <div className="rounded-md border overflow-clip">
         <Table>

@@ -1,5 +1,6 @@
 import {
   createParkingSpace,
+  deleteParkingSpaceById,
   getAllParkingSpaces,
 } from "@/data-access/parking-spaces";
 import { parkingSpaceSchema } from "@/lib/zod";
@@ -41,4 +42,10 @@ export const getUnavailableSpacesUseCase = async () => {
   );
 
   return unavailableSpaces;
+};
+
+export const deleteParkingSpaceByIdUseCase = async (parkingSpaceId: string) => {
+  const responseMessage = await deleteParkingSpaceById(parkingSpaceId);
+
+  return responseMessage;
 };

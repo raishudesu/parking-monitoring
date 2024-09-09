@@ -209,7 +209,7 @@ const DijkstraMap = ({
       </GoogleMap>
 
       {/* Below the map: List of parking spaces with click handlers */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-10 mt-6 flex flex-col">
+      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-20 mt-6 flex flex-col">
         <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
           <DrawerTrigger asChild>
             <Button size={"lg"} className="rounded-full">

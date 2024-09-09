@@ -27,3 +27,13 @@ export const getParkingSpaceById = async (parkingSpaceId: string) => {
 
   return parkingSpace;
 };
+
+export const deleteParkingSpaceById = async (parkingSpaceId: string) => {
+  const parkingSpace = await prisma.parkingSpace.delete({
+    where: {
+      id: parkingSpaceId,
+    },
+  });
+
+  if (parkingSpace) return "Parking space deleted successfully.";
+};
