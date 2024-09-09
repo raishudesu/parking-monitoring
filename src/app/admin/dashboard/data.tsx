@@ -17,29 +17,14 @@ export const sideNavLinks = [
     link: "/admin/dashboard",
   },
   {
-    name: "Parking Spaces",
-    icon: <SquareParking />,
-    link: "/admin/dashboard/parking-spaces",
-  },
-  {
     name: "Accounts",
     icon: <Users />,
     link: "/admin/dashboard/accounts",
   },
   {
-    name: "Violations",
-    icon: <TriangleAlert />,
-    link: "/admin/dashboard/violations",
-  },
-  {
     name: "Administrators",
     icon: <Shield />,
     link: "/admin/dashboard/administrators",
-  },
-  {
-    name: "Sessions",
-    icon: <History />,
-    link: "/admin/dashboard/sessions",
   },
   {
     name: "Audit Logs",
@@ -50,6 +35,21 @@ export const sideNavLinks = [
     name: "Colleges",
     icon: <Building2 />,
     link: "/admin/dashboard/colleges",
+  },
+  {
+    name: "Parking Spaces",
+    icon: <SquareParking />,
+    link: "/admin/dashboard/parking-spaces",
+  },
+  {
+    name: "Sessions",
+    icon: <History />,
+    link: "/admin/dashboard/sessions",
+  },
+  {
+    name: "Violations",
+    icon: <TriangleAlert />,
+    link: "/admin/dashboard/violations",
   },
   {
     name: "Settings",

@@ -81,3 +81,15 @@ export const parkingSpaceUpdateFormSchema = z.object({
   parkingSpaceId: z.string(),
   data: parkingSpaceSchema,
 });
+
+export const adminUpdateSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  corpEmail: z.string(),
+  role: z.enum(["ADMIN", "SUPERADMIN"]),
+});
+
+export const adminUpdateFormSchema = z.object({
+  adminId: z.string(),
+  data: adminUpdateSchema,
+});

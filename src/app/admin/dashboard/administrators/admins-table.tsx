@@ -45,6 +45,7 @@ import {
 import type { Admin, College, GPOAccount } from "@prisma/client";
 import AdminCreationForm from "./admin-creation-form";
 import AdminCreationDialog from "./admin-creation-dialog";
+import AdminUpdateDialog from "./admin-update-dialog";
 
 export type AdminAccountData = Omit<Admin, "password">;
 
@@ -103,12 +104,18 @@ export const columns: ColumnDef<AdminAccountData>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const { firstName, lastName, corpEmail, role } = row.original;
+
+      const adminData = {
+        firstName,
+        lastName,
+        corpEmail,
+        role,
+      };
+
       return (
         <div className="flex gap-2">
-          <Button className="flex gap-2">
-            Edit
-            <UserRoundPen size={15} />
-          </Button>
+          <AdminUpdateDialog adminId={row.original.id} adminData={adminData} />
           <Button variant={"destructive"} className="flex gap-2">
             Delete <Trash2 size={18} />
           </Button>
@@ -149,8 +156,6 @@ export function AdminsTable({ data }: { data: AdminAccountData[] }) {
   return (
     <div className="w-full">
       <div className="flex items-center gap-4 py-4">
-        <AdminCreationDialog />
-
         <Input
           placeholder="Filter by Corporate Email"
           value={
@@ -159,7 +164,7 @@ export function AdminsTable({ data }: { data: AdminAccountData[] }) {
           onChange={(event) =>
             table.getColumn("corpEmail")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm ml-auto"
+          className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -187,6 +192,9 @@ export function AdminsTable({ data }: { data: AdminAccountData[] }) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="ml-auto">
+          <AdminCreationDialog />
+        </div>
       </div>
       <div className="rounded-md border overflow-clip">
         <Table>

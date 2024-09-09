@@ -195,7 +195,6 @@ export function AccountsTable({ data }: { data: GPOAccountData[] }) {
   return (
     <div className="w-full">
       <div className="flex items-center gap-4 py-4">
-        <AccountCreationDialog />
         <Input
           placeholder="Filter by Gate Pass Number..."
           value={
@@ -207,7 +206,7 @@ export function AccountsTable({ data }: { data: GPOAccountData[] }) {
               .getColumn("gatePassNumber")
               ?.setFilterValue(event.target.value)
           }
-          className="max-w-sm ml-auto"
+          className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -235,6 +234,9 @@ export function AccountsTable({ data }: { data: GPOAccountData[] }) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="ml-auto">
+          <AccountCreationDialog />
+        </div>
       </div>
       <div className="rounded-md border overflow-clip">
         <Table>

@@ -95,9 +95,18 @@ export const deleteGpoAccount = async (gatePassNumber: string) => {
       `No GPO Account found with Gate Pass Number: ${gatePassNumber}`
     );
 
-  await prisma.gPOAccount.delete({
+  // await prisma.gPOAccount.delete({
+  //   where: {
+  //     gatePassNumber,
+  //   },
+  // });
+
+  await prisma.gPOAccount.update({
     where: {
       gatePassNumber,
+    },
+    data: {
+      isActive: false,
     },
   });
 

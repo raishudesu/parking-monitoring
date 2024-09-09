@@ -3,12 +3,13 @@ import {
   getAdminByEmail,
   getAdminById,
   getAdmins,
+  updateAdminById,
   updateAdminPassword,
 } from "@/data-access/admin";
 import { AdminLoginError } from "./errors";
 import { compare, hash } from "bcrypt";
 import { z } from "zod";
-import { adminAccountSchema } from "@/lib/zod";
+import { adminAccountSchema, adminUpdateSchema } from "@/lib/zod";
 
 export const createAdminUseCase = async (
   data: z.infer<typeof adminAccountSchema>
@@ -60,6 +61,17 @@ export const updateAdminPasswordUseCase = async (
   const hashedPwd = await hash(newPassword, 10);
 
   const admin = await updateAdminPassword(adminId, hashedPwd);
+
+  const { password: currPassword, ...filteredAdmin } = admin;
+
+  return filteredAdmin;
+};
+
+export const updateAdminByIdUseCase = async (
+  adminId: string,
+  data: z.infer<typeof adminUpdateSchema>
+) => {
+  const admin = await updateAdminById(adminId, data);
 
   const { password: currPassword, ...filteredAdmin } = admin;
 

@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
-import { adminAccountSchema } from "@/lib/zod";
+import { adminAccountSchema, adminUpdateSchema } from "@/lib/zod";
+import { Admin } from "@prisma/client";
 import { z } from "zod";
 
 export const createAdmin = async (data: z.infer<typeof adminAccountSchema>) => {
@@ -51,6 +52,20 @@ export const updateAdminPassword = async (
     data: {
       password: newPassword,
     },
+  });
+
+  return admin;
+};
+
+export const updateAdminById = async (
+  adminId: string,
+  data: z.infer<typeof adminUpdateSchema>
+) => {
+  const admin = await prisma.admin.update({
+    where: {
+      id: adminId,
+    },
+    data,
   });
 
   return admin;

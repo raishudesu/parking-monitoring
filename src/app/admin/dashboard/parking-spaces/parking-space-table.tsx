@@ -141,15 +141,26 @@ export const columns: ColumnDef<ParkingSpace>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const {
+        name,
+        description,
+        longitude,
+        latitude,
+        spaceType,
+        maxCapacity,
+        // imageUrl,
+      } = row.original;
+
       const updateFormData = {
-        name: row.original.name,
-        description: row.original.description,
-        longitude: row.original.longitude,
-        latitude: row.original.latitude,
-        spaceType: row.original.spaceType,
-        maxCapacity: row.original.maxCapacity.toString(),
-        imageUrl: row.original.imageUrl as string,
+        name,
+        description,
+        longitude,
+        latitude,
+        spaceType,
+        maxCapacity: maxCapacity.toString(),
+        // imageUrl: imageUrl as string,
       };
+
       return (
         <div className="flex gap-2">
           <UpdateParkingSpaceDialog
