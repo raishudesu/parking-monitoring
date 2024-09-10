@@ -19,6 +19,9 @@ export const getAllGpoAccounts = async () => {
     include: {
       collegeName: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return gpoAccounts;
@@ -85,32 +88,32 @@ export const updateGpoAccount = async (
   return gpo;
 };
 
-// DELETE GPO ACCOUNT
-// THIS IS UNLIKELY TO BE USED FOR NOW
-export const deleteGpoAccount = async (gatePassNumber: string) => {
-  const gpo = await getGpoByGatePassNumber(gatePassNumber);
-
-  if (!gpo)
-    throw Error(
-      `No GPO Account found with Gate Pass Number: ${gatePassNumber}`
-    );
-
-  // await prisma.gPOAccount.delete({
-  //   where: {
-  //     gatePassNumber,
-  //   },
-  // });
-
-  await prisma.gPOAccount.update({
+// DEACTIVATE GPO ACCOUNT
+export const deactivateGpoAccount = async (accountId: string) => {
+  const gpo = await prisma.gPOAccount.update({
     where: {
-      gatePassNumber,
+      id: accountId,
     },
     data: {
       isActive: false,
     },
   });
 
-  return;
+  return gpo;
+};
+
+// REACTIVATE GPO ACCOUNT
+export const reactivateGpoAccount = async (accountId: string) => {
+  const gpo = await prisma.gPOAccount.update({
+    where: {
+      id: accountId,
+    },
+    data: {
+      isActive: true,
+    },
+  });
+
+  return gpo;
 };
 
 export const updateGpoPassword = async (

@@ -12,6 +12,10 @@ const GpoDashboardLayout = async ({ children }: { children: ReactNode }) => {
     redirect("/gpo/sign-in");
   }
 
+  if (session?.user.isActive === false) {
+    redirect("/gpo/deactivated");
+  }
+
   return (
     <div className="w-full flex h-screen">
       <SideNav />

@@ -13,14 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  ChevronDown,
-  CirclePlus,
-  MoreHorizontal,
-  Trash2,
-  UserRoundPen,
-} from "lucide-react";
+import { ChevronDown, UserRoundPen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -44,6 +37,8 @@ import {
 } from "@/components/ui/table";
 import type { College, GPOAccount } from "@prisma/client";
 import AccountCreationDialog from "./account-creation-dialog";
+import ReactivateBtn from "./reactivate-btn";
+import DeactivateBtn from "./deactivate-btn";
 
 export type GPOAccountData = Omit<GPOAccount, "password"> & {
   collegeName: College;
@@ -155,9 +150,11 @@ export const columns: ColumnDef<GPOAccountData>[] = [
             Edit
             <UserRoundPen size={15} />
           </Button>
-          <Button variant={"destructive"} className="flex gap-2">
-            Delete <Trash2 size={18} />
-          </Button>
+          {row.original.isActive ? (
+            <DeactivateBtn accountId={row.original.id} />
+          ) : (
+            <ReactivateBtn accountId={row.original.id} />
+          )}
         </div>
       );
     },
@@ -238,7 +235,7 @@ export function AccountsTable({ data }: { data: GPOAccountData[] }) {
           <AccountCreationDialog />
         </div>
       </div>
-      <div className="rounded-md border overflow-clip">
+      <div className="rounded-md border overflow-clip bg-background">
         <Table>
           <TableHeader className="bg-orange-500 bg-opacity-25">
             {table.getHeaderGroups().map((headerGroup) => (

@@ -12,7 +12,16 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   // pages: {
-  //   signIn: "/sign-in",
+  //   // sign in pages here
+  //   signIn: (context: any) => {
+  //     const { providerId } = context;
+  //     if (providerId === "gpo") {
+  //       return "/gpo/sign-in";
+  //     } else if (providerId === "admin") {
+  //       return "/admin/sign-in";
+  //     }
+  //     return "/sign-in";
+  //   },
   // },
   providers: [
     CredentialsProvider({
@@ -35,6 +44,9 @@ export const authOptions: NextAuthOptions = {
 
           return {
             ...existingUser,
+            firstName: "",
+            lastName: "",
+            corpEmail: existingUser.email,
             error: null,
           };
         } catch (error) {
@@ -60,6 +72,7 @@ export const authOptions: NextAuthOptions = {
 
           return {
             ...admin,
+            creditScore: null,
             error: null,
           };
         } catch (error) {

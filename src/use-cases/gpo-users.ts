@@ -2,11 +2,12 @@ import { compare, hash } from "bcrypt";
 import {
   addCreditScoreToGpo,
   createGpoAccount,
-  deleteGpoAccount,
+  deactivateGpoAccount,
   getAllGpoAccounts,
   getCurrentGpoSessionByGpoId,
   getGpoByGatePassNumber,
   getGpoById,
+  reactivateGpoAccount,
   updateGpoAccount,
   updateGpoPassword,
 } from "../data-access/gpo-users";
@@ -84,11 +85,26 @@ export const updateGpoAccountUseCase = async (
   return filteredGpoAccount;
 };
 
-// GPO ACCOUNT DELETE USE CASE
-export const deleteGpoAccountUseCase = async (gatePassNumber: string) => {
-  await deleteGpoAccount(gatePassNumber);
+// DEACTIVATE GPO ACCOUNT USE CASE
+export const deactivateGpoAccountUseCase = async (accountId: string) => {
+  const gpo = await getGpoById(accountId);
 
-  return;
+  if (!gpo) throw Error(`No GPO Account found with account ID: ${accountId}`);
+
+  const deactivatedGpo = await deactivateGpoAccount(accountId);
+
+  if (deactivatedGpo) return "Account Deactivated Successfully.";
+};
+
+// REACTIVATE GPO ACCOUNT USE CASE
+export const reactivateGpoAccountUseCase = async (accountId: string) => {
+  const gpo = await getGpoById(accountId);
+
+  if (!gpo) throw Error(`No GPO Account found with account ID: ${accountId}`);
+
+  const reactivatedGpo = await reactivateGpoAccount(accountId);
+
+  if (reactivatedGpo) return "Account Reactivated Successfully.";
 };
 
 export const getCurrentGpoSessionUseCase = async (gpoAccountId: string) => {

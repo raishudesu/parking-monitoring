@@ -14,8 +14,12 @@ declare module "next-auth" {
 
   interface User extends SystemUsers {
     role: AdminRole | UserRole;
-    creditScore: number;
+    creditScore: number | null;
+    isActive: boolean;
     error: string | null;
+    firstName: string;
+    lastName: string;
+    corpEmail: string | null;
   }
 
   interface Session {
