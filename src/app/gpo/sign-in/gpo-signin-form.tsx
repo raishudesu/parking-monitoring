@@ -114,7 +114,7 @@ const GpoSignInForm = () => {
         />
         <Button
           type="submit"
-          className="self-stretch md:self-start flex items-center justify-center gap-2"
+          className="self-stretch flex items-center justify-center gap-2"
           disabled={form.formState.isSubmitting}
         >
           <LoaderCircle

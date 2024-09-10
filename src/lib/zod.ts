@@ -18,6 +18,11 @@ export const gpoAccountSchema = z.object({
   isActive: z.boolean().optional(),
 });
 
+export const gpoUpdateAccountSchema = z.object({
+  accountId: z.string(),
+  data: gpoAccountSchema,
+});
+
 const overrideSchema = z.object({
   collegeId: z.string().optional(),
 });
@@ -30,8 +35,8 @@ export const loginSchema = z.object({
 });
 
 export const updatePasswordSchema = z.object({
-  oldPassword: z.string(),
-  newPassword: z.string(),
+  oldPassword: z.string().min(8),
+  newPassword: z.string().min(8),
   accountId: z.string(),
 });
 

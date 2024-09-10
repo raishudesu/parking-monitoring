@@ -1,8 +1,9 @@
 import Logo from "@/components/logo";
-import GpoSignInForm from "./form";
+import GpoSignInForm from "./gpo-signin-form";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const SignInPage = async () => {
   const session = await getServerSession(authOptions);
@@ -13,8 +14,8 @@ const SignInPage = async () => {
 
   return (
     <div className="h-screen flex justify-center items-center ">
-      <div className="mb-12 w-full max-w-screen-sm">
-        <div className="w-full flex flex-col items-center gap-6">
+      <div className="mb-24 w-full max-w-sm">
+        <div className="px-4 w-full flex flex-col items-center gap-6">
           <div className="flex flex-col items-center gap-2">
             <Logo />
             <small className="text-muted-foreground font-semibold">
@@ -26,6 +27,17 @@ const SignInPage = async () => {
             Login to ParkSU
           </h1>
           <GpoSignInForm />
+        </div>
+        <div className="mt-12 w-full text-center">
+          <small className="text-muted-foreground">
+            Not a Gate Pass Owner? Log in as {""}
+            <Link
+              href={"/admin/sign-in"}
+              className="text-primary hover:underline font-semibold"
+            >
+              Administrator
+            </Link>
+          </small>
         </div>
       </div>
     </div>

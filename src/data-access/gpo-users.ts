@@ -75,12 +75,12 @@ export const getGpoById = async (accountId: string) => {
 
 // UPDATE GPO ACCOUNT BASED FROM GATE PASS NUMBER
 export const updateGpoAccount = async (
-  gatePassNumber: string,
+  accountId: string,
   data: z.infer<typeof gpoAccountSchema>
 ) => {
   const gpo = await prisma.gPOAccount.update({
     where: {
-      gatePassNumber,
+      id: accountId,
     },
     data,
   });

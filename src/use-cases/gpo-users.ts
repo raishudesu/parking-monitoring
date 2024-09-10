@@ -70,19 +70,15 @@ export const createGpoAccountUseCase = async (
 
 // GPO ACCOUNT UPDATE USE CASE
 export const updateGpoAccountUseCase = async (
-  gatePassNumber: string,
+  accountId: string,
   data: z.infer<typeof gpoAccountSchema>
 ) => {
-  const gpo = await updateGpoAccount(gatePassNumber, data);
+  const gpo = await updateGpoAccount(accountId, data);
 
   if (!gpo)
-    throw Error(
-      `Updating GPO Account with Gate Pass Number: ${gatePassNumber} failed.`
-    );
+    throw Error(`Updating GPO Account with Account ID: ${accountId} failed.`);
 
-  const { password: newGpoPassword, ...filteredGpoAccount } = gpo;
-
-  return filteredGpoAccount;
+  return "GPO Account Updated Successfully.";
 };
 
 // DEACTIVATE GPO ACCOUNT USE CASE

@@ -1,11 +1,16 @@
 "use server";
 
 import { createServerAction } from "zsa";
-import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
+import {
+  accountCreationSchema,
+  gpoAccountSchema,
+  gpoUpdateAccountSchema,
+} from "@/lib/zod";
 import {
   createGpoAccountUseCase,
   deactivateGpoAccountUseCase,
   reactivateGpoAccountUseCase,
+  updateGpoAccountUseCase,
 } from "@/use-cases/gpo-users";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -14,6 +19,16 @@ export const createGpoAccountAction = createServerAction()
   .input(accountCreationSchema)
   .handler(async ({ input }) => {
     const res = await createGpoAccountUseCase(input);
+
+    if (res) revalidatePath("/admin/dashboard/accounts");
+
+    return res;
+  });
+
+export const updateGpoAccountAction = createServerAction()
+  .input(gpoUpdateAccountSchema)
+  .handler(async ({ input }) => {
+    const res = await updateGpoAccountUseCase(input.accountId, input.data);
 
     if (res) revalidatePath("/admin/dashboard/accounts");
 
