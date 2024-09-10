@@ -39,8 +39,9 @@ import type { College, GPOAccount } from "@prisma/client";
 import AccountCreationDialog from "./account-creation-dialog";
 import ReactivateBtn from "./reactivate-btn";
 import DeactivateBtn from "./deactivate-btn";
+import AccountUpdateDialog from "./account-update-dialog";
 
-export type GPOAccountData = Omit<GPOAccount, "password"> & {
+export type GPOAccountData = GPOAccount & {
   collegeName: College;
 };
 
@@ -144,12 +145,34 @@ export const columns: ColumnDef<GPOAccountData>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const {
+        email,
+        gatePassNumber,
+        password,
+        accountType,
+        collegeId,
+        department,
+        isVIP,
+        isPWD,
+      } = row.original;
+
+      const updateFormData = {
+        email: email as string,
+        gatePassNumber,
+        password,
+        accountType,
+        collegeId,
+        department: department as string,
+        isVIP,
+        isPWD,
+      };
+
       return (
         <div className="flex gap-2">
-          <Button className="flex gap-2">
-            Edit
-            <UserRoundPen size={15} />
-          </Button>
+          <AccountUpdateDialog
+            accountId={row.original.id}
+            data={updateFormData}
+          />
           {row.original.isActive ? (
             <DeactivateBtn accountId={row.original.id} />
           ) : (

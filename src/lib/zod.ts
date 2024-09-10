@@ -18,6 +18,11 @@ export const gpoAccountSchema = z.object({
   isActive: z.boolean().optional(),
 });
 
+export const gpoLoginSchema = z.object({
+  gatePassNumber: z.string().min(8),
+  plainTextPassword: z.string().min(8),
+});
+
 export const gpoUpdateAccountSchema = z.object({
   accountId: z.string(),
   data: gpoAccountSchema,

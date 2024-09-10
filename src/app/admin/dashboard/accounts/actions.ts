@@ -28,11 +28,11 @@ export const createGpoAccountAction = createServerAction()
 export const updateGpoAccountAction = createServerAction()
   .input(gpoUpdateAccountSchema)
   .handler(async ({ input }) => {
-    const res = await updateGpoAccountUseCase(input.accountId, input.data);
+    const gpo = await updateGpoAccountUseCase(input.accountId, input.data);
 
-    if (res) revalidatePath("/admin/dashboard/accounts");
+    if (gpo) revalidatePath("/admin/dashboard/accounts");
 
-    return res;
+    return gpo;
   });
 
 export const deactivateGpoAccountAction = createServerAction()

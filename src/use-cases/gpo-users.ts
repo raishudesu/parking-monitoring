@@ -73,12 +73,15 @@ export const updateGpoAccountUseCase = async (
   accountId: string,
   data: z.infer<typeof gpoAccountSchema>
 ) => {
+  const hashedPwd = await hash(data.password, 10);
+
+  data.password = hashedPwd;
   const gpo = await updateGpoAccount(accountId, data);
 
   if (!gpo)
     throw Error(`Updating GPO Account with Account ID: ${accountId} failed.`);
 
-  return "GPO Account Updated Successfully.";
+  return gpo;
 };
 
 // DEACTIVATE GPO ACCOUNT USE CASE

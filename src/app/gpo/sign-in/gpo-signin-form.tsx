@@ -17,24 +17,20 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { gpoLoginSchema } from "@/lib/zod";
 
 const GpoSignInForm = () => {
   const router = useRouter();
 
-  const loginSchema = z.object({
-    gatePassNumber: z.string(),
-    plainTextPassword: z.string().min(8),
-  });
-
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof gpoLoginSchema>>({
+    resolver: zodResolver(gpoLoginSchema),
     defaultValues: {
       gatePassNumber: "",
       plainTextPassword: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof gpoLoginSchema>) => {
     try {
       // Cant use signIn in server-side because it is needed on the client to process tokens and sessions
       const res = await signIn("gpo", {
