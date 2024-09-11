@@ -1,8 +1,12 @@
+import { getAllCollegesUseCase } from "@/use-cases/colleges";
 import { AccountsTable, GPOAccountData } from "./accounts-table";
 import { getAllGpoAccountsUseCase } from "@/use-cases/gpo-users";
 
 const AccountsPage = async () => {
-  const gpoAccounts = await getAllGpoAccountsUseCase();
+  const [gpoAccounts, colleges] = await Promise.all([
+    getAllGpoAccountsUseCase(),
+    getAllCollegesUseCase(),
+  ]);
 
   return (
     <div className="w-full flex flex-col p-6">
@@ -15,7 +19,10 @@ const AccountsPage = async () => {
         </h1>
       </div>
       <div>
-        <AccountsTable data={gpoAccounts as GPOAccountData[]} />
+        <AccountsTable
+          data={gpoAccounts as GPOAccountData[]}
+          colleges={colleges}
+        />
       </div>
     </div>
   );

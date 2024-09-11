@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/table";
 import type { College } from "@prisma/client";
 import CollegeCreationDialog from "./college-creation-dialog";
+import CollegeDeletionDialog from "./college-deletion-dialog";
 
 type CollegeData = College & {
   _count: {
@@ -106,9 +107,7 @@ export const columns: ColumnDef<CollegeData>[] = [
             Edit
             <UserRoundPen size={15} />
           </Button>
-          <Button variant={"destructive"} className="flex gap-2">
-            Delete <Trash2 size={18} />
-          </Button>
+          <CollegeDeletionDialog collegeId={row.original.id} />
         </div>
       );
     },

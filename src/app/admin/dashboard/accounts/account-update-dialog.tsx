@@ -15,6 +15,7 @@ import { gpoUpdateAccountSchema } from "@/lib/zod";
 const AccountUpdateDialog = ({
   accountId,
   data,
+  colleges,
 }: z.infer<typeof gpoUpdateAccountSchema>) => {
   return (
     <Dialog>
@@ -32,7 +33,11 @@ const AccountUpdateDialog = ({
             sent to their email.
           </DialogDescription>
         </DialogHeader>
-        <AccountUpdateForm accountId={accountId} data={data} />
+        <AccountUpdateForm
+          accountId={accountId}
+          data={data}
+          colleges={colleges}
+        />
       </DialogContent>
     </Dialog>
   );

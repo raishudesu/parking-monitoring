@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import AccountCreationForm from "./account-creation-form";
 import { CirclePlus } from "lucide-react";
+import { College } from "@prisma/client";
 
-const AccountCreationDialog = () => {
+const AccountCreationDialog = ({ colleges }: { colleges: College[] }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -22,7 +23,7 @@ const AccountCreationDialog = () => {
         <DialogHeader>
           <DialogTitle>Create Gate Pass Owner Account</DialogTitle>
         </DialogHeader>
-        <AccountCreationForm />
+        <AccountCreationForm colleges={colleges} />
       </DialogContent>
     </Dialog>
   );

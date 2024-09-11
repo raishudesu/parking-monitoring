@@ -23,9 +23,15 @@ export const gpoLoginSchema = z.object({
   plainTextPassword: z.string().min(8),
 });
 
+export const collegeSchema = z.object({
+  id: z.number(),
+  collegeName: z.string(),
+});
+
 export const gpoUpdateAccountSchema = z.object({
   accountId: z.string(),
   data: gpoAccountSchema,
+  colleges: z.array(collegeSchema).optional(),
 });
 
 const overrideSchema = z.object({

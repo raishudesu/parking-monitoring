@@ -28,6 +28,7 @@ import { createGpoAccountAction } from "./actions";
 import { useServerAction } from "zsa-react";
 import { generateSecurePassword } from "@/lib/utils";
 import emailjs from "@emailjs/browser";
+import { College } from "@prisma/client";
 
 const sendAccountDetailsToGpoEmail = async (
   email: string,
@@ -48,7 +49,7 @@ const sendAccountDetailsToGpoEmail = async (
   }
 };
 
-const AccountCreationForm = () => {
+const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
   const { isPending, execute } = useServerAction(createGpoAccountAction);
 
   const form = useForm<z.infer<typeof accountCreationSchema>>({
@@ -216,9 +217,11 @@ const AccountCreationForm = () => {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="0">...</SelectItem>
-                  <SelectItem value="1">CS</SelectItem>
-                  <SelectItem value="2">CEAT</SelectItem>
-                  <SelectItem value="3">CTE</SelectItem>
+                  {colleges.map(({ id, collegeName }) => (
+                    <SelectItem key={id} value={id.toString()}>
+                      {collegeName}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

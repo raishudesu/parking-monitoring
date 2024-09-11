@@ -51,6 +51,7 @@ const sendUpdatedDetailsToGpoEmail = async (
 const AccountUpdateForm = ({
   accountId,
   data,
+  colleges,
 }: z.infer<typeof gpoUpdateAccountSchema>) => {
   const { isPending, execute } = useServerAction(updateGpoAccountAction);
 
@@ -219,9 +220,11 @@ const AccountUpdateForm = ({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="0">...</SelectItem>
-                  <SelectItem value="1">CS</SelectItem>
-                  <SelectItem value="2">CEAT</SelectItem>
-                  <SelectItem value="3">CTE</SelectItem>
+                  {colleges?.map(({ id, collegeName }) => (
+                    <SelectItem key={id} value={id.toString()}>
+                      {collegeName}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

@@ -45,146 +45,153 @@ export type GPOAccountData = GPOAccount & {
   collegeName: College;
 };
 
-export const columns: ColumnDef<GPOAccountData>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-  },
-  {
-    accessorKey: "gatePassNumber",
-    header: "Gate Pass Number",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("gatePassNumber")}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "accountType",
-    header: "Type",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("accountType")}</div>
-    ),
-  },
-  {
-    accessorKey: "collegeName",
-    header: "College",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.original.collegeName ? (
-          row.original.collegeName.collegeName
-        ) : (
-          <span className="text-destructive font-semibold">N/A</span>
-        )}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "department",
-    header: "Department",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.original.department ? (
-          row.original.department
-        ) : (
-          <span className="text-destructive font-semibold">N/A</span>
-        )}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "isVIP",
-    header: "isVIP",
-    cell: ({ row }) => (
-      <div className="capitalize">{`${row.getValue("isVIP")}`}</div>
-    ),
-  },
-  {
-    accessorKey: "isPWD",
-    header: "isPWD",
-    cell: ({ row }) => (
-      <div className="capitalize">{`${row.getValue("isPWD")}`}</div>
-    ),
-  },
-  {
-    accessorKey: "creditScore",
-    header: "Credit Score",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("creditScore")}</div>
-    ),
-    enableSorting: true,
-  },
-  {
-    accessorKey: "isActive",
-    header: "isActive",
-    cell: ({ row }) => (
-      <div className="capitalize">{`${row.getValue("isActive")}`}</div>
-    ),
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const {
-        email,
-        gatePassNumber,
-        password,
-        accountType,
-        collegeId,
-        department,
-        isVIP,
-        isPWD,
-      } = row.original;
-
-      const updateFormData = {
-        email: email as string,
-        gatePassNumber,
-        password,
-        accountType,
-        collegeId,
-        department: department as string,
-        isVIP,
-        isPWD,
-      };
-
-      return (
-        <div className="flex gap-2">
-          <AccountUpdateDialog
-            accountId={row.original.id}
-            data={updateFormData}
-          />
-          {row.original.isActive ? (
-            <DeactivateBtn accountId={row.original.id} />
+export function AccountsTable({
+  data,
+  colleges,
+}: {
+  data: GPOAccountData[];
+  colleges: College[];
+}) {
+  const columns: ColumnDef<GPOAccountData>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+    },
+    {
+      accessorKey: "gatePassNumber",
+      header: "Gate Pass Number",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("gatePassNumber")}</div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => <div>{row.getValue("email")}</div>,
+    },
+    {
+      accessorKey: "accountType",
+      header: "Type",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("accountType")}</div>
+      ),
+    },
+    {
+      accessorKey: "collegeName",
+      header: "College",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.original.collegeName ? (
+            row.original.collegeName.collegeName
           ) : (
-            <ReactivateBtn accountId={row.original.id} />
+            <span className="text-destructive font-semibold">N/A</span>
           )}
         </div>
-      );
+      ),
     },
-  },
-];
+    {
+      accessorKey: "department",
+      header: "Department",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.original.department ? (
+            row.original.department
+          ) : (
+            <span className="text-destructive font-semibold">N/A</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "isVIP",
+      header: "isVIP",
+      cell: ({ row }) => (
+        <div className="capitalize">{`${row.getValue("isVIP")}`}</div>
+      ),
+    },
+    {
+      accessorKey: "isPWD",
+      header: "isPWD",
+      cell: ({ row }) => (
+        <div className="capitalize">{`${row.getValue("isPWD")}`}</div>
+      ),
+    },
+    {
+      accessorKey: "creditScore",
+      header: "Credit Score",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("creditScore")}</div>
+      ),
+      enableSorting: true,
+    },
+    {
+      accessorKey: "isActive",
+      header: "isActive",
+      cell: ({ row }) => (
+        <div className="capitalize">{`${row.getValue("isActive")}`}</div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const {
+          email,
+          gatePassNumber,
+          password,
+          accountType,
+          collegeId,
+          department,
+          isVIP,
+          isPWD,
+        } = row.original;
 
-export function AccountsTable({ data }: { data: GPOAccountData[] }) {
+        const updateFormData = {
+          email: email as string,
+          gatePassNumber,
+          password,
+          accountType,
+          collegeId,
+          department: department as string,
+          isVIP,
+          isPWD,
+        };
+
+        return (
+          <div className="flex gap-2">
+            <AccountUpdateDialog
+              accountId={row.original.id}
+              data={updateFormData}
+              colleges={colleges}
+            />
+            {row.original.isActive ? (
+              <DeactivateBtn accountId={row.original.id} />
+            ) : (
+              <ReactivateBtn accountId={row.original.id} />
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -255,7 +262,7 @@ export function AccountsTable({ data }: { data: GPOAccountData[] }) {
           </DropdownMenuContent>
         </DropdownMenu>
         <div className="ml-auto">
-          <AccountCreationDialog />
+          <AccountCreationDialog colleges={colleges} />
         </div>
       </div>
       <div className="rounded-md border overflow-clip bg-background">

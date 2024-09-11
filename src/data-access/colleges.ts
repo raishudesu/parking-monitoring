@@ -19,6 +19,9 @@ export const getAllColleges = async () => {
         },
       },
     },
+    orderBy: {
+      id: "asc",
+    },
   });
 
   return colleges;
