@@ -103,3 +103,7 @@ export const adminUpdateFormSchema = z.object({
   adminId: z.string(),
   data: adminUpdateSchema,
 });
+
+export const collegeCreationSchema = z.object({
+  collegeName: z.string().min(2),
+});

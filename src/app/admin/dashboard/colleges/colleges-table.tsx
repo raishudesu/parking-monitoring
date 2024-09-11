@@ -46,6 +46,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { College } from "@prisma/client";
+import CollegeCreationDialog from "./college-creation-dialog";
 
 type CollegeData = College & {
   _count: {
@@ -181,6 +182,9 @@ export function CollegesTable({ data }: { data: CollegeData[] }) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="ml-auto">
+          <CollegeCreationDialog />
+        </div>
       </div>
       <div className="rounded-md border overflow-clip">
         <Table>

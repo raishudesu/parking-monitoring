@@ -23,3 +23,29 @@ export const getAllColleges = async () => {
 
   return colleges;
 };
+
+export const updateCollegeById = async (
+  collegeId: number,
+  collegeName: string
+) => {
+  const college = await prisma.college.update({
+    where: {
+      id: collegeId,
+    },
+    data: {
+      collegeName,
+    },
+  });
+
+  return college;
+};
+
+export const deleteCollegeById = async (collegeId: number) => {
+  const college = await prisma.college.delete({
+    where: {
+      id: collegeId,
+    },
+  });
+
+  return college;
+};
