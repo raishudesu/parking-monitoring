@@ -20,6 +20,7 @@ declare module "next-auth" {
     firstName: string;
     lastName: string;
     corpEmail: string | null;
+    gatePassNumber: string;
   }
 
   interface Session {

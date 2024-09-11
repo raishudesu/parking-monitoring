@@ -1,8 +1,9 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import NavLinks from "./nav-links";
 import Logo from "@/components/logo";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import SignOutBtn from "@/components/signout-btn";
 
 const SideNav = async () => {
   const session = await getServerSession(authOptions);
@@ -21,11 +22,15 @@ const SideNav = async () => {
             </ul>
           </nav>
         </div>
-        <div className="w-full p-3 flex justify-between items-center rounded-xl">
+        <div className="w-full p-3 flex flex-col gap-4 rounded-xl">
           <div className="flex gap-2 items-center">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>
+                <span className="capitalize">
+                  {user?.firstName.slice(0, 1)}
+                  {user?.lastName.slice(0, 1)}
+                </span>
+              </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <span className="font-semibold">
@@ -34,6 +39,7 @@ const SideNav = async () => {
               <small className="text-muted-foreground">{user?.corpEmail}</small>
             </div>
           </div>
+          <SignOutBtn />
         </div>
       </div>
     </aside>

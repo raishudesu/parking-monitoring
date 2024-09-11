@@ -11,18 +11,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  // pages: {
-  //   // sign in pages here
-  //   signIn: (context: any) => {
-  //     const { providerId } = context;
-  //     if (providerId === "gpo") {
-  //       return "/gpo/sign-in";
-  //     } else if (providerId === "admin") {
-  //       return "/admin/sign-in";
-  //     }
-  //     return "/sign-in";
-  //   },
-  // },
+
   providers: [
     CredentialsProvider({
       id: "gpo",
@@ -74,6 +63,7 @@ export const authOptions: NextAuthOptions = {
             ...admin,
             creditScore: null,
             error: null,
+            gatePassNumber: "",
           };
         } catch (error) {
           throw error;

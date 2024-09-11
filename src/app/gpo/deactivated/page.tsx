@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { Ban } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import SignOutBtn from "./signout-btn";
+import SignOutBtn from "../../../components/signout-btn";
 
 const DeactivatedPage = async () => {
   const session = await getServerSession(authOptions);

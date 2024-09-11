@@ -2,18 +2,23 @@
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 const SignOutBtn = () => {
   const router = useRouter();
+  const session = useSession();
 
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false });
 
-      router.replace("/gpo/sign-in");
+      if (session.data?.user.role === "GPO") {
+        router.replace("/gpo/sign-in");
+        return;
+      }
+
+      router.replace("/admin/sign-in");
     } catch (error) {
       console.error("Sign out failed:", error);
 
@@ -24,7 +29,11 @@ const SignOutBtn = () => {
       });
     }
   };
-  return <Button onClick={handleSignOut}>Sign out</Button>;
+  return (
+    <Button variant={"secondary"} onClick={handleSignOut}>
+      Sign Out
+    </Button>
+  );
 };
 
 export default SignOutBtn;

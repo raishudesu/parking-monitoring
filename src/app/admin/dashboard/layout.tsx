@@ -18,7 +18,7 @@ const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
     <div className="w-full flex h-screen">
       <SideNav />
       <div className="w-full h-full overflow-y-scroll ">
-        <div className="p-6 pb-3 md:hidden">
+        <div className="p-6 pb-3 lg:hidden bg-orange-500 bg-opacity-25 border-b">
           <SideSheet />
         </div>
         <div className="h-full bg-slate-50">{children}</div>
