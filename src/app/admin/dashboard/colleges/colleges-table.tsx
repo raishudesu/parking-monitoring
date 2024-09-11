@@ -48,6 +48,7 @@ import {
 import type { College } from "@prisma/client";
 import CollegeCreationDialog from "./college-creation-dialog";
 import CollegeDeletionDialog from "./college-deletion-dialog";
+import CollegeUpdateDialog from "./college-update-dialog";
 
 type CollegeData = College & {
   _count: {
@@ -83,7 +84,7 @@ export const columns: ColumnDef<CollegeData>[] = [
   },
   {
     accessorKey: "collegeName",
-    header: "CollegeData name",
+    header: "Name",
     cell: ({ row }) => (
       <div className="capitalize">{row.original.collegeName}</div>
     ),
@@ -103,10 +104,10 @@ export const columns: ColumnDef<CollegeData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex gap-2">
-          <Button className="flex gap-2">
-            Edit
-            <UserRoundPen size={15} />
-          </Button>
+          <CollegeUpdateDialog
+            id={row.original.id}
+            collegeName={row.original.collegeName}
+          />
           <CollegeDeletionDialog collegeId={row.original.id} />
         </div>
       );
@@ -185,7 +186,7 @@ export function CollegesTable({ data }: { data: CollegeData[] }) {
           <CollegeCreationDialog />
         </div>
       </div>
-      <div className="rounded-md border overflow-clip">
+      <div className="rounded-md border overflow-clip bg-background">
         <Table>
           <TableHeader className="bg-orange-500 bg-opacity-25">
             {table.getHeaderGroups().map((headerGroup) => (
