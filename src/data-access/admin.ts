@@ -1,6 +1,5 @@
 import prisma from "@/lib/db";
 import { adminAccountSchema, adminUpdateSchema } from "@/lib/zod";
-import { Admin } from "@prisma/client";
 import { z } from "zod";
 
 export const createAdmin = async (data: z.infer<typeof adminAccountSchema>) => {
@@ -69,4 +68,14 @@ export const updateAdminById = async (
   });
 
   return admin;
+};
+
+export const deleteAdminById = async (adminId: string) => {
+  const deletedAdmin = await prisma.admin.delete({
+    where: {
+      id: adminId,
+    },
+  });
+
+  return deletedAdmin;
 };

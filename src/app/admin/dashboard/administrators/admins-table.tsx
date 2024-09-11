@@ -46,6 +46,8 @@ import type { Admin, College, GPOAccount } from "@prisma/client";
 import AdminCreationForm from "./admin-creation-form";
 import AdminCreationDialog from "./admin-creation-dialog";
 import AdminUpdateDialog from "./admin-update-dialog";
+import DeleteAdminDialog from "./admin-delete-dialog";
+import AdminDeleteDialog from "./admin-delete-dialog";
 
 export type AdminAccountData = Omit<Admin, "password">;
 
@@ -116,9 +118,7 @@ export const columns: ColumnDef<AdminAccountData>[] = [
       return (
         <div className="flex gap-2">
           <AdminUpdateDialog adminId={row.original.id} adminData={adminData} />
-          <Button variant={"destructive"} className="flex gap-2">
-            Delete <Trash2 size={18} />
-          </Button>
+          <AdminDeleteDialog adminId={row.original.id} />
         </div>
       );
     },

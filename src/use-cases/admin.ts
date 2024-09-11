@@ -1,5 +1,6 @@
 import {
   createAdmin,
+  deleteAdminById,
   getAdminByEmail,
   getAdminById,
   getAdmins,
@@ -76,4 +77,14 @@ export const updateAdminByIdUseCase = async (
   const { password: currPassword, ...filteredAdmin } = admin;
 
   return filteredAdmin;
+};
+
+export const deleteAdminByIdUseCase = async (adminId: string) => {
+  const admin = await getAdminById(adminId);
+
+  if (!admin) throw Error(`Admin with ID: ${adminId} does not exist.`);
+
+  await deleteAdminById(adminId);
+
+  return "Admin Deleted Successfully.";
 };

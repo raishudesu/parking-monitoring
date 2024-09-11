@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -30,8 +31,13 @@ const SignOutBtn = () => {
     }
   };
   return (
-    <Button variant={"secondary"} onClick={handleSignOut}>
+    <Button
+      variant={"secondary"}
+      onClick={handleSignOut}
+      className="flex gap-2 items-center"
+    >
       Sign Out
+      <LogOut size={15} />
     </Button>
   );
 };
