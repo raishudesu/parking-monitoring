@@ -177,7 +177,7 @@ export function ViolationsTable({ data }: { data: ViolationsData[] }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border overflow-clip">
+      <div className="rounded-md border overflow-clip bg-background">
         <Table>
           <TableHeader className="bg-orange-500 bg-opacity-25">
             {table.getHeaderGroups().map((headerGroup) => (

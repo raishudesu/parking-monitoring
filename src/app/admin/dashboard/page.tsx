@@ -2,14 +2,19 @@ import React from "react";
 import Overview from "./overview";
 import AnalyticsSection from "./analytics";
 import RecentTransactions from "./recent-transactions";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-const AdminDashboardPage = () => {
+const AdminDashboardPage = async () => {
+  const session = await getServerSession(authOptions);
   return (
     <div className="w-full flex flex-col p-6">
       <div className="pb-6 flex flex-col gap-3">
-        <div className="text-lg text-muted-foreground">Dashboard</div>
+        <div className="text-lg text-muted-foreground">
+          Administrator Dashboard
+        </div>
         <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Hi, Administrator! 👨‍💻
+          Hi, {session?.user.firstName}! 👨‍💻
         </h1>
       </div>
       <Overview />
