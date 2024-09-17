@@ -113,3 +113,15 @@ export const adminUpdateFormSchema = z.object({
 export const collegeCreationSchema = z.object({
   collegeName: z.string().min(2),
 });
+
+export const auditLogSchema = z.object({
+  action: z.enum(["CREATE", "INSERT", "UPDATE", "DELETE"]),
+  table: z.enum([
+    "ADMIN",
+    "ACCOUNT",
+    "VISITORACCOUNT",
+    "PARKINGSPACE",
+    "COLLEGE",
+  ]),
+  adminId: z.string(),
+});

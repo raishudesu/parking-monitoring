@@ -165,12 +165,12 @@ model Admin {
 }
 
 model AuditLog {
-  id           String      @id @default(uuid())
-  action       AduitAction
-  tableChanged AuditTable
-  admin        Admin       @relation(fields: [adminId], references: [id])
-  adminId      String
-  createdAt    DateTime    @default(now())
+  id        String      @id @default(uuid())
+  action    AduitAction
+  table     AuditTable
+  admin     Admin       @relation(fields: [adminId], references: [id])
+  adminId   String
+  createdAt DateTime    @default(now())
 }
 
 model ReportGenerationLog {
