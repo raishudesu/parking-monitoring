@@ -23,7 +23,7 @@ export const createAdminAction = createServerAction()
 export const updateAdminAction = createServerAction()
   .input(adminUpdateFormSchema)
   .handler(async ({ input }) => {
-    const admin = updateAdminByIdUseCase(input.adminId, input.data);
+    const admin = await updateAdminByIdUseCase(input.adminId, input.data);
 
     revalidatePath("/admin/dashboard/administrators");
 
@@ -34,10 +34,11 @@ export const deleteAdminAction = createServerAction()
   .input(
     z.object({
       adminId: z.string(),
+      auditAdminId: z.string(),
     })
   )
   .handler(async ({ input }) => {
-    const res = await deleteAdminByIdUseCase(input.adminId);
+    const res = await deleteAdminByIdUseCase(input.auditAdminId, input.adminId);
 
     revalidatePath("/admin/dashboard/administrators");
 

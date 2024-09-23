@@ -11,6 +11,7 @@ import { AdminLoginError } from "./errors";
 import { compare, hash } from "bcrypt";
 import { z } from "zod";
 import { adminAccountSchema, adminUpdateSchema } from "@/lib/zod";
+import { createAuditLog } from "@/data-access/audit-log";
 
 export const createAdminUseCase = async (
   data: z.infer<typeof adminAccountSchema>
@@ -19,7 +20,21 @@ export const createAdminUseCase = async (
 
   data.password = hashedPwd;
 
-  const admin = await createAdmin(data);
+  const newAdminData = {
+    password: data.password,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    corpEmail: data.corpEmail,
+    role: data.role,
+  };
+
+  const admin = await createAdmin(newAdminData);
+
+  await createAuditLog({
+    action: "CREATE",
+    table: "ADMIN",
+    adminId: data.id as string,
+  });
 
   return admin;
 };
@@ -65,6 +80,12 @@ export const updateAdminPasswordUseCase = async (
 
   const { password: currPassword, ...filteredAdmin } = admin;
 
+  await createAuditLog({
+    action: "UPDATE",
+    table: "ADMIN",
+    adminId,
+  });
+
   return filteredAdmin;
 };
 
@@ -72,19 +93,41 @@ export const updateAdminByIdUseCase = async (
   adminId: string,
   data: z.infer<typeof adminUpdateSchema>
 ) => {
-  const admin = await updateAdminById(adminId, data);
+  const updatedAdminData = {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    corpEmail: data.corpEmail,
+    role: data.role,
+  };
+
+  const admin = await updateAdminById(adminId, updatedAdminData);
 
   const { password: currPassword, ...filteredAdmin } = admin;
+
+  await createAuditLog({
+    action: "UPDATE",
+    table: "ADMIN",
+    adminId: data.auditAdminId as string,
+  });
 
   return filteredAdmin;
 };
 
-export const deleteAdminByIdUseCase = async (adminId: string) => {
+export const deleteAdminByIdUseCase = async (
+  auditAdminId: string,
+  adminId: string
+) => {
   const admin = await getAdminById(adminId);
 
   if (!admin) throw Error(`Admin with ID: ${adminId} does not exist.`);
 
   await deleteAdminById(adminId);
+
+  await createAuditLog({
+    action: "DELETE",
+    table: "ADMIN",
+    adminId: auditAdminId,
+  });
 
   return "Admin Deleted Successfully.";
 };

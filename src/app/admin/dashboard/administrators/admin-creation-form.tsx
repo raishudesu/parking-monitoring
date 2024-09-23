@@ -25,13 +25,16 @@ import {
 } from "@/components/ui/select";
 import { useServerAction } from "zsa-react";
 import { createAdminAction } from "./actions";
+import { useSession } from "next-auth/react";
 
 const AdminCreationForm = () => {
+  const session = useSession();
   const { isPending, execute } = useServerAction(createAdminAction);
 
   const form = useForm<z.infer<typeof adminAccountSchema>>({
     resolver: zodResolver(adminAccountSchema),
     defaultValues: {
+      id: session.data?.user.id,
       firstName: "",
       lastName: "",
       corpEmail: "",

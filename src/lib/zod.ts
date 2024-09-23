@@ -52,6 +52,7 @@ export const updatePasswordSchema = z.object({
 });
 
 export const adminAccountSchema = z.object({
+  id: z.string().optional(),
   firstName: z.string(),
   lastName: z.string(),
   corpEmail: z.string(),
@@ -99,6 +100,7 @@ export const parkingSpaceUpdateFormSchema = z.object({
 });
 
 export const adminUpdateSchema = z.object({
+  auditAdminId: z.string().optional(),
   firstName: z.string(),
   lastName: z.string(),
   corpEmail: z.string(),

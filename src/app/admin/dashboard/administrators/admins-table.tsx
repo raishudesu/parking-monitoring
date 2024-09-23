@@ -155,7 +155,7 @@ export function AdminsTable({ data }: { data: AdminAccountData[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 py-4">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 py-4">
         <Input
           placeholder="Filter by Corporate Email"
           value={
@@ -169,7 +169,7 @@ export function AdminsTable({ data }: { data: AdminAccountData[] }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+              Columns <ChevronDown className="md:ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -192,7 +192,7 @@ export function AdminsTable({ data }: { data: AdminAccountData[] }) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
-        <div className="ml-auto">
+        <div className="flex flex-col md:ml-auto">
           <AdminCreationDialog />
         </div>
       </div>

@@ -26,6 +26,7 @@ import {
 import { useServerAction } from "zsa-react";
 import { updateAdminAction } from "./actions";
 import { Dispatch, SetStateAction } from "react";
+import { useSession } from "next-auth/react";
 
 const AdminUpdateForm = ({
   adminId,
@@ -36,11 +37,13 @@ const AdminUpdateForm = ({
   adminData: z.infer<typeof adminUpdateSchema>;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const session = useSession();
   const { isPending, execute } = useServerAction(updateAdminAction);
 
   const form = useForm<z.infer<typeof adminUpdateSchema>>({
     resolver: zodResolver(adminUpdateSchema),
     defaultValues: {
+      auditAdminId: session.data?.user.id,
       firstName: adminData.firstName,
       lastName: adminData.lastName,
       corpEmail: adminData.corpEmail,
