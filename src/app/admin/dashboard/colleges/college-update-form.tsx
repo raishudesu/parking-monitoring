@@ -18,11 +18,14 @@ import { collegeCreationSchema, collegeSchema } from "@/lib/zod";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "zsa-react";
 import { updateCollegeAction } from "./actions";
+import { useSession } from "next-auth/react";
 
 const CollegeUpdateForm = ({
   id: collegeId,
   collegeName,
 }: z.infer<typeof collegeSchema>) => {
+  const session = useSession();
+
   const { isPending, execute } = useServerAction(updateCollegeAction);
 
   const form = useForm<z.infer<typeof collegeCreationSchema>>({
@@ -35,6 +38,7 @@ const CollegeUpdateForm = ({
   const onSubmit = async (values: z.infer<typeof collegeCreationSchema>) => {
     try {
       const [data, err] = await execute({
+        auditAdminId: session.data?.user.id as string,
         collegeId,
         collegeName: values.collegeName,
       });

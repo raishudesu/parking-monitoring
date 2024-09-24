@@ -17,14 +17,19 @@ import { useServerAction } from "zsa-react";
 import { deleteCollegeAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 const CollegeDeletionDialog = ({ collegeId }: { collegeId: number }) => {
+  const session = useSession();
   const { isPending, execute } = useServerAction(deleteCollegeAction);
   const [open, setOpen] = useState(false);
 
   const onDelete = async () => {
     try {
-      const [data, err] = await execute({ collegeId });
+      const [data, err] = await execute({
+        auditAdminId: session.data?.user.id as string,
+        collegeId,
+      });
 
       if (err) {
         let errorMessage = "An unknown error occurred";

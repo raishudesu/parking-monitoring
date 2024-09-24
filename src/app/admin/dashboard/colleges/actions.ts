@@ -13,7 +13,10 @@ import { createServerAction } from "zsa";
 export const createCollegeAction = createServerAction()
   .input(collegeCreationSchema)
   .handler(async ({ input }) => {
-    const college = await createCollegeUseCase(input.collegeName);
+    const college = await createCollegeUseCase(
+      input.auditAdminId as string,
+      input.collegeName
+    );
 
     if (college) revalidatePath("/admin/dashboard/colleges");
 
@@ -23,12 +26,14 @@ export const createCollegeAction = createServerAction()
 export const updateCollegeAction = createServerAction()
   .input(
     z.object({
+      auditAdminId: z.string(),
       collegeId: z.number(),
       collegeName: z.string(),
     })
   )
   .handler(async ({ input }) => {
     const res = await updateCollegeByIdUseCase(
+      input.auditAdminId,
       input.collegeId,
       input.collegeName
     );
@@ -41,11 +46,15 @@ export const updateCollegeAction = createServerAction()
 export const deleteCollegeAction = createServerAction()
   .input(
     z.object({
+      auditAdminId: z.string(),
       collegeId: z.number(),
     })
   )
   .handler(async ({ input }) => {
-    const res = await deleteCollegeByIdUseCase(input.collegeId);
+    const res = await deleteCollegeByIdUseCase(
+      input.auditAdminId,
+      input.collegeId
+    );
 
     revalidatePath("/admin/dashboard/colleges");
 

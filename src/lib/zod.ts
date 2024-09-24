@@ -114,6 +114,7 @@ export const adminUpdateFormSchema = z.object({
 
 export const collegeCreationSchema = z.object({
   collegeName: z.string().min(2),
+  auditAdminId: z.string().optional(),
 });
 
 export const auditLogSchema = z.object({

@@ -1,3 +1,4 @@
+import { createAuditLog } from "@/data-access/audit-log";
 import {
   createCollege,
   deleteCollegeById,
@@ -5,8 +6,17 @@ import {
   updateCollegeById,
 } from "@/data-access/colleges";
 
-export const createCollegeUseCase = async (collegeName: string) => {
+export const createCollegeUseCase = async (
+  auditAdminId: string,
+  collegeName: string
+) => {
   const college = await createCollege(collegeName);
+
+  await createAuditLog({
+    action: "CREATE",
+    table: "COLLEGE",
+    adminId: auditAdminId,
+  });
 
   return college;
 };
@@ -18,20 +28,40 @@ export const getAllCollegesUseCase = async () => {
 };
 
 export const updateCollegeByIdUseCase = async (
+  auditAdminId: string,
   collegeId: number,
   collegeName: string
 ) => {
   const college = await updateCollegeById(collegeId, collegeName);
 
-  if (college) return "College Updated Successfully.";
+  if (college) {
+    await createAuditLog({
+      action: "UPDATE",
+      table: "COLLEGE",
+      adminId: auditAdminId,
+    });
+
+    return "College Updated Successfully.";
+  }
 
   return "Something went wrong. Try again later.";
 };
 
-export const deleteCollegeByIdUseCase = async (collegeId: number) => {
+export const deleteCollegeByIdUseCase = async (
+  auditAdminId: string,
+  collegeId: number
+) => {
   const college = await deleteCollegeById(collegeId);
 
-  if (college) return "College Deleted Successfully.";
+  if (college) {
+    await createAuditLog({
+      action: "DELETE",
+      table: "COLLEGE",
+      adminId: auditAdminId,
+    });
+
+    return "College Deleted Successfully.";
+  }
 
   return "Something went wrong. Try again later.";
 };

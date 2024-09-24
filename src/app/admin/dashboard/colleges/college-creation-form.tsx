@@ -18,13 +18,16 @@ import { collegeCreationSchema } from "@/lib/zod";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "zsa-react";
 import { createCollegeAction } from "./actions";
+import { useSession } from "next-auth/react";
 
 const CollegeCreationForm = () => {
+  const session = useSession();
   const { isPending, execute } = useServerAction(createCollegeAction);
 
   const form = useForm<z.infer<typeof collegeCreationSchema>>({
     resolver: zodResolver(collegeCreationSchema),
     defaultValues: {
+      auditAdminId: session.data?.user.id,
       collegeName: "",
     },
   });
