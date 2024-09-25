@@ -26,6 +26,7 @@ import { useServerAction } from "zsa-react";
 import { updateParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { Dispatch, SetStateAction } from "react";
+import { useSession } from "next-auth/react";
 
 const ParkingSpaceUpdateForm = ({
   parkingSpaceId,
@@ -36,6 +37,8 @@ const ParkingSpaceUpdateForm = ({
   data: z.infer<typeof parkingSpaceFormSchema>;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const session = useSession();
+
   const { isPending, execute } = useServerAction(updateParkingSpaceAction);
 
   const form = useForm<z.infer<typeof parkingSpaceFormSchema>>({
@@ -55,6 +58,7 @@ const ParkingSpaceUpdateForm = ({
       const newValues: z.infer<typeof parkingSpaceSchema> = {
         ...values,
         maxCapacity: parseInt(values.maxCapacity, 10),
+        auditAdminId: session.data?.user.id,
       };
 
       const [data, err] = await execute({ parkingSpaceId, data: newValues });

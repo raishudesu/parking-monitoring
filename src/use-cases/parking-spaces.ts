@@ -1,3 +1,5 @@
+import { description } from "@/app/gpo/dashboard/credit-score";
+import { createAuditLog } from "@/data-access/audit-log";
 import {
   createParkingSpace,
   deleteParkingSpaceById,
@@ -10,7 +12,22 @@ import { z } from "zod";
 export const createParkingSpaceUseCase = async (
   data: z.infer<typeof parkingSpaceSchema>
 ) => {
-  const parkingSpace = await createParkingSpace(data);
+  const parkingSpaceData = {
+    name: data.name,
+    description: data.description,
+    longitude: data.longitude,
+    latitude: data.latitude,
+    spaceType: data.spaceType,
+    maxCapacity: data.maxCapacity,
+  };
+
+  const parkingSpace = await createParkingSpace(parkingSpaceData);
+
+  await createAuditLog({
+    action: "CREATE",
+    table: "PARKINGSPACE",
+    adminId: data.auditAdminId as string,
+  });
 
   return parkingSpace;
 };
@@ -49,13 +66,42 @@ export const updateParkingSpaceByIdUseCase = async (
   parkingSpaceId: string,
   data: z.infer<typeof parkingSpaceSchema>
 ) => {
-  const parkingSpace = await updateParkingSpaceById(parkingSpaceId, data);
+  const parkingSpaceData = {
+    name: data.name,
+    description: data.description,
+    longitude: data.longitude,
+    latitude: data.latitude,
+    spaceType: data.spaceType,
+    maxCapacity: data.maxCapacity,
+  };
 
-  if (parkingSpace) return "Parking space updated successfully.";
+  const parkingSpace = await updateParkingSpaceById(
+    parkingSpaceId,
+    parkingSpaceData
+  );
+
+  if (parkingSpace) {
+    await createAuditLog({
+      action: "UPDATE",
+      table: "PARKINGSPACE",
+      adminId: data.auditAdminId as string,
+    });
+
+    return "Parking space updated successfully.";
+  }
 };
 
-export const deleteParkingSpaceByIdUseCase = async (parkingSpaceId: string) => {
+export const deleteParkingSpaceByIdUseCase = async (
+  auditAdminId: string,
+  parkingSpaceId: string
+) => {
   const parkingSpace = await deleteParkingSpaceById(parkingSpaceId);
+
+  await createAuditLog({
+    action: "DELETE",
+    table: "PARKINGSPACE",
+    adminId: auditAdminId,
+  });
 
   if (parkingSpace) return "Parking space deleted successfully.";
 };

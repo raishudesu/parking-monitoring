@@ -34,9 +34,17 @@ export const updateParkingSpaceAction = createServerAction()
   });
 
 export const deleteParkingSpaceAction = createServerAction()
-  .input(z.string())
+  .input(
+    z.object({
+      parkingSpaceId: z.string(),
+      auditAdminId: z.string(),
+    })
+  )
   .handler(async ({ input }) => {
-    const responseMessage = await deleteParkingSpaceByIdUseCase(input);
+    const responseMessage = await deleteParkingSpaceByIdUseCase(
+      input.auditAdminId,
+      input.parkingSpaceId
+    );
 
     revalidatePath("/admin/dashboard/parking-spaces");
 

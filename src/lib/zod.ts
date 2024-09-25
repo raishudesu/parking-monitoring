@@ -61,6 +61,7 @@ export const adminAccountSchema = z.object({
 });
 
 export const parkingSpaceSchema = z.object({
+  auditAdminId: z.string().optional(),
   name: z.string(),
   description: z.string(),
   longitude: z.string(),
