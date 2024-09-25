@@ -28,6 +28,7 @@ import { updateGpoAccountAction } from "./actions";
 import { useServerAction } from "zsa-react";
 import { generateSecurePassword } from "@/lib/utils";
 import emailjs from "@emailjs/browser";
+import { useSession } from "next-auth/react";
 
 const sendUpdatedDetailsToGpoEmail = async (
   email: string,
@@ -53,6 +54,7 @@ const AccountUpdateForm = ({
   data,
   colleges,
 }: z.infer<typeof gpoUpdateAccountSchema>) => {
+  const session = useSession();
   const { isPending, execute } = useServerAction(updateGpoAccountAction);
 
   const form = useForm<z.infer<typeof accountCreationSchema>>({
@@ -72,7 +74,11 @@ const AccountUpdateForm = ({
   const onSubmit = async (values: z.infer<typeof accountCreationSchema>) => {
     values.password = generateSecurePassword(values.gatePassNumber);
 
-    const [data, err] = await execute({ accountId, data: values });
+    const [data, err] = await execute({
+      auditAdminId: session.data?.user.id,
+      accountId,
+      data: values,
+    });
 
     if (err) {
       const parsedErrorData = await JSON.parse(err?.data);

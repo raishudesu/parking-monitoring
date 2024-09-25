@@ -23,6 +23,8 @@ enum AduitAction {
   INSERT
   UPDATE
   DELETE
+  REACTIVATE
+  DEACTIVATE
 }
 
 enum AuditTable {

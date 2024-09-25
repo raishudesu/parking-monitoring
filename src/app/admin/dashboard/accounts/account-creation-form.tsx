@@ -29,6 +29,7 @@ import { useServerAction } from "zsa-react";
 import { generateSecurePassword } from "@/lib/utils";
 import emailjs from "@emailjs/browser";
 import { College } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 const sendAccountDetailsToGpoEmail = async (
   email: string,
@@ -50,6 +51,7 @@ const sendAccountDetailsToGpoEmail = async (
 };
 
 const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
+  const session = useSession();
   const { isPending, execute } = useServerAction(createGpoAccountAction);
 
   const form = useForm<z.infer<typeof accountCreationSchema>>({
@@ -69,7 +71,10 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
   const onSubmit = async (values: z.infer<typeof accountCreationSchema>) => {
     values.password = generateSecurePassword(values.gatePassNumber);
 
-    const [data, err] = await execute(values);
+    const [data, err] = await execute({
+      auditAdminId: session.data?.user.id as string,
+      data: values,
+    });
 
     if (err) {
       const parsedErrorData = await JSON.parse(err?.data);

@@ -14,6 +14,7 @@ import {
 import { LoginError } from "./errors";
 import { z } from "zod";
 import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
+import { createAuditLog } from "@/data-access/audit-log";
 
 // USE CASE FOR GPO LOG IN
 export const gpoLoginUseCase = async (
@@ -44,6 +45,7 @@ export const getAllGpoAccountsUseCase = async () => {
 
 // GPO ACCOUNT CREATION USE CASE
 export const createGpoAccountUseCase = async (
+  auditAdminId: string,
   data: z.infer<typeof accountCreationSchema>
 ) => {
   // VALIDATE THE DATA FIRST
@@ -65,11 +67,18 @@ export const createGpoAccountUseCase = async (
   // FILTER OUT THE PASSWORD PROPERTY FROM THE RETURNED OBJECT
   const { password: newGpoPassword, ...filteredGpoAccount } = gpo;
 
+  await createAuditLog({
+    action: "CREATE",
+    table: "ACCOUNT",
+    adminId: auditAdminId,
+  });
+
   return filteredGpoAccount;
 };
 
 // GPO ACCOUNT UPDATE USE CASE
 export const updateGpoAccountUseCase = async (
+  auditAdminId: string,
   accountId: string,
   data: z.infer<typeof gpoAccountSchema>
 ) => {
@@ -81,29 +90,57 @@ export const updateGpoAccountUseCase = async (
   if (!gpo)
     throw Error(`Updating GPO Account with Account ID: ${accountId} failed.`);
 
+  await createAuditLog({
+    action: "UPDATE",
+    table: "ACCOUNT",
+    adminId: auditAdminId,
+  });
+
   return gpo;
 };
 
 // DEACTIVATE GPO ACCOUNT USE CASE
-export const deactivateGpoAccountUseCase = async (accountId: string) => {
+export const deactivateGpoAccountUseCase = async (
+  auditAdminId: string,
+  accountId: string
+) => {
   const gpo = await getGpoById(accountId);
 
   if (!gpo) throw Error(`No GPO Account found with account ID: ${accountId}`);
 
   const deactivatedGpo = await deactivateGpoAccount(accountId);
 
-  if (deactivatedGpo) return "Account Deactivated Successfully.";
+  if (deactivatedGpo) {
+    await createAuditLog({
+      action: "DEACTIVATE",
+      table: "ACCOUNT",
+      adminId: auditAdminId,
+    });
+
+    return "Account Deactivated Successfully.";
+  }
 };
 
 // REACTIVATE GPO ACCOUNT USE CASE
-export const reactivateGpoAccountUseCase = async (accountId: string) => {
+export const reactivateGpoAccountUseCase = async (
+  auditAdminId: string,
+  accountId: string
+) => {
   const gpo = await getGpoById(accountId);
 
   if (!gpo) throw Error(`No GPO Account found with account ID: ${accountId}`);
 
   const reactivatedGpo = await reactivateGpoAccount(accountId);
 
-  if (reactivatedGpo) return "Account Reactivated Successfully.";
+  if (reactivatedGpo) {
+    await createAuditLog({
+      action: "REACTIVATE",
+      table: "ACCOUNT",
+      adminId: auditAdminId,
+    });
+
+    return "Account Reactivated Successfully.";
+  }
 };
 
 export const getCurrentGpoSessionUseCase = async (gpoAccountId: string) => {

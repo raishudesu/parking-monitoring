@@ -16,9 +16,14 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 export const createGpoAccountAction = createServerAction()
-  .input(accountCreationSchema)
+  .input(
+    z.object({
+      auditAdminId: z.string(),
+      data: accountCreationSchema,
+    })
+  )
   .handler(async ({ input }) => {
-    const res = await createGpoAccountUseCase(input);
+    const res = await createGpoAccountUseCase(input.auditAdminId, input.data);
 
     if (res) revalidatePath("/admin/dashboard/accounts");
 
@@ -28,7 +33,11 @@ export const createGpoAccountAction = createServerAction()
 export const updateGpoAccountAction = createServerAction()
   .input(gpoUpdateAccountSchema)
   .handler(async ({ input }) => {
-    const gpo = await updateGpoAccountUseCase(input.accountId, input.data);
+    const gpo = await updateGpoAccountUseCase(
+      input.auditAdminId as string,
+      input.accountId,
+      input.data
+    );
 
     if (gpo) revalidatePath("/admin/dashboard/accounts");
 
@@ -38,11 +47,15 @@ export const updateGpoAccountAction = createServerAction()
 export const deactivateGpoAccountAction = createServerAction()
   .input(
     z.object({
+      auditAdminId: z.string(),
       accountId: z.string(),
     })
   )
   .handler(async ({ input }) => {
-    const res = await deactivateGpoAccountUseCase(input.accountId);
+    const res = await deactivateGpoAccountUseCase(
+      input.auditAdminId,
+      input.accountId
+    );
 
     if (res) revalidatePath("/admin/dashboard/accounts");
 
@@ -52,11 +65,15 @@ export const deactivateGpoAccountAction = createServerAction()
 export const reactivateGpoAccountAction = createServerAction()
   .input(
     z.object({
+      auditAdminId: z.string(),
       accountId: z.string(),
     })
   )
   .handler(async ({ input }) => {
-    const res = await reactivateGpoAccountUseCase(input.accountId);
+    const res = await reactivateGpoAccountUseCase(
+      input.auditAdminId,
+      input.accountId
+    );
 
     if (res) revalidatePath("/admin/dashboard/accounts");
 

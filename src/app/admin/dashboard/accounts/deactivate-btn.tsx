@@ -3,13 +3,18 @@ import { LoaderCircle, ShieldCheck, ShieldMinus } from "lucide-react";
 import { useServerAction } from "zsa-react";
 import { deactivateGpoAccountAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
 
 const DeactivateBtn = ({ accountId }: { accountId: string }) => {
+  const session = useSession();
   const { isPending, execute } = useServerAction(deactivateGpoAccountAction);
 
   const handleDeactivate = async () => {
     try {
-      const [data, err] = await execute({ accountId });
+      const [data, err] = await execute({
+        auditAdminId: session.data?.user.id as string,
+        accountId,
+      });
 
       if (err) {
         const parsedErrorData = await JSON.parse(err?.data);

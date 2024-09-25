@@ -29,6 +29,7 @@ export const collegeSchema = z.object({
 });
 
 export const gpoUpdateAccountSchema = z.object({
+  auditAdminId: z.string().optional(),
   accountId: z.string(),
   data: gpoAccountSchema,
   colleges: z.array(collegeSchema).optional(),
@@ -119,7 +120,14 @@ export const collegeCreationSchema = z.object({
 });
 
 export const auditLogSchema = z.object({
-  action: z.enum(["CREATE", "INSERT", "UPDATE", "DELETE"]),
+  action: z.enum([
+    "CREATE",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "REACTIVATE",
+    "DEACTIVATE",
+  ]),
   table: z.enum([
     "ADMIN",
     "ACCOUNT",
