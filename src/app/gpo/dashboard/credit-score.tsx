@@ -18,7 +18,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useSession } from "next-auth/react";
 
 export const description = "A donut chart representing your credit score";
 
@@ -28,9 +27,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const CreditScore = () => {
-  const session = useSession();
-  const currentCreditScore = session.data?.user.creditScore; // Replace this with the actual credit score logic
+const CreditScore = ({ creditScore }: { creditScore: number }) => {
+  const currentCreditScore = creditScore; // Replace this with the actual credit score logic
   const total = 100; // Total possible score
 
   const chartData = [

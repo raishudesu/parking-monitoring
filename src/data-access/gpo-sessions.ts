@@ -138,6 +138,9 @@ export const getRecentSessions = async () => {
 
 export const getSessionsForAnalysis = async () => {
   const sessions = await prisma.gPOSession.findMany({
+    where: {
+      status: "ENDED",
+    },
     select: {
       id: true,
       startTime: true,

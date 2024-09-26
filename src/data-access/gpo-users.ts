@@ -165,3 +165,16 @@ export const getActiveGpoCount = async () => {
 
   return count;
 };
+
+export const getCreditScore = async (accountId: string) => {
+  const gpo = await prisma.gPOAccount.findUnique({
+    where: {
+      id: accountId,
+    },
+    select: {
+      creditScore: true,
+    },
+  });
+
+  return gpo;
+};

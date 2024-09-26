@@ -5,6 +5,7 @@ import {
   deactivateGpoAccount,
   getActiveGpoCount,
   getAllGpoAccounts,
+  getCreditScore,
   getCurrentGpoSessionByGpoId,
   getGpoByGatePassNumber,
   getGpoById,
@@ -204,4 +205,10 @@ export const getActiveGpoCountUseCase = async () => {
   const count = await getActiveGpoCount();
 
   return count;
+};
+
+export const getCreditsScoreUseCase = async (accountId: string) => {
+  const gpoCreditScore = await getCreditScore(accountId);
+
+  return gpoCreditScore;
 };
