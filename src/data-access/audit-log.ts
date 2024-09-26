@@ -21,6 +21,9 @@ export const getAuditLogs = async () => {
         },
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return logs;

@@ -27,7 +27,7 @@ const SideSheet = () => {
   const user = session?.data?.user;
 
   return (
-    <div className="p-6 pb-3 lg:hidden bg-orange-500 bg-opacity-25 border-b">
+    <div className="flex items-center gap-4 p-6 pb-3 lg:hidden bg-orange-500 bg-opacity-25 border-b">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
           <div className="border py-3 px-4 bg-secondary rounded-lg">
@@ -61,6 +61,9 @@ const SideSheet = () => {
           </div>
         </SheetContent>
       </Sheet>
+      <h1 className="scroll-m-20 text-2xl text-primary font-bold tracking-tight lg:text-5xl">
+        ParkSU
+      </h1>
     </div>
   );
 };

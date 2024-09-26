@@ -19,7 +19,7 @@ const ScanQrDrawer = () => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <div className="w-full h-full bg-slate-50 hover:bg-slate-100 ease-in-out transition-colors rounded-xl flex flex-col gap-6 justify-center items-center">
+        <div className="w-full h-full bg-background border border-primary hover:bg-slate-100 ease-in-out transition-colors rounded-xl flex flex-col gap-6 justify-center items-center">
           <ScanLine size={100} className="text-primary" />
           <span className="text-xl font-bold">Scan QR</span>
         </div>
