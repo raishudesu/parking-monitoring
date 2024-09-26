@@ -149,3 +149,19 @@ export const addCreditScoreToGpo = async (
 
   return gpo;
 };
+
+export const getGpoCount = async () => {
+  const count = await prisma.gPOAccount.count();
+
+  return count;
+};
+
+export const getActiveGpoCount = async () => {
+  const count = await prisma.gPOAccount.count({
+    where: {
+      isActive: true,
+    },
+  });
+
+  return count;
+};

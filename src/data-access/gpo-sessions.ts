@@ -111,3 +111,44 @@ export const endGpoSession = async (
 
   return gpoSession;
 };
+
+export const getRecentSessions = async () => {
+  const sessions = await prisma.gPOSession.findMany({
+    take: 10,
+    orderBy: {
+      startTime: "desc",
+    },
+    include: {
+      accountParked: {
+        select: {
+          gatePassNumber: true,
+          email: true,
+        },
+      },
+      parkingSpace: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  return sessions;
+};
+
+export const getSessionsForAnalysis = async () => {
+  const sessions = await prisma.gPOSession.findMany({
+    select: {
+      id: true,
+      startTime: true,
+      endTime: true,
+      parkingSpace: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  return sessions;
+};

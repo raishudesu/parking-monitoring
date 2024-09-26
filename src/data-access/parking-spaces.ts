@@ -52,3 +52,9 @@ export const deleteParkingSpaceById = async (parkingSpaceId: string) => {
 
   return parkingSpace;
 };
+
+export const getParkingSpaceCount = async () => {
+  const count = await prisma.parkingSpace.count();
+
+  return count;
+};

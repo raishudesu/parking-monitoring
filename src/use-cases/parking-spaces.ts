@@ -1,9 +1,9 @@
-import { description } from "@/app/gpo/dashboard/credit-score";
 import { createAuditLog } from "@/data-access/audit-log";
 import {
   createParkingSpace,
   deleteParkingSpaceById,
   getAllParkingSpaces,
+  getParkingSpaceCount,
   updateParkingSpaceById,
 } from "@/data-access/parking-spaces";
 import { parkingSpaceSchema } from "@/lib/zod";
@@ -104,4 +104,10 @@ export const deleteParkingSpaceByIdUseCase = async (
   });
 
   if (parkingSpace) return "Parking space deleted successfully.";
+};
+
+export const getParkingSpaceCountUseCase = async () => {
+  const count = await getParkingSpaceCount();
+
+  return count;
 };

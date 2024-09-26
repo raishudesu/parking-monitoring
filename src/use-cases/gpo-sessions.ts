@@ -4,6 +4,8 @@ import {
   getAllGpoSessions,
   getOngoingGpoSession,
   getGpoSessionsByGpoId,
+  getRecentSessions,
+  getSessionsForAnalysis,
 } from "@/data-access/gpo-sessions";
 import { getParkingSpaceById } from "@/data-access/parking-spaces";
 import { authOptions } from "@/lib/auth";
@@ -127,4 +129,16 @@ export const getAllGpoSessionsUseCase = async () => {
   const gpoSessions = await getAllGpoSessions();
 
   return gpoSessions;
+};
+
+export const getRecentSessionsUseCase = async () => {
+  const sessions = await getRecentSessions();
+
+  return sessions;
+};
+
+export const getSessionsForAnalysisUseCase = async () => {
+  const sessions = await getSessionsForAnalysis();
+
+  return sessions;
 };

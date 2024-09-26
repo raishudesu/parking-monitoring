@@ -3,10 +3,12 @@ import {
   addCreditScoreToGpo,
   createGpoAccount,
   deactivateGpoAccount,
+  getActiveGpoCount,
   getAllGpoAccounts,
   getCurrentGpoSessionByGpoId,
   getGpoByGatePassNumber,
   getGpoById,
+  getGpoCount,
   reactivateGpoAccount,
   updateGpoAccount,
   updateGpoPassword,
@@ -190,4 +192,16 @@ export const addCreditScoreToGpoUseCase = async (accountId: string) => {
   const { password: omittedPwd, ...filteredGpo } = updatedGpo;
 
   return filteredGpo;
+};
+
+export const getGpoCountUseCase = async () => {
+  const count = await getGpoCount();
+
+  return count;
+};
+
+export const getActiveGpoCountUseCase = async () => {
+  const count = await getActiveGpoCount();
+
+  return count;
 };
