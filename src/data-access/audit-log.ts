@@ -11,7 +11,17 @@ export const createAuditLog = async (data: z.infer<typeof auditLogSchema>) => {
 };
 
 export const getAuditLogs = async () => {
-  const logs = await prisma.auditLog.findMany();
+  const logs = await prisma.auditLog.findMany({
+    include: {
+      admin: {
+        select: {
+          firstName: true,
+          lastName: true,
+          corpEmail: true,
+        },
+      },
+    },
+  });
 
   return logs;
 };
