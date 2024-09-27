@@ -5,11 +5,22 @@ import CurrentSession from "./current-session";
 import SessionHistory from "./session-history";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import {
+  getAvailableSpacesUseCase,
+  getUnavailableSpacesUseCase,
+} from "@/use-cases/parking-spaces";
+import { createClient } from "@/utils/supabase/server";
 
 const GpoDashboardPage = async () => {
   const session = await getServerSession(authOptions);
 
   const creditScore = await getCreditScore(session?.user.id as string);
+  const [availableParkingSpaces, unavailableParkingSpaces] = await Promise.all([
+    getAvailableSpacesUseCase(),
+    getUnavailableSpacesUseCase(),
+  ]);
+
+  // const supabase = createClient();
 
   return (
     <div className="w-full flex flex-col p-6">
@@ -29,7 +40,10 @@ const GpoDashboardPage = async () => {
             <CurrentSession />
           </div>
           <div className="mt-6">
-            <AvailableParkingSpaces />
+            <AvailableParkingSpaces
+              availableParkingSpaces={availableParkingSpaces}
+              unavailableParkingSpaces={unavailableParkingSpaces}
+            />
           </div>
         </div>
         <div className="mt-6 w-full">

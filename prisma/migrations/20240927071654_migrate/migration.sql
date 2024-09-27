@@ -1,15 +1,11 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Post` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
 -- CreateEnum
 CREATE TYPE "AdminRole" AS ENUM ('ADMIN', 'SUPERADMIN');
 
 -- CreateEnum
-CREATE TYPE "AduitAction" AS ENUM ('CREATE', 'INSERT', 'UPDATE', 'DELETE');
+CREATE TYPE "UserRole" AS ENUM ('GPO', 'VISITOR');
+
+-- CreateEnum
+CREATE TYPE "AduitAction" AS ENUM ('CREATE', 'INSERT', 'UPDATE', 'DELETE', 'REACTIVATE', 'DEACTIVATE');
 
 -- CreateEnum
 CREATE TYPE "AuditTable" AS ENUM ('ADMIN', 'ACCOUNT', 'VISITORACCOUNT', 'PARKINGSPACE', 'COLLEGE');
@@ -23,27 +19,20 @@ CREATE TYPE "AccountType" AS ENUM ('FACULTY', 'STUDENT', 'STAFF');
 -- CreateEnum
 CREATE TYPE "SessionStatus" AS ENUM ('ONGOING', 'ENDED');
 
--- DropForeignKey
-ALTER TABLE "Post" DROP CONSTRAINT "Post_authorId_fkey";
-
--- DropTable
-DROP TABLE "Post";
-
--- DropTable
-DROP TABLE "User";
-
 -- CreateTable
 CREATE TABLE "GPOAccount" (
     "id" TEXT NOT NULL,
     "gatePassNumber" TEXT NOT NULL,
+    "email" TEXT,
     "password" TEXT NOT NULL,
     "accountType" "AccountType" NOT NULL,
-    "collegeId" INTEGER NOT NULL,
+    "collegeId" INTEGER,
     "department" TEXT,
     "isVIP" BOOLEAN NOT NULL DEFAULT false,
     "isPWD" BOOLEAN NOT NULL DEFAULT false,
     "imageLink" TEXT,
-    "creditScore" INTEGER NOT NULL,
+    "role" "UserRole" NOT NULL DEFAULT 'GPO',
+    "creditScore" INTEGER DEFAULT 100,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -57,9 +46,10 @@ CREATE TABLE "GPOSession" (
     "parkingSpaceId" TEXT NOT NULL,
     "accountId" TEXT NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "endTime" TIMESTAMP(3) NOT NULL,
-    "status" "SessionStatus" NOT NULL,
-    "endedProperly" BOOLEAN NOT NULL,
+    "shouldEndAt" TIMESTAMP(3),
+    "endTime" TIMESTAMP(3),
+    "status" "SessionStatus" NOT NULL DEFAULT 'ONGOING',
+    "endedProperly" BOOLEAN,
 
     CONSTRAINT "GPOSession_pkey" PRIMARY KEY ("id")
 );
@@ -84,6 +74,7 @@ CREATE TABLE "VisitorAccount" (
     "isPWD" BOOLEAN NOT NULL DEFAULT false,
     "imageLink" TEXT,
     "creditScore" INTEGER NOT NULL,
+    "role" "UserRole" NOT NULL DEFAULT 'VISITOR',
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -122,9 +113,9 @@ CREATE TABLE "ParkingSpace" (
     "description" TEXT NOT NULL,
     "longitude" TEXT NOT NULL,
     "latitude" TEXT NOT NULL,
-    "spaceType" "ParkingSpaceType" NOT NULL,
-    "currCapacity" INTEGER NOT NULL,
-    "maxCapacity" INTEGER,
+    "spaceType" "ParkingSpaceType" NOT NULL DEFAULT 'HYBRID',
+    "currCapacity" INTEGER DEFAULT 0,
+    "maxCapacity" INTEGER NOT NULL,
     "imageUrl" TEXT,
     "addedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -152,7 +143,7 @@ CREATE TABLE "Admin" (
 CREATE TABLE "AuditLog" (
     "id" TEXT NOT NULL,
     "action" "AduitAction" NOT NULL,
-    "tableChanged" "AuditTable" NOT NULL,
+    "table" "AuditTable" NOT NULL,
     "adminId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -181,22 +172,25 @@ CREATE TABLE "College" (
 CREATE UNIQUE INDEX "GPOAccount_gatePassNumber_key" ON "GPOAccount"("gatePassNumber");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "GPOAccount_email_key" ON "GPOAccount"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "VisitorAccount_gatePassNumber_key" ON "VisitorAccount"("gatePassNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Admin_corpEmail_key" ON "Admin"("corpEmail");
 
 -- AddForeignKey
-ALTER TABLE "GPOAccount" ADD CONSTRAINT "GPOAccount_collegeId_fkey" FOREIGN KEY ("collegeId") REFERENCES "College"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "GPOAccount" ADD CONSTRAINT "GPOAccount_collegeId_fkey" FOREIGN KEY ("collegeId") REFERENCES "College"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "GPOSession" ADD CONSTRAINT "GPOSession_parkingSpaceId_fkey" FOREIGN KEY ("parkingSpaceId") REFERENCES "ParkingSpace"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "GPOSession" ADD CONSTRAINT "GPOSession_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "GPOAccount"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "GPOSession" ADD CONSTRAINT "GPOSession_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "GPOAccount"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "GPOViolation" ADD CONSTRAINT "GPOViolation_accountViolatorId_fkey" FOREIGN KEY ("accountViolatorId") REFERENCES "GPOAccount"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "GPOViolation" ADD CONSTRAINT "GPOViolation_accountViolatorId_fkey" FOREIGN KEY ("accountViolatorId") REFERENCES "GPOAccount"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "VisitorSession" ADD CONSTRAINT "VisitorSession_parkingSpaceId_fkey" FOREIGN KEY ("parkingSpaceId") REFERENCES "ParkingSpace"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

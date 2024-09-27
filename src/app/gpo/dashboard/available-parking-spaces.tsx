@@ -1,16 +1,40 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import {
-  getAvailableSpacesUseCase,
-  getUnavailableSpacesUseCase,
-} from "@/use-cases/parking-spaces";
+import { createClient } from "@/utils/supabase/client";
+import { ParkingSpace } from "@prisma/client";
 import { CircleParking } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const AvailableParkingSpaces = async () => {
-  const [availableParkingSpaces, unavailableParkingSpaces] = await Promise.all([
-    getAvailableSpacesUseCase(),
-    getUnavailableSpacesUseCase(),
-  ]);
+const supabase = createClient();
+
+const AvailableParkingSpaces = ({
+  availableParkingSpaces,
+  unavailableParkingSpaces,
+}: {
+  availableParkingSpaces: ParkingSpace[];
+  unavailableParkingSpaces: ParkingSpace[];
+}) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("parking-space")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "ParkingSpace" },
+        () => {
+          router.refresh();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
 
   return (
     <>
