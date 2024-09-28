@@ -30,24 +30,24 @@ const SideSheetMap = () => {
           <Menu />
         </div>
       </SheetTrigger>
-      <SheetContent side={"left"}>
+      <SheetContent side={"left"} className="overflow-clip">
         <SheetHeader>
           <SheetTitle>
             <Logo />
           </SheetTitle>
         </SheetHeader>
-        <div className="flex flex-col gap-6">
+        <div className="w-full flex flex-col gap-6">
           <ul className="flex flex-col gap-3">
             <NavLinks open={open} setOpen={setOpen} />
           </ul>
           <div className="w-full p-3 flex flex-col gap-4 rounded-xl">
-            <div className="flex gap-2 items-center">
+            <div className="w-full flex gap-2 items-center">
               <Avatar>
                 <AvatarFallback>GPO</AvatarFallback>
               </Avatar>
-              <div className="flex flex-col">
+              <div className="w-full flex flex-col pr-6">
                 <span className="font-semibold">{user?.gatePassNumber}</span>
-                <small className="text-muted-foreground">
+                <small className="truncate text-muted-foreground">
                   {user?.corpEmail}
                 </small>
               </div>

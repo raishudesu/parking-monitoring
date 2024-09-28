@@ -77,11 +77,6 @@ const DijkstraMap = ({
           const { latitude, longitude } = position.coords;
           const currentLocation: LatLng = { lat: latitude, lng: longitude };
           setUserLocation(currentLocation);
-
-          // Optionally, center the map on the updated user location
-          if (map) {
-            map.panTo(userLocation as LatLng);
-          }
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -245,7 +240,7 @@ const DijkstraMap = ({
 
       <Button
         size="icon"
-        className="absolute top-4 right-4 rounded-full"
+        className="absolute bottom-20 right-6 rounded-full"
         onClick={handleCenterOnUser}
       >
         <Crosshair />

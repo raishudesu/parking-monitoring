@@ -49,9 +49,9 @@ const SideSheet = () => {
                 <Avatar>
                   <AvatarFallback>GPO</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col">
+                <div className="w-full flex flex-col pr-6">
                   <span className="font-semibold">{user?.gatePassNumber}</span>
-                  <small className="text-muted-foreground">
+                  <small className="truncate text-muted-foreground">
                     {user?.corpEmail}
                   </small>
                 </div>
