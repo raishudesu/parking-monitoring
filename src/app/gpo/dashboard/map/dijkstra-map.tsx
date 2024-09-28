@@ -49,6 +49,8 @@ const DijkstraMap = ({
   const [closestPoint, setClosestPoint] = useState<LatLng | null>(null);
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
+  const [selectedParkingSpace, setSelectedParkingSpace] =
+    useState<LatLng | null>(null); // Track selected parking space
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
@@ -58,21 +60,39 @@ const DijkstraMap = ({
     setMap(null);
   }, []);
 
-  // Get the user's current location
+  // Real-time location tracking using watchPosition
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+      const watchId = navigator.geolocation.watchPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           const currentLocation: LatLng = { lat: latitude, lng: longitude };
           setUserLocation(currentLocation);
+
+          // Optionally, center the map on the updated user location
+          // if (map) {
+          //   map.panTo(currentLocation);
+          // }
+
+          // Update directions if a parking space is selected
+          if (selectedParkingSpace) {
+            calculateRoute(currentLocation, selectedParkingSpace);
+          }
         },
         (error) => {
           console.error("Error getting location:", error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
         }
       );
+
+      // Cleanup watchPosition when component unmounts
+      return () => navigator.geolocation.clearWatch(watchId);
     }
-  }, []);
+  }, [map, selectedParkingSpace]);
 
   // Find the closest parking space
   const findClosestPoint = useCallback(
@@ -152,8 +172,9 @@ const DijkstraMap = ({
         lat: parseFloat(parkingSpace.latitude),
         lng: parseFloat(parkingSpace.longitude),
       };
+      setSelectedParkingSpace(destination); // Set the selected parking space
       map.panTo(destination);
-      calculateRoute(userLocation, destination);
+      calculateRoute(userLocation, destination); // Calculate the route to the selected parking space
     }
 
     setDrawerOpen(!drawerOpen);
