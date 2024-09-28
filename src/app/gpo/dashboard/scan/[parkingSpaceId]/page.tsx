@@ -21,7 +21,10 @@ const SubmitPage = async ({
         </h1>
       </div>
       <div className="w-full h-full flex flex-col mt-6">
-        <DurationForm parkingSpaceId={parkingSpaceId} />
+        <DurationForm
+          parkingSpaceId={parkingSpaceId}
+          parkingSpace={parkingSpace}
+        />
       </div>
     </div>
   );

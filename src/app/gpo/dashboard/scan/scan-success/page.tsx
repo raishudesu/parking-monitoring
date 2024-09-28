@@ -24,7 +24,7 @@ const ScanSuccess = () => {
           Parking Session Started
         </h1>
         <p className="leading-7 [&:not(:first-child)]:mt-6 text-muted-foreground">
-          Your parking in *parking name* has started.
+          Remember to end your session on time!
         </p>
       </div>
       <BadgeCheck size={200} className="text-green-500" />

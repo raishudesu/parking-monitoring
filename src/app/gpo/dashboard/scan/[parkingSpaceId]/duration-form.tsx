@@ -24,12 +24,19 @@ import { useServerAction } from "zsa-react";
 import { createGpoSessionAction } from "./actions";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ParkingSpace } from "@prisma/client";
 
 const durationFormSchema = z.object({
   duration: z.string(),
 });
 
-const DurationForm = ({ parkingSpaceId }: { parkingSpaceId: string }) => {
+const DurationForm = ({
+  parkingSpaceId,
+  parkingSpace,
+}: {
+  parkingSpaceId: string;
+  parkingSpace: ParkingSpace | null;
+}) => {
   const session = useSession();
   const router = useRouter();
 
@@ -44,42 +51,88 @@ const DurationForm = ({ parkingSpaceId }: { parkingSpaceId: string }) => {
 
   const onSubmit = async (values: z.infer<typeof durationFormSchema>) => {
     try {
-      const [data, err] = await execute({
-        parkingSpaceId,
-        gpoAccountID: session.data?.user.id as string,
-        duration: values.duration,
-      });
+      // Get the user's current location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
 
-      if (err) {
-        let errorMessage = "An unknown error occurred";
-        if (typeof err.data === "string") {
-          try {
-            const parsedErrorData = JSON.parse(err.data);
-            errorMessage =
-              parsedErrorData.message || JSON.stringify(parsedErrorData);
-          } catch (parseError) {
-            console.error("Error parsing error data:", parseError);
-            errorMessage = err.data;
+            // Calculate distance between user and parking space
+            const userLocation = { lat: latitude, lng: longitude };
+            const parkingLocation = {
+              lat: parseFloat(parkingSpace!.latitude),
+              lng: parseFloat(parkingSpace!.longitude),
+            };
+
+            const distance = calculateDistance(userLocation, parkingLocation);
+
+            // Define a radius of 100 meters (0.1 kilometers)
+            const radius = 0.1;
+
+            if (distance > radius) {
+              toast({
+                title: "Error",
+                description: `You are too far from the parking space. Please move closer.`,
+                variant: "destructive",
+              });
+              return;
+            }
+
+            // If within radius, proceed with session creation
+            const [data, err] = await execute({
+              parkingSpaceId,
+              gpoAccountID: session.data?.user.id as string,
+              duration: values.duration,
+            });
+
+            if (err) {
+              let errorMessage = "An unknown error occurred";
+              if (typeof err.data === "string") {
+                try {
+                  const parsedErrorData = JSON.parse(err.data);
+                  errorMessage =
+                    parsedErrorData.message || JSON.stringify(parsedErrorData);
+                } catch (parseError) {
+                  console.error("Error parsing error data:", parseError);
+                  errorMessage = err.data;
+                }
+              } else if (err.data && typeof err.data === "object") {
+                errorMessage = JSON.stringify(err.data);
+              }
+
+              toast({
+                title: "Something went wrong.",
+                variant: "destructive",
+                description: err.message,
+              });
+              return;
+            }
+
+            if (data) {
+              toast({
+                title: "Parking session created",
+                description: "Redirecting you now...",
+              });
+
+              router.replace("/gpo/dashboard/scan/scan-success");
+            }
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
+            toast({
+              title: "Error",
+              description:
+                "Failed to get your location. Please allow location access.",
+              variant: "destructive",
+            });
           }
-        } else if (err.data && typeof err.data === "object") {
-          errorMessage = JSON.stringify(err.data);
-        }
-
+        );
+      } else {
         toast({
-          title: "Something went wrong.",
+          title: "Error",
+          description: "Geolocation is not supported by your browser.",
           variant: "destructive",
-          description: err.message,
         });
-        return;
-      }
-
-      if (data) {
-        toast({
-          title: "Parking session created",
-          description: "Redirecting you now...",
-        });
-
-        router.replace("/gpo/dashboard/scan/scan-success");
       }
     } catch (error: any) {
       toast({
@@ -89,6 +142,24 @@ const DurationForm = ({ parkingSpaceId }: { parkingSpaceId: string }) => {
       });
       console.error(error);
     }
+  };
+
+  // Helper function to calculate distance between two points using the Haversine formula
+  const calculateDistance = (
+    point1: { lat: number; lng: number },
+    point2: { lat: number; lng: number }
+  ): number => {
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = ((point2.lat - point1.lat) * Math.PI) / 180;
+    const dLng = ((point2.lng - point1.lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((point1.lat * Math.PI) / 180) *
+        Math.cos((point2.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in kilometers
   };
 
   return (
