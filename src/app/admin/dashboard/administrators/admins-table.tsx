@@ -48,6 +48,7 @@ import AdminCreationDialog from "./admin-creation-dialog";
 import AdminUpdateDialog from "./admin-update-dialog";
 import DeleteAdminDialog from "./admin-delete-dialog";
 import AdminDeleteDialog from "./admin-delete-dialog";
+import { useSession } from "next-auth/react";
 
 export type AdminAccountData = Omit<Admin, "password">;
 
@@ -107,7 +108,6 @@ export const columns: ColumnDef<AdminAccountData>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const { firstName, lastName, corpEmail, role } = row.original;
-
       const adminData = {
         firstName,
         lastName,

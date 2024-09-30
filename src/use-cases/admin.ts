@@ -16,6 +16,8 @@ import { createAuditLog } from "@/data-access/audit-log";
 export const createAdminUseCase = async (
   data: z.infer<typeof adminAccountSchema>
 ) => {
+  await isSuperAdminUseCase(data.id as string);
+
   const hashedPwd = await hash(data.password, 10);
 
   data.password = hashedPwd;
@@ -37,6 +39,17 @@ export const createAdminUseCase = async (
   });
 
   return admin;
+};
+
+export const isSuperAdminUseCase = async (adminId: string) => {
+  const currentAdmin = await getAdminById(adminId);
+
+  if (!currentAdmin) throw Error("Admin doesn't exist.");
+
+  if (!(currentAdmin.role === "SUPERADMIN"))
+    throw Error("You are unauthorized to do this action.");
+
+  return;
 };
 
 export const getAdminsUseCase = async () => {
@@ -93,6 +106,8 @@ export const updateAdminByIdUseCase = async (
   adminId: string,
   data: z.infer<typeof adminUpdateSchema>
 ) => {
+  await isSuperAdminUseCase(data.auditAdminId as string);
+
   const updatedAdminData = {
     firstName: data.firstName,
     lastName: data.lastName,
@@ -117,6 +132,8 @@ export const deleteAdminByIdUseCase = async (
   auditAdminId: string,
   adminId: string
 ) => {
+  await isSuperAdminUseCase(auditAdminId as string);
+
   const admin = await getAdminById(adminId);
 
   if (!admin) throw Error(`Admin with ID: ${adminId} does not exist.`);

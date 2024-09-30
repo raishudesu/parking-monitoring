@@ -40,8 +40,11 @@ const AdminUpdateForm = ({
   const session = useSession();
   const { isPending, execute } = useServerAction(updateAdminAction);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const form = useForm<z.infer<typeof adminUpdateSchema>>({
     resolver: zodResolver(adminUpdateSchema),
+    disabled: isAdmin || isPending,
     defaultValues: {
       auditAdminId: session.data?.user.id,
       firstName: adminData.firstName,
@@ -113,7 +116,6 @@ const AdminUpdateForm = ({
                   className="w-full"
                   placeholder="John"
                   type="text"
-                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -132,7 +134,6 @@ const AdminUpdateForm = ({
                   className="w-full"
                   placeholder="Doe"
                   type="text"
-                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -152,32 +153,13 @@ const AdminUpdateForm = ({
                   className="w-full"
                   type="email"
                   placeholder="e.g 202180386@psu.palawan.edu.ph"
-                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Password"
-                  type="password"
-                  disabled={isPending}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+
         <FormField
           control={form.control}
           name="role"
@@ -187,7 +169,7 @@ const AdminUpdateForm = ({
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                disabled={isPending}
+                disabled={isPending || isAdmin}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -203,10 +185,15 @@ const AdminUpdateForm = ({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending || isAdmin}>
           Update
         </Button>
       </form>
+      {isAdmin && (
+        <span className="text-destructive text-center font-bold">
+          ACCESS DENIED
+        </span>
+      )}
     </Form>
   );
 };

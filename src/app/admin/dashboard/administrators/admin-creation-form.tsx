@@ -31,8 +31,11 @@ const AdminCreationForm = () => {
   const session = useSession();
   const { isPending, execute } = useServerAction(createAdminAction);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const form = useForm<z.infer<typeof adminAccountSchema>>({
     resolver: zodResolver(adminAccountSchema),
+    disabled: isAdmin || isPending,
     defaultValues: {
       id: session.data?.user.id,
       firstName: "",
@@ -102,7 +105,6 @@ const AdminCreationForm = () => {
                   className="w-full"
                   placeholder="John"
                   type="text"
-                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -121,7 +123,6 @@ const AdminCreationForm = () => {
                   className="w-full"
                   placeholder="Doe"
                   type="text"
-                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -141,7 +142,6 @@ const AdminCreationForm = () => {
                   className="w-full"
                   type="email"
                   placeholder="e.g 202180386@psu.palawan.edu.ph"
-                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -160,7 +160,6 @@ const AdminCreationForm = () => {
                   className="w-full"
                   placeholder="Password"
                   type="password"
-                  disabled={isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -176,7 +175,7 @@ const AdminCreationForm = () => {
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                disabled={isPending}
+                disabled={isPending || isAdmin}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -192,10 +191,15 @@ const AdminCreationForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending || isAdmin}>
           Create
         </Button>
       </form>
+      {isAdmin && (
+        <span className="text-destructive text-center font-bold">
+          ACCESS DENIED
+        </span>
+      )}
     </Form>
   );
 };
