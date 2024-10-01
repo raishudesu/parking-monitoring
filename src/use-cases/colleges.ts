@@ -29,7 +29,7 @@ export const getAllCollegesUseCase = async () => {
 
 export const updateCollegeByIdUseCase = async (
   auditAdminId: string,
-  collegeId: number,
+  collegeId: string,
   collegeName: string
 ) => {
   const college = await updateCollegeById(collegeId, collegeName);

@@ -27,7 +27,7 @@ export const updateCollegeAction = createServerAction()
   .input(
     z.object({
       auditAdminId: z.string(),
-      collegeId: z.number(),
+      collegeId: z.string(),
       collegeName: z.string(),
     })
   )
