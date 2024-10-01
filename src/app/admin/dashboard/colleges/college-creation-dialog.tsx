@@ -8,10 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { CirclePlus } from "lucide-react";
 import CollegeCreationForm from "./college-creation-form";
+import { useState } from "react";
 
 const CollegeCreationDialog = () => {
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="flex gap-2">
           Add College
@@ -22,7 +24,7 @@ const CollegeCreationDialog = () => {
         <DialogHeader>
           <DialogTitle>Add College with Parking Space</DialogTitle>
         </DialogHeader>
-        <CollegeCreationForm />
+        <CollegeCreationForm setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );

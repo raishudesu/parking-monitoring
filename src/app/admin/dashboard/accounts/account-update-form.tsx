@@ -29,6 +29,7 @@ import { useServerAction } from "zsa-react";
 import { generateSecurePassword } from "@/lib/utils";
 import emailjs from "@emailjs/browser";
 import { useSession } from "next-auth/react";
+import { Dispatch, SetStateAction } from "react";
 
 const sendUpdatedDetailsToGpoEmail = async (
   email: string,
@@ -53,7 +54,10 @@ const AccountUpdateForm = ({
   accountId,
   data,
   colleges,
-}: z.infer<typeof gpoUpdateAccountSchema>) => {
+  setOpen,
+}: z.infer<typeof gpoUpdateAccountSchema> & {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const session = useSession();
   const { isPending, execute } = useServerAction(updateGpoAccountAction);
 
@@ -64,7 +68,7 @@ const AccountUpdateForm = ({
       gatePassNumber: data.gatePassNumber,
       password: data.password,
       accountType: data.accountType,
-      collegeId: data.collegeId?.toString(),
+      collegeId: data.collegeId as string | undefined,
       isVIP: data.isVIP,
       isPWD: data.isPWD,
       department: data.department,
@@ -110,6 +114,7 @@ const AccountUpdateForm = ({
       });
 
       form.reset();
+      setOpen(false);
 
       const res = await sendUpdatedDetailsToGpoEmail(
         data?.email as string,
@@ -216,7 +221,7 @@ const AccountUpdateForm = ({
               <FormLabel>College</FormLabel>
               <Select
                 onValueChange={field.onChange}
-                defaultValue={field.value}
+                defaultValue={field.value as string | undefined}
                 disabled={isPending}
               >
                 <FormControl>
@@ -227,7 +232,7 @@ const AccountUpdateForm = ({
                 <SelectContent>
                   <SelectItem value="0">...</SelectItem>
                   {colleges?.map(({ id, collegeName }) => (
-                    <SelectItem key={id} value={id.toString()}>
+                    <SelectItem key={id} value={id}>
                       {collegeName}
                     </SelectItem>
                   ))}

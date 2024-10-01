@@ -5,11 +5,7 @@ export const gpoAccountSchema = z.object({
   gatePassNumber: z.string().min(5),
   password: z.string(),
   accountType: z.enum(["FACULTY", "STUDENT", "STAFF"]),
-  collegeId: z
-    .string()
-    .transform((val) => Number(val))
-    .or(z.null())
-    .or(z.undefined()),
+  collegeId: z.string().or(z.null()),
   department: z.string().max(25).optional(),
   isVIP: z.boolean(),
   isPWD: z.boolean(),
@@ -24,7 +20,7 @@ export const gpoLoginSchema = z.object({
 });
 
 export const collegeSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   collegeName: z.string(),
 });
 
@@ -36,7 +32,7 @@ export const gpoUpdateAccountSchema = z.object({
 });
 
 const overrideSchema = z.object({
-  collegeId: z.string().optional(),
+  collegeId: z.string().or(z.null()),
 });
 
 export const accountCreationSchema = gpoAccountSchema.merge(overrideSchema);

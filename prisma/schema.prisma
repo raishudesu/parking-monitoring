@@ -63,7 +63,7 @@ model GPOAccount {
   password       String
   accountType    AccountType
   collegeName    College?       @relation(fields: [collegeId], references: [id])
-  collegeId      Int?
+  collegeId      String?
   department     String?
   isVIP          Boolean        @default(false)
   isPWD          Boolean        @default(false)
@@ -185,7 +185,7 @@ model ReportGenerationLog {
 }
 
 model College {
-  id          Int          @id @default(autoincrement())
+  id          String       @id @default(uuid())
   collegeName String
   accounts    GPOAccount[]
 }

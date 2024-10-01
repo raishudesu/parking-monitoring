@@ -19,7 +19,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 
-const CollegeDeletionDialog = ({ collegeId }: { collegeId: number }) => {
+const CollegeDeletionDialog = ({ collegeId }: { collegeId: string }) => {
   const session = useSession();
   const { isPending, execute } = useServerAction(deleteCollegeAction);
   const [open, setOpen] = useState(false);

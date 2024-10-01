@@ -19,8 +19,13 @@ import { Button } from "@/components/ui/button";
 import { useServerAction } from "zsa-react";
 import { createCollegeAction } from "./actions";
 import { useSession } from "next-auth/react";
+import { Dispatch, SetStateAction } from "react";
 
-const CollegeCreationForm = () => {
+const CollegeCreationForm = ({
+  setOpen,
+}: {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const session = useSession();
   const { isPending, execute } = useServerAction(createCollegeAction);
 
@@ -65,6 +70,7 @@ const CollegeCreationForm = () => {
         });
 
         form.reset();
+        setOpen(false);
       }
     } catch (error: any) {
       toast({

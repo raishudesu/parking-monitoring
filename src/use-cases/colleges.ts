@@ -49,7 +49,7 @@ export const updateCollegeByIdUseCase = async (
 
 export const deleteCollegeByIdUseCase = async (
   auditAdminId: string,
-  collegeId: number
+  collegeId: string
 ) => {
   const college = await deleteCollegeById(collegeId);
 

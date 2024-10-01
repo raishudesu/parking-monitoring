@@ -59,9 +59,9 @@ export const createGpoAccountUseCase = async (
 
   validatedData.password = hashedPwd;
 
-  if (validatedData.collegeId === 0) {
-    validatedData.collegeId = null;
-  }
+  // if (validatedData.collegeId === null) {
+  //   validatedData.collegeId = null;
+  // }
 
   const gpo = await createGpoAccount(validatedData);
 

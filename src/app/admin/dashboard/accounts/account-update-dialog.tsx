@@ -11,14 +11,17 @@ import { UserRoundPen } from "lucide-react";
 import AccountUpdateForm from "./account-update-form";
 import { z } from "zod";
 import { gpoUpdateAccountSchema } from "@/lib/zod";
+import { useState } from "react";
 
 const AccountUpdateDialog = ({
   accountId,
   data,
   colleges,
 }: z.infer<typeof gpoUpdateAccountSchema>) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="flex gap-2">
           Edit
@@ -37,6 +40,7 @@ const AccountUpdateDialog = ({
           accountId={accountId}
           data={data}
           colleges={colleges}
+          setOpen={setOpen}
         />
       </DialogContent>
     </Dialog>

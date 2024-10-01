@@ -47,7 +47,7 @@ export const deleteCollegeAction = createServerAction()
   .input(
     z.object({
       auditAdminId: z.string(),
-      collegeId: z.number(),
+      collegeId: z.string(),
     })
   )
   .handler(async ({ input }) => {
