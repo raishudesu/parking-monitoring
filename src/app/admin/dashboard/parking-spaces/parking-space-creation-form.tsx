@@ -26,7 +26,6 @@ import { useServerAction } from "zsa-react";
 import { createParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
-import { Dispatch, SetStateAction } from "react";
 
 const ParkingSpaceCreationForm = () => {
   const session = useSession();
@@ -85,7 +84,6 @@ const ParkingSpaceCreationForm = () => {
         });
 
         form.reset();
-        setOpen(false);
       }
     } catch (error: any) {
       toast({
