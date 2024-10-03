@@ -1,6 +1,7 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import React from "react";
+import { TrendingUp, AlertTriangle } from "lucide-react";
 import {
   CartesianGrid,
   Line,
@@ -25,6 +26,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const chartConfig = {
   desktop: {
@@ -50,7 +52,7 @@ type parkingUsageType = {
 function getParkingSessionDataForChart(parkingSessions: parkingUsageType) {
   return parkingSessions.map((session) => {
     const startTime = new Date(session.startTime);
-    const endTime = new Date(session.endTime as Date);
+    const endTime = session.endTime ? new Date(session.endTime) : new Date();
 
     // Calculate duration in minutes (example)
     const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60);
@@ -64,12 +66,11 @@ function getParkingSessionDataForChart(parkingSessions: parkingUsageType) {
 }
 
 // Function to calculate analysis data
-
 function getParkingSessionAnalysis(parkingSessions: parkingUsageType) {
   const totalSessions = parkingSessions.length;
   const totalDuration = parkingSessions.reduce((sum, session) => {
     const startTime = new Date(session.startTime);
-    const endTime = new Date(session.endTime as Date);
+    const endTime = session.endTime ? new Date(session.endTime) : new Date();
     const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60);
     return sum + duration;
   }, 0);
@@ -82,7 +83,7 @@ function getParkingSessionAnalysis(parkingSessions: parkingUsageType) {
 
   parkingSessions.forEach((session) => {
     const startTime = new Date(session.startTime);
-    const endTime = new Date(session.endTime as Date);
+    const endTime = session.endTime ? new Date(session.endTime) : new Date();
     const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60);
 
     if (duration > maxDuration) {
@@ -112,10 +113,57 @@ function getParkingSessionAnalysis(parkingSessions: parkingUsageType) {
 const AnalyticsSection = ({
   parkingUsageData,
 }: {
-  parkingUsageData: parkingUsageType;
+  parkingUsageData: parkingUsageType | undefined;
 }) => {
-  const chartData = getParkingSessionDataForChart(parkingUsageData);
-  const analysis = getParkingSessionAnalysis(parkingUsageData);
+  if (!parkingUsageData || parkingUsageData.length === 0) {
+    return (
+      <Card className="w-full shadow-md h-full">
+        <CardHeader>
+          <CardTitle>Campus Parking Usage</CardTitle>
+          <CardDescription>
+            Parking Usage Analysis for All Recorded Sessions
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              No parking usage data available. Please try again later.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  let chartData, analysis;
+  try {
+    chartData = getParkingSessionDataForChart(parkingUsageData);
+    analysis = getParkingSessionAnalysis(parkingUsageData);
+  } catch (error) {
+    console.error("Error processing parking data:", error);
+    return (
+      <Card className="w-full shadow-md h-full">
+        <CardHeader>
+          <CardTitle>Campus Parking Usage</CardTitle>
+          <CardDescription>
+            Parking Usage Analysis for All Recorded Sessions
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              An error occurred while processing parking data. Please try again
+              later.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full shadow-md h-full">
@@ -136,14 +184,12 @@ const AnalyticsSection = ({
               }}
             >
               <CartesianGrid vertical={false} />
-              {/* X-axis displays the date */}
               <XAxis
                 dataKey="date"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
               />
-              {/* Y-axis to display duration */}
               <YAxis
                 dataKey="duration"
                 tickLine={false}
