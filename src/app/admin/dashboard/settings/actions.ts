@@ -9,7 +9,8 @@ export const updateAdminPasswordAction = createServerAction()
   .handler(async ({ input }) => {
     const res = await updateAdminPasswordUseCase(
       input.accountId,
-      input.newPassword
+      input.newPassword,
+      input.oldPassword
     );
 
     return res;
