@@ -21,8 +21,8 @@ const AdminDashboardPage = async () => {
         </h1>
       </div>
       <Overview />
-      <div className=" mt-6 ">
-        <div className="h-full grid xl:grid-cols-2 gap-4 ">
+      <div className="w-full mt-6 ">
+        <div className="w-full h-full flex flex-col xl:grid xl:grid-cols-2 gap-4 ">
           <AnalyticsSection parkingUsageData={parkingUsageData} />
           <div className="max-h-[65vh] bg-background shadow-md p-6 border rounded-lg overflow-y-scroll flex flex-col gap-6">
             <span className="text-lg font-semibold">Recent Sessions</span>

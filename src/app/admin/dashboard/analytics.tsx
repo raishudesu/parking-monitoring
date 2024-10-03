@@ -118,7 +118,7 @@ const AnalyticsSection = ({
   const analysis = getParkingSessionAnalysis(parkingUsageData);
 
   return (
-    <Card className="shadow-md h-full">
+    <Card className="w-full shadow-md h-full">
       <CardHeader>
         <CardTitle>Campus Parking Usage</CardTitle>
         <CardDescription>
