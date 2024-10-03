@@ -212,7 +212,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
               <FormLabel>College</FormLabel>
               <Select
                 onValueChange={field.onChange}
-                defaultValue={field.value}
+                defaultValue={field.value as string | undefined}
                 disabled={isPending}
               >
                 <FormControl>
