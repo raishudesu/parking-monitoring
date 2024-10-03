@@ -1,27 +1,13 @@
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 import SideNav from "./side-nav";
 import SideSheet from "./side-sheet";
 
 const GpoDashboardLayout = async ({ children }: { children: ReactNode }) => {
-  const session = await getServerSession(authOptions);
-
-  if (!(session?.user.role === "GPO")) {
-    redirect("/gpo/sign-in");
-  }
-
-  if (session?.user.isActive === false) {
-    redirect("/gpo/deactivated");
-  }
-
   return (
     <div className="w-full flex h-screen">
       <SideNav />
       <div className="w-full">
         <SideSheet />
-
         <div className="h-full overflow-y-scroll bg-slate-50">{children}</div>
       </div>
     </div>

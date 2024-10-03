@@ -6,11 +6,11 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 const AdminSignInPage = async () => {
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
 
-  if (session?.user.role === "ADMIN") {
-    redirect("/admin/dashboard");
-  }
+  // if (session?.user.role === "ADMIN") {
+  //   redirect("/admin/dashboard");
+  // }
 
   return (
     <div className="h-screen flex justify-center items-center ">

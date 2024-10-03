@@ -1,17 +1,8 @@
 import Logo from "@/components/logo";
 import GpoSignInForm from "./gpo-signin-form";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 const SignInPage = async () => {
-  const session = await getServerSession(authOptions);
-
-  if (session?.user.role === "GPO") {
-    redirect("/gpo/dashboard");
-  }
-
   return (
     <div className="h-screen flex justify-center items-center ">
       <div className="mb-24 w-full max-w-sm">
