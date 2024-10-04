@@ -26,17 +26,17 @@ const SideSheet = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>
-        <div className="py-3 px-4 bg-secondary rounded-lg">
+        <div className="py-3 px-4 bg-secondary rounded-lg text-primary">
           <Menu />
         </div>
       </SheetTrigger>
-      <SheetContent side={"left"}>
+      <SheetContent side={"left"} className="w-full overflow-auto">
         <SheetHeader>
           <SheetTitle>
             <Logo />
           </SheetTitle>
         </SheetHeader>
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-12 ">
           <ul className="flex flex-col gap-3">
             <NavLinks open={open} setOpen={setOpen} />
           </ul>

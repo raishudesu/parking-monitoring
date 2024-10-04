@@ -191,7 +191,11 @@ const AdminCreationForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending || isAdmin}>
+        <Button
+          type="submit"
+          disabled={isPending || isAdmin}
+          className="w-full"
+        >
           Create
         </Button>
       </form>

@@ -45,7 +45,7 @@ const AccountsPage = async () => {
           Administrator Dashboard
         </div>
         <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Accounts 🧍
+          Accounts
         </h1>
       </div>
       {error ? (
@@ -55,9 +55,7 @@ const AccountsPage = async () => {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : gpoAccounts ? (
-        <div>
-          <AccountsTable data={gpoAccounts} colleges={colleges as College[]} />
-        </div>
+        <AccountsTable data={gpoAccounts} colleges={colleges as College[]} />
       ) : (
         <Alert>
           <AlertTriangle className="h-4 w-4" />

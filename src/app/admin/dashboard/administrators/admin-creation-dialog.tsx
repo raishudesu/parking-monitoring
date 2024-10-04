@@ -18,7 +18,7 @@ const AdminCreationDialog = () => {
           <CirclePlus size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Create Administrator Account</DialogTitle>
         </DialogHeader>
