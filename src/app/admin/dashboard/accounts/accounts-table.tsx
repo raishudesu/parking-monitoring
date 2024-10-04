@@ -221,7 +221,7 @@ export function AccountsTable({
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 py-4">
+      <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
           placeholder="Filter by Gate Pass Number..."
           value={
@@ -233,11 +233,11 @@ export function AccountsTable({
               .getColumn("gatePassNumber")
               ?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="md:max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" className="self-stretch md:self-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -261,9 +261,7 @@ export function AccountsTable({
               })}
           </DropdownMenuContent>
         </DropdownMenu>
-        <div className="ml-auto">
-          <AccountCreationDialog colleges={colleges} />
-        </div>
+        <AccountCreationDialog colleges={colleges} />
       </div>
       <div className="rounded-md border overflow-clip bg-background">
         <Table>

@@ -14,12 +14,12 @@ const AccountCreationDialog = ({ colleges }: { colleges: College[] }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="flex gap-2">
+        <Button className="flex gap-2 self-stretch md:ml-auto">
           Create Account
           <CirclePlus size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Create Gate Pass Owner Account</DialogTitle>
         </DialogHeader>

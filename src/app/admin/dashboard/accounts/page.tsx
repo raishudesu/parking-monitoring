@@ -1,12 +1,42 @@
+import React from "react";
 import { getAllCollegesUseCase } from "@/use-cases/colleges";
 import { AccountsTable, GPOAccountData } from "./accounts-table";
 import { getAllGpoAccountsUseCase } from "@/use-cases/gpo-users";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
+
+// Define the College type
+type College = {
+  id: string;
+  collegeName: string;
+};
 
 const AccountsPage = async () => {
-  const [gpoAccounts, colleges] = await Promise.all([
-    getAllGpoAccountsUseCase(),
-    getAllCollegesUseCase(),
-  ]);
+  let gpoAccounts: GPOAccountData[] | null = null;
+  let colleges: College[] | null = null;
+  let error: string | null = null;
+
+  try {
+    const [fetchedAccounts, fetchedColleges] = await Promise.all([
+      getAllGpoAccountsUseCase(),
+      getAllCollegesUseCase(),
+    ]);
+
+    gpoAccounts = fetchedAccounts as GPOAccountData[];
+    colleges = fetchedColleges as College[];
+
+    // Ensure colleges is not null and all items have the correct shape
+    if (
+      !colleges ||
+      colleges.some((college) => !college.id || !college.collegeName)
+    ) {
+      throw new Error("Invalid college data received");
+    }
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    error =
+      "There was an error fetching the accounts data. Please try again later.";
+  }
 
   return (
     <div className="w-full flex flex-col p-6">
@@ -18,12 +48,25 @@ const AccountsPage = async () => {
           Accounts 🧍
         </h1>
       </div>
-      <div>
-        <AccountsTable
-          data={gpoAccounts as GPOAccountData[]}
-          colleges={colleges}
-        />
-      </div>
+      {error ? (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      ) : gpoAccounts ? (
+        <div>
+          <AccountsTable data={gpoAccounts} colleges={colleges as College[]} />
+        </div>
+      ) : (
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>No Data</AlertTitle>
+          <AlertDescription>
+            No accounts data available at the moment.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 };
