@@ -54,6 +54,15 @@ const SideSheet = () => {
                 <span className="font-semibold">
                   {user?.firstName} {user?.lastName}
                 </span>
+                <small
+                  className={`font-semibold ${
+                    user?.role === "SUPERADMIN"
+                      ? "text-destructive"
+                      : "text-green-500"
+                  }`}
+                >
+                  {user?.role}
+                </small>
                 <small className="text-muted-foreground">
                   {user?.corpEmail}
                 </small>

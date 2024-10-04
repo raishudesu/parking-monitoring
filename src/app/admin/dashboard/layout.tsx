@@ -13,7 +13,7 @@ const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
             ParkSU
           </h1>
         </header>
-        <div className="h-full bg-slate-50">{children}</div>
+        <div className="min-h-screen bg-slate-50">{children}</div>
       </div>
     </div>
   );
