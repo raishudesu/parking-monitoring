@@ -39,7 +39,7 @@ const AdminSignInForm = () => {
         redirect: false,
       });
 
-      if (!res?.ok) {
+      if (res?.error) {
         toast({
           title: "Something went wrong",
           description: res?.error,

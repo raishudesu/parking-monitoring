@@ -24,7 +24,8 @@ const RecentTransactions = async () => {
   let error: string | null = null;
 
   try {
-    sessions = await getRecentSessionsUseCase();
+    const fetchedSessions = await getRecentSessionsUseCase();
+    sessions = fetchedSessions as Session[];
   } catch (err) {
     console.error("Failed to fetch recent sessions:", err);
     error =
