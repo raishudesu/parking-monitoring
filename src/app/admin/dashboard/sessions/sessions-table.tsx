@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/table";
 import type { GPOAccount, GPOSession, ParkingSpace } from "@prisma/client";
 
-type SessionData = GPOSession & {
+export type SessionData = GPOSession & {
   parkingSpace: ParkingSpace;
   accountParked: GPOAccount;
 };
@@ -176,7 +176,7 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 py-4">
+      <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
           placeholder="Filter by Corporate Email"
           value={
@@ -189,11 +189,11 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" className="self-stretch md:self-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="center">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
