@@ -66,8 +66,8 @@ const DurationForm = ({
 
             const distance = calculateDistance(userLocation, parkingLocation);
 
-            // Define a radius of 100 meters (0.1 kilometers)
-            const radius = 0.1;
+            // Define a radius of 50 meters (50 kilometers)
+            const radius = 0.05;
 
             if (distance > radius) {
               toast({
