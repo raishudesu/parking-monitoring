@@ -13,12 +13,12 @@ const ParkingSpaceCreationDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="flex gap-2">
+        <Button className="flex gap-2 md:ml-auto self-stretch">
           Add a Parking Space
           <CirclePlus size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Add parking space</DialogTitle>
         </DialogHeader>

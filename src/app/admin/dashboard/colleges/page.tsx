@@ -1,4 +1,3 @@
-import { College } from "@prisma/client";
 import { CollegeData, CollegesTable } from "./colleges-table";
 import { getAllCollegesUseCase } from "@/use-cases/colleges";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
