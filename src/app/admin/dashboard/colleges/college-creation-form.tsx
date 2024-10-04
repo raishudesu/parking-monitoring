@@ -104,7 +104,7 @@ const CollegeCreationForm = ({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending} className="w-full">
           Create
         </Button>
       </form>

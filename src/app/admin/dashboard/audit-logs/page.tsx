@@ -41,7 +41,7 @@ const AuditLogsPage = async () => {
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>No Data</AlertTitle>
           <AlertDescription>
-            No accounts data available at the moment.
+            No audit logs data available at the moment.
           </AlertDescription>
         </Alert>
       )}

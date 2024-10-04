@@ -15,12 +15,12 @@ const CollegeCreationDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex gap-2">
+        <Button className="flex gap-2 md:ml-auto self-stretch md:self-auto">
           Add College
           <CirclePlus size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] overflow-auto">
         <DialogHeader>
           <DialogTitle>Add College with Parking Space</DialogTitle>
         </DialogHeader>

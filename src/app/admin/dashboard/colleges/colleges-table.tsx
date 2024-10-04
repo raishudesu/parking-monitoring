@@ -50,7 +50,7 @@ import CollegeCreationDialog from "./college-creation-dialog";
 import CollegeDeletionDialog from "./college-deletion-dialog";
 import CollegeUpdateDialog from "./college-update-dialog";
 
-type CollegeData = College & {
+export type CollegeData = College & {
   _count: {
     accounts: number;
   };
@@ -145,7 +145,7 @@ export function CollegesTable({ data }: { data: CollegeData[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 py-4">
+      <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
           placeholder="Filter by College Name"
           value={
@@ -154,11 +154,11 @@ export function CollegesTable({ data }: { data: CollegeData[] }) {
           onChange={(event) =>
             table.getColumn("collegeName")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="md:max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" className="self-stretch md:self-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -182,9 +182,7 @@ export function CollegesTable({ data }: { data: CollegeData[] }) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
-        <div className="ml-auto">
-          <CollegeCreationDialog />
-        </div>
+        <CollegeCreationDialog />
       </div>
       <div className="rounded-md border overflow-clip bg-background">
         <Table>

@@ -4,12 +4,7 @@ import { AccountsTable, GPOAccountData } from "./accounts-table";
 import { getAllGpoAccountsUseCase } from "@/use-cases/gpo-users";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-
-// Define the College type
-type College = {
-  id: string;
-  collegeName: string;
-};
+import { College } from "@prisma/client";
 
 const AccountsPage = async () => {
   let gpoAccounts: GPOAccountData[] | null = null;
