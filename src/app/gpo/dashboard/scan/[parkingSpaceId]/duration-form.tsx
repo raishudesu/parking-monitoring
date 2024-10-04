@@ -51,41 +51,34 @@ const DurationForm = ({
 
   const onSubmit = async (values: z.infer<typeof durationFormSchema>) => {
     try {
-      // Ensure that geolocation is supported
-      if (!navigator.geolocation) {
-        toast({
-          title: "Error",
-          description: "Geolocation is not supported by your browser.",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Get the user's current location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
 
-      // Watch the user's position in real-time
-      const watchId = navigator.geolocation.watchPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
+            // Calculate distance between user and parking space
+            const userLocation = { lat: latitude, lng: longitude };
+            const parkingLocation = {
+              lat: parseFloat(parkingSpace!.latitude),
+              lng: parseFloat(parkingSpace!.longitude),
+            };
 
-          // Calculate distance between the user and parking space
-          const userLocation = { lat: latitude, lng: longitude };
-          const parkingLocation = {
-            lat: parseFloat(parkingSpace!.latitude),
-            lng: parseFloat(parkingSpace!.longitude),
-          };
+            const distance = calculateDistance(userLocation, parkingLocation);
 
-          console.log(userLocation);
+            // Define a radius of 100 meters (0.1 kilometers)
+            const radius = 0.1;
 
-          const distance = calculateDistance(userLocation, parkingLocation);
+            if (distance > radius) {
+              toast({
+                title: "Error",
+                description: `You are too far from the parking space. Please move closer.`,
+                variant: "destructive",
+              });
+              return;
+            }
 
-          // Define a radius of 100 meters (0.1 kilometers)
-          const radius = 0.1;
-
-          // If the user is within the radius, proceed with session creation
-          if (distance <= radius) {
-            // Stop watching the position once the user is within range
-            navigator.geolocation.clearWatch(watchId);
-
-            // Proceed with creating the parking session
+            // If within radius, proceed with session creation
             const [data, err] = await execute({
               parkingSpaceId,
               gpoAccountID: session.data?.user.id as string,
@@ -123,31 +116,24 @@ const DurationForm = ({
 
               router.replace("/gpo/dashboard/scan/scan-success");
             }
-          } else {
-            // Notify the user that they are too far from the parking space
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
             toast({
-              title: "Too far",
+              title: "Error",
               description:
-                "You are too far from the parking space. Please move closer.",
+                "Failed to get your location. Please allow location access.",
               variant: "destructive",
             });
           }
-        },
-        (error) => {
-          console.error("Geolocation error:", error);
-          toast({
-            title: "Error",
-            description:
-              "Failed to get your location. Please allow location access.",
-            variant: "destructive",
-          });
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
-        }
-      );
+        );
+      } else {
+        toast({
+          title: "Error",
+          description: "Geolocation is not supported by your browser.",
+          variant: "destructive",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Something went wrong.",
