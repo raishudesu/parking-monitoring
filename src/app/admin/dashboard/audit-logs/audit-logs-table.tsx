@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/table";
 import type { Admin, AuditLog } from "@prisma/client";
 
-type AuditLogsData = AuditLog & {
+export type AuditLogsData = AuditLog & {
   admin: Omit<
     Admin,
     "password" | "isActive" | "role" | "updatedAt" | "id" | "createdAt"
@@ -113,6 +113,11 @@ export const columns: ColumnDef<AuditLogsData>[] = [
     header: "Admin Email",
     cell: ({ row }) => <div>{`${row.original.admin.corpEmail}`}</div>,
   },
+  {
+    accessorKey: "createdAt",
+    header: "Date",
+    cell: ({ row }) => <div>{`${row.original.createdAt}`}</div>,
+  },
 
   //   {
   //     id: "actions",
@@ -164,18 +169,18 @@ export function AuditLogsTable({ data }: { data: AuditLogsData[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 py-4">
+      <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
           placeholder="Filter by Action"
           value={(table.getColumn("action")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("action")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="md:max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" className="self-stretch md:self-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>

@@ -26,12 +26,12 @@ const AccountsPage = async () => {
     colleges = fetchedColleges as College[];
 
     // Ensure colleges is not null and all items have the correct shape
-    if (
-      !colleges ||
-      colleges.some((college) => !college.id || !college.collegeName)
-    ) {
-      throw new Error("Invalid college data received");
-    }
+    // if (
+    //   !colleges ||
+    //   colleges.some((college) => !college.id || !college.collegeName)
+    // ) {
+    //   throw new Error("Invalid college data received");
+    // }
   } catch (err) {
     console.error("Error fetching data:", err);
     error =
