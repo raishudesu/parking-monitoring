@@ -1,8 +1,19 @@
 import { getAllGpoViolationsUseCase } from "@/use-cases/gpo-violations";
-import { ViolationsTable } from "./violations-table";
+import { ViolationsData, ViolationsTable } from "./violations-table";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 const ViolationsPage = async () => {
-  const violations = await getAllGpoViolationsUseCase();
+  let violations: ViolationsData[] | null = null;
+  let error: string | null = null;
+
+  try {
+    const fetchedViolations = await getAllGpoViolationsUseCase();
+    violations = fetchedViolations as ViolationsData[];
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    error = "There was an error fetching the GPO violations data.";
+  }
 
   return (
     <div className="w-full flex flex-col py-6 px-3 md:px-6">
@@ -11,13 +22,26 @@ const ViolationsPage = async () => {
           Administrator Dashboard
         </div>
         <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Violations ⚠️
+          Violations
         </h1>
       </div>
-
-      <div className="mt-6">
+      {error ? (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      ) : violations ? (
         <ViolationsTable data={violations} />
-      </div>
+      ) : (
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>No Data</AlertTitle>
+          <AlertDescription>
+            No GPO sessions data available at the moment.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 };

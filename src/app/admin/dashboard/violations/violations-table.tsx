@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/table";
 import { GPOViolation } from "@prisma/client";
 
-type ViolationsData = GPOViolation & {
+export type ViolationsData = GPOViolation & {
   accountViolator: {
     email: string | null;
   };
@@ -136,7 +136,7 @@ export function ViolationsTable({ data }: { data: ViolationsData[] }) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 py-4">
+      <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
           placeholder="Filter by Corporate Email"
           value={
@@ -148,11 +148,11 @@ export function ViolationsTable({ data }: { data: ViolationsData[] }) {
               .getColumn("accountViolator")
               ?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="md:max-w-sm self-stretch"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" className="self-stretch md:self-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
