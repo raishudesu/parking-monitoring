@@ -151,6 +151,9 @@ export const getSessionsForAnalysis = async () => {
         },
       },
     },
+    orderBy: {
+      startTime: "asc",
+    },
   });
 
   return sessions;

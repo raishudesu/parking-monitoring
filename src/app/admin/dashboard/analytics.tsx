@@ -58,8 +58,8 @@ function getParkingSessionDataForChart(parkingSessions: parkingUsageType) {
     const duration = (endTime.getTime() - startTime.getTime()) / (1000 * 60);
 
     return {
-      date: startTime.toLocaleDateString(), // Format date for the X-axis
-      parkingSpace: session.parkingSpace.name, // Parking space name
+      date: startTime.getTime(), // Use timestamp for the X-axis
+      parkingSpace: session.parkingSpace.name || "Parking space", // Parking space name
       duration: duration, // Duration in minutes for the Y-axis
     };
   });
@@ -115,6 +115,29 @@ const AnalyticsSection = ({
 }: {
   parkingUsageData: parkingUsageType | undefined;
 }) => {
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-background border rounded-lg shadow-md p-2">
+          <p className="font-semibold text-primary">
+            {new Date(data.date).toLocaleString()}
+          </p>
+          <p>
+            Parking Space:{" "}
+            <span className="font-semibold">{data.parkingSpace}</span>
+          </p>
+          <p>
+            Duration:{" "}
+            <span className="font-semibold">{data.duration.toFixed(2)}</span>{" "}
+            minutes
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   if (!parkingUsageData || parkingUsageData.length === 0) {
     return (
       <Card className="w-full shadow-md h-full">
@@ -189,7 +212,9 @@ const AnalyticsSection = ({
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
+                tickFormatter={(tick) => new Date(tick).toLocaleDateString()}
               />
+
               <YAxis
                 dataKey="duration"
                 tickLine={false}
@@ -201,7 +226,7 @@ const AnalyticsSection = ({
                   position: "insideLeft",
                 }}
               />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip />} />
               <Line
                 dataKey="duration"
                 type="natural"

@@ -7,6 +7,14 @@ import AnalyticsSection from "./analytics";
 import RecentTransactions from "./recent-transactions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const AdminDashboardPage = async () => {
   let session;
@@ -33,11 +41,21 @@ const AdminDashboardPage = async () => {
   }
 
   const renderErrorAlert = (error: any) => (
-    <Alert variant="destructive">
-      <AlertTriangle className="h-4 w-4" />
-      <AlertTitle>Error</AlertTitle>
-      <AlertDescription>{error}</AlertDescription>
-    </Alert>
+    <Card className="w-full shadow-md h-full">
+      <CardHeader>
+        <CardTitle>Campus Parking Usage</CardTitle>
+        <CardDescription>
+          Parking Usage Analysis for All Recorded Sessions
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </CardContent>
+    </Card>
   );
 
   if (sessionError) {
@@ -54,11 +72,14 @@ const AdminDashboardPage = async () => {
           Hi, {session?.user.firstName}! 👨‍💻
         </h1>
       </div>
-      {dataError && renderErrorAlert(dataError)}
       <Overview />
       <div className="w-full mt-6 ">
         <div className="w-full h-full flex flex-col xl:grid xl:grid-cols-2 gap-4 ">
-          <AnalyticsSection parkingUsageData={parkingUsageData} />
+          {dataError ? (
+            renderErrorAlert(dataError)
+          ) : (
+            <AnalyticsSection parkingUsageData={parkingUsageData} />
+          )}
           <div className="max-h-[65vh] bg-background shadow-md p-6 border rounded-lg overflow-y-scroll flex flex-col gap-6">
             <span className="text-lg font-semibold">Recent Sessions</span>
             <RecentTransactions />
