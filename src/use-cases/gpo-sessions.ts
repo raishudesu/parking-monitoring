@@ -12,6 +12,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { createGpoViolationUseCase } from "./gpo-violations";
 import { addCreditScoreToGpoUseCase } from "./gpo-users";
+import { deactivateGpoAccount } from "@/data-access/gpo-users";
 
 // CREATE GPO SESSION
 export const createGpoSessionUseCase = async (
@@ -116,7 +117,14 @@ export const endGpoSessionUseCase = async (accountId: string) => {
 
   // APPLY VIOLATION IF DID NOT END ON TIME
   if (!endedProperly) {
-    await createGpoViolationUseCase(accountId, "Did not end on time.", 10);
+    const { GatePassOwner } = await createGpoViolationUseCase(
+      accountId,
+      "Did not end on time.",
+      10
+    );
+    if (GatePassOwner?.creditScore ?? 0 <= 60) {
+      await deactivateGpoAccount(accountId);
+    }
   } else {
     await addCreditScoreToGpoUseCase(accountId);
   }

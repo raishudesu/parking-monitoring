@@ -1,14 +1,10 @@
 "use client";
 
-import * as React from "react";
-import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
-
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -19,8 +15,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-export const description = "A donut chart representing your credit score";
-
 const chartConfig = {
   creditScore: {
     label: "Credit Score",
@@ -28,16 +22,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const CreditScore = ({ creditScore }: { creditScore: number }) => {
-  const currentCreditScore = creditScore; // Replace this with the actual credit score logic
   const total = 100; // Total possible score
 
   const chartData = [
-    { name: "Credit Score", value: currentCreditScore, fill: "#4CAF50" }, // Example credit score
-    {
-      name: "Remaining",
-      value: (currentCreditScore ?? 0) - 100,
-      fill: "#F44336",
-    }, // Remaining part to complete 100
+    { name: "Credit Score", value: creditScore, fill: "#4CAF50" },
+    { name: "Remaining", value: total - creditScore, fill: "#F44336" },
   ];
 
   return (
@@ -80,7 +69,7 @@ const CreditScore = ({ creditScore }: { creditScore: number }) => {
                           y={viewBox.cy}
                           className="fill-foreground text-xl font-bold"
                         >
-                          {currentCreditScore}/{total}
+                          {creditScore}/{total}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -98,14 +87,6 @@ const CreditScore = ({ creditScore }: { creditScore: number }) => {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
     </Card>
   );
 };

@@ -7,7 +7,7 @@ const SignInPage = async () => {
     <div className="h-screen flex justify-center items-center ">
       <div className="mb-24 w-full max-w-sm">
         <div className="px-4 w-full flex flex-col items-center gap-6">
-          <div className="flex flex-col items-center gap-2">
+          <div className="text-center flex flex-col items-center gap-2">
             <Logo />
             <small className="text-muted-foreground font-semibold">
               Palawan State University Parking Monitoring System

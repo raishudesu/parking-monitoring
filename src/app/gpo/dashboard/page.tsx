@@ -9,18 +9,16 @@ import {
   getAvailableSpacesUseCase,
   getUnavailableSpacesUseCase,
 } from "@/use-cases/parking-spaces";
-import { createClient } from "@/utils/supabase/server";
 
 const GpoDashboardPage = async () => {
   const session = await getServerSession(authOptions);
 
-  const creditScore = await getCreditScore(session?.user.id as string);
-  const [availableParkingSpaces, unavailableParkingSpaces] = await Promise.all([
-    getAvailableSpacesUseCase(),
-    getUnavailableSpacesUseCase(),
-  ]);
-
-  // const supabase = createClient();
+  const [creditScore, availableParkingSpaces, unavailableParkingSpaces] =
+    await Promise.all([
+      getCreditScore(session?.user.id as string),
+      getAvailableSpacesUseCase(),
+      getUnavailableSpacesUseCase(),
+    ]);
 
   return (
     <div className="w-full flex flex-col p-6">

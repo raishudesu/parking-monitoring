@@ -1,22 +1,13 @@
 import Logo from "@/components/logo";
 import AdminSignInForm from "./admin-signin-form";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 const AdminSignInPage = async () => {
-  // const session = await getServerSession(authOptions);
-
-  // if (session?.user.role === "ADMIN") {
-  //   redirect("/admin/dashboard");
-  // }
-
   return (
     <div className="h-screen flex justify-center items-center ">
       <div className="mb-24 w-full max-w-sm">
         <div className="px-4 w-full flex flex-col items-center gap-6">
-          <div className="flex flex-col items-center gap-2">
+          <div className="text-center flex flex-col items-center gap-2">
             <Logo />
             <small className="text-muted-foreground font-semibold">
               Palawan State University Parking Monitoring System

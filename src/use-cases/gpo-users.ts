@@ -18,6 +18,7 @@ import { LoginError } from "./errors";
 import { z } from "zod";
 import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
 import { createAuditLog } from "@/data-access/audit-log";
+import { GPOAccount } from "@prisma/client";
 
 // USE CASE FOR GPO LOG IN
 export const gpoLoginUseCase = async (
@@ -37,6 +38,14 @@ export const gpoLoginUseCase = async (
   const { password: newUserPassword, ...sanitizedGpo } = gpo; // DTO to exclude the password property upon sending the user details back
 
   return sanitizedGpo;
+};
+
+export const getGpoByIdUseCase = async (accountId: string) => {
+  const gpo = await getGpoById(accountId);
+
+  const { password: _password, ...filteredGpo } = gpo as GPOAccount;
+
+  return filteredGpo;
 };
 
 // GET ALL GPO ACCOUNTS
@@ -104,7 +113,7 @@ export const updateGpoAccountUseCase = async (
 
 // DEACTIVATE GPO ACCOUNT USE CASE
 export const deactivateGpoAccountUseCase = async (
-  auditAdminId: string,
+  auditAdminId: string | undefined,
   accountId: string
 ) => {
   const gpo = await getGpoById(accountId);
@@ -114,11 +123,13 @@ export const deactivateGpoAccountUseCase = async (
   const deactivatedGpo = await deactivateGpoAccount(accountId);
 
   if (deactivatedGpo) {
-    await createAuditLog({
-      action: "DEACTIVATE",
-      table: "ACCOUNT",
-      adminId: auditAdminId,
-    });
+    if (auditAdminId) {
+      await createAuditLog({
+        action: "DEACTIVATE",
+        table: "ACCOUNT",
+        adminId: auditAdminId,
+      });
+    }
 
     return "Account Deactivated Successfully.";
   }

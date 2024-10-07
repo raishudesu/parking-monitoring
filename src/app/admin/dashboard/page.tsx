@@ -21,8 +21,8 @@ export const dynamic = "force-dynamic";
 const AdminDashboardPage = async () => {
   let session;
   let parkingUsageData;
-  let sessionError = null;
-  let dataError = null;
+  let sessionError: string | null = null;
+  let dataError: string | null = null;
 
   try {
     session = await getServerSession(authOptions);
