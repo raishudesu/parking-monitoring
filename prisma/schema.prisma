@@ -79,7 +79,7 @@ model GPOAccount {
 
 model GPOSession {
   id             String        @id @default(uuid())
-  parkingSpace   ParkingSpace  @relation(fields: [parkingSpaceId], references: [id])
+  parkingSpace   ParkingSpace  @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
   parkingSpaceId String
   accountParked  GPOAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId      String

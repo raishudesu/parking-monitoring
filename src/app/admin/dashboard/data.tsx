@@ -1,5 +1,6 @@
 import {
   Building2,
+  ChartColumnIncreasing,
   History,
   LayoutGrid,
   Logs,
@@ -50,6 +51,11 @@ export const sideNavLinks = [
     name: "Violations",
     icon: <TriangleAlert />,
     link: "/admin/dashboard/violations",
+  },
+  {
+    name: "Analytics",
+    icon: <ChartColumnIncreasing />,
+    link: "/admin/dashboard/analytics",
   },
   {
     name: "Settings",
