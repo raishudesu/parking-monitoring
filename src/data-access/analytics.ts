@@ -55,3 +55,26 @@ export const getUserBehaviorDataForAnalysis = async () => {
 
   return gpoAccounts;
 };
+
+export const getSpaceUtilDataForAnalysis = async () => {
+  const parkingSpaces = await prisma.parkingSpace.findMany({
+    select: {
+      id: true,
+      name: true,
+      spaceType: true,
+      _count: {
+        select: {
+          gpoSessions: true,
+        },
+      },
+      gpoSessions: {
+        select: {
+          startTime: true,
+          endTime: true,
+        },
+      },
+    },
+  });
+
+  return parkingSpaces;
+};

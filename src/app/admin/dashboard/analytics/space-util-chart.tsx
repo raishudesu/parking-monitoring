@@ -1,7 +1,6 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -16,14 +15,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { UtilizationData } from "@/types/analytics";
 
-// Define props type
 interface BarChartProps {
-  data: {
-    accountType: string;
-    totalSessions: number;
-    averageDuration: number | undefined;
-  }[];
+  data: UtilizationData;
   title?: string;
   description?: string;
 }
@@ -34,16 +29,23 @@ const chartConfig = {
     color: "hsl(var(--chart-1))", // Adjust the color as needed
   },
   averageDuration: {
-    label: "Average Duration (min)",
+    label: "Average Duration (hrs)",
     color: "hsl(var(--chart-2))", // Adjust the color as needed
   },
 } satisfies ChartConfig;
 
-const UserBehaviorChart = ({
+const SpaceUtilizationChart = ({
   data,
-  title = "User Behavior Analysis",
-  description = "Sessions and Average Duration per Account Type",
+  title = "Space Utilization Analysis",
+  description = "Sessions and Average Duration per Space Type",
 }: BarChartProps) => {
+  // Convert data from object format to array format for the chart
+  const chartData = Object.entries(data).map(([spaceType, stats]) => ({
+    spaceType,
+    totalSessions: stats.totalSessions,
+    averageDuration: stats.averageDuration,
+  }));
+
   return (
     <Card>
       <CardHeader>
@@ -53,12 +55,12 @@ const UserBehaviorChart = ({
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart
-            data={data}
+            data={chartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="accountType"
+              dataKey="spaceType"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -86,4 +88,4 @@ const UserBehaviorChart = ({
   );
 };
 
-export default UserBehaviorChart;
+export default SpaceUtilizationChart;

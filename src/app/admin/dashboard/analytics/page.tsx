@@ -1,4 +1,5 @@
 import OccupancyAnalysis from "./occupancy-analysis";
+import SpaceUtilAnalysis from "./space-util-analysis";
 import UserBehaviorAnalysis from "./user-behavior-analysis";
 
 const AnalyticsPage = () => {
@@ -16,6 +17,7 @@ const AnalyticsPage = () => {
         <div className="w-full h-full flex flex-col xl:grid xl:grid-cols-2 gap-4 ">
           <OccupancyAnalysis />
           <UserBehaviorAnalysis />
+          <SpaceUtilAnalysis />
         </div>
       </div>
     </div>

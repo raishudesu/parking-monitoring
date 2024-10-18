@@ -1,8 +1,14 @@
 import {
   getOccupancyDataForAnalysis,
+  getSpaceUtilDataForAnalysis,
   getUserBehaviorDataForAnalysis,
 } from "@/data-access/analytics";
-import { AggregationMap, ProcessedBehaviorData } from "@/types/analytics";
+import {
+  AggregationMap,
+  ParkingSpace,
+  ProcessedBehaviorData,
+  UtilizationData,
+} from "@/types/analytics";
 
 export const getOccupancyDataForAnalysisUseCase = async (
   startDate?: Date,
@@ -78,3 +84,46 @@ const aggregateUserBehaviorData = (data: ProcessedBehaviorData[]) => {
 
   return aggregation;
 };
+
+export const getSpaceUtilDataForAnalysisUseCase =
+  async (): Promise<UtilizationData> => {
+    const data = await getSpaceUtilDataForAnalysis();
+
+    const utilizationData: UtilizationData = {};
+
+    data.forEach((space: ParkingSpace) => {
+      const totalDuration = space.gpoSessions.reduce((acc, session) => {
+        const start = new Date(session.startTime).getTime();
+        const end = new Date(session.endTime ?? 0).getTime();
+        return acc + (end - start);
+      }, 0);
+
+      const sessionCount = space.gpoSessions.length;
+      const averageDuration =
+        sessionCount > 0 ? totalDuration / sessionCount : 0;
+
+      // Initialize the space type if not already present
+      if (!utilizationData[space.spaceType]) {
+        utilizationData[space.spaceType] = {
+          totalSessions: 0,
+          totalDuration: 0,
+          sessionCount: 0,
+        };
+      }
+
+      // Aggregate data
+      utilizationData[space.spaceType].totalSessions += sessionCount;
+      utilizationData[space.spaceType].totalDuration += totalDuration;
+      utilizationData[space.spaceType].sessionCount += sessionCount;
+      // utilizationData[space.spaceType].averageDuration += averageDuration;
+    });
+
+    // Calculate average durations
+    Object.keys(utilizationData).forEach((spaceType) => {
+      const { totalDuration, sessionCount } = utilizationData[spaceType];
+      utilizationData[spaceType].averageDuration =
+        sessionCount > 0 ? totalDuration / (sessionCount * 1000 * 60 * 60) : 0; // Convert to hours
+    });
+
+    return utilizationData;
+  };
