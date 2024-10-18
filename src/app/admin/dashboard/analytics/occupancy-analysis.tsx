@@ -1,4 +1,4 @@
-import { getOccupancyDataForAnalysisUseCase } from "@/use-cases/analytics";
+import { getOccupancyDataUseCase } from "@/use-cases/analytics";
 import { OccupancyChart } from "./occupancy-chart";
 
 type TimeFrame = "daily" | "weekly" | "yearly";
@@ -20,7 +20,7 @@ type ProcessedOccupancyData = {
 };
 
 const OccupancyAnalysis = async () => {
-  const gpoSessions = await getOccupancyDataForAnalysisUseCase();
+  const gpoSessions = await getOccupancyDataUseCase();
   const chartData = processOccupancyData(gpoSessions, "daily");
 
   return <OccupancyChart chartData={chartData} />;
