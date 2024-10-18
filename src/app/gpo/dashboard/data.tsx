@@ -12,11 +12,6 @@ export const gpoNavLinks = [
     link: "/gpo/dashboard/map",
   },
   {
-    name: "Scan",
-    icon: <ScanLine />,
-    link: "/gpo/dashboard/scan",
-  },
-  {
     name: "Settings",
     icon: <Settings />,
     link: "/gpo/dashboard/settings",

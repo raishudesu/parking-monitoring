@@ -29,3 +29,29 @@ export const getOccupancyDataForAnalysis = async (
 
   return gpoSessions;
 };
+
+export const getUserBehaviorDataForAnalysis = async () => {
+  const gpoAccounts = await prisma.gPOAccount.findMany({
+    select: {
+      accountType: true,
+      _count: {
+        select: {
+          gpoSessions: true,
+        },
+      },
+      gpoSessions: {
+        select: {
+          startTime: true,
+          endTime: true,
+          parkingSpace: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return gpoAccounts;
+};
