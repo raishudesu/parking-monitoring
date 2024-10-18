@@ -17,3 +17,25 @@ export type AggregatedData = {
 export type AggregationMap = {
   [accountType: string]: AggregatedData; // Use string index for account types
 };
+
+export type ParkingSpaceUtilization = {
+  totalSessions: number;
+  totalDuration: number;
+  sessionCount: number;
+  averageDuration?: number;
+};
+
+export type UtilizationData = Record<string, ParkingSpaceUtilization>;
+
+export type ParkingSpace = {
+  id: string;
+  name: string;
+  spaceType: string;
+  _count: {
+    gpoSessions: number;
+  };
+  gpoSessions: {
+    startTime: Date;
+    endTime: Date | null;
+  }[];
+};

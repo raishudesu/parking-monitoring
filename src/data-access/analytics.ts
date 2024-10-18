@@ -1,9 +1,6 @@
 import prisma from "@/lib/db";
 
-export const getOccupancyDataForAnalysis = async (
-  startDate?: Date,
-  endDate?: Date
-) => {
+export const getOccupancyData = async (startDate?: Date, endDate?: Date) => {
   const gpoSessions = await prisma.gPOSession.findMany({
     where: {
       startTime: {
@@ -30,7 +27,7 @@ export const getOccupancyDataForAnalysis = async (
   return gpoSessions;
 };
 
-export const getUserBehaviorDataForAnalysis = async () => {
+export const getUserBehaviorData = async () => {
   const gpoAccounts = await prisma.gPOAccount.findMany({
     select: {
       accountType: true,
@@ -54,4 +51,38 @@ export const getUserBehaviorDataForAnalysis = async () => {
   });
 
   return gpoAccounts;
+};
+
+export const getSpaceUtilData = async () => {
+  const parkingSpaces = await prisma.parkingSpace.findMany({
+    select: {
+      id: true,
+      name: true,
+      spaceType: true,
+      _count: {
+        select: {
+          gpoSessions: true,
+        },
+      },
+      gpoSessions: {
+        select: {
+          startTime: true,
+          endTime: true,
+        },
+      },
+    },
+  });
+
+  return parkingSpaces;
+};
+
+export const getPeakHoursData = async () => {
+  const sessions = await prisma.gPOSession.findMany({
+    select: {
+      startTime: true,
+      endTime: true,
+    },
+  });
+
+  return sessions;
 };
