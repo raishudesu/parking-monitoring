@@ -27,6 +27,7 @@ import { updateParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { Dispatch, SetStateAction } from "react";
 import { useSession } from "next-auth/react";
+import MapPicker from "./map-picker";
 
 const ParkingSpaceUpdateForm = ({
   parkingSpaceId,
@@ -52,6 +53,11 @@ const ParkingSpaceUpdateForm = ({
       maxCapacity: data.maxCapacity,
     },
   });
+
+  const handleLocationPicked = (lat: number, lng: number) => {
+    form.setValue("latitude", lat.toString());
+    form.setValue("longitude", lng.toString());
+  };
 
   const onSubmit = async (values: z.infer<typeof parkingSpaceFormSchema>) => {
     try {
@@ -144,7 +150,10 @@ const ParkingSpaceUpdateForm = ({
             </FormItem>
           )}
         />
-
+        <FormItem>
+          <FormLabel>Location</FormLabel>
+          <MapPicker onLocationPicked={handleLocationPicked} />
+        </FormItem>
         <FormField
           control={form.control}
           name="longitude"
@@ -157,6 +166,7 @@ const ParkingSpaceUpdateForm = ({
                   className="w-full"
                   placeholder="Enter longitude"
                   disabled={isPending}
+                  readOnly
                 />
               </FormControl>
               <FormMessage />
@@ -175,6 +185,7 @@ const ParkingSpaceUpdateForm = ({
                   className="w-full"
                   placeholder="Enter Latitude"
                   disabled={isPending}
+                  readOnly
                 />
               </FormControl>
               <FormMessage />

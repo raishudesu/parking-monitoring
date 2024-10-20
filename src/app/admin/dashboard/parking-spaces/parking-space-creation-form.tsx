@@ -26,6 +26,7 @@ import { useServerAction } from "zsa-react";
 import { createParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
+import MapPicker from "./map-picker";
 
 const ParkingSpaceCreationForm = () => {
   const session = useSession();
@@ -44,6 +45,11 @@ const ParkingSpaceCreationForm = () => {
       imageUrl: "",
     },
   });
+
+  const handleLocationPicked = (lat: number, lng: number) => {
+    form.setValue("latitude", lat.toString());
+    form.setValue("longitude", lng.toString());
+  };
 
   const onSubmit = async (values: z.infer<typeof parkingSpaceFormSchema>) => {
     try {
@@ -135,7 +141,10 @@ const ParkingSpaceCreationForm = () => {
             </FormItem>
           )}
         />
-
+        <FormItem>
+          <FormLabel>Location</FormLabel>
+          <MapPicker onLocationPicked={handleLocationPicked} />
+        </FormItem>
         <FormField
           control={form.control}
           name="longitude"
@@ -148,6 +157,7 @@ const ParkingSpaceCreationForm = () => {
                   className="w-full"
                   placeholder="Enter longitude"
                   disabled={isPending}
+                  readOnly
                 />
               </FormControl>
               <FormMessage />
@@ -166,6 +176,7 @@ const ParkingSpaceCreationForm = () => {
                   className="w-full"
                   placeholder="Enter Latitude"
                   disabled={isPending}
+                  readOnly
                 />
               </FormControl>
               <FormMessage />
