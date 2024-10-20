@@ -9,7 +9,7 @@ import {
 import { UserRoundPen } from "lucide-react";
 import AdminUpdateForm from "./admin-update-form";
 import { z } from "zod";
-import { adminAccountSchema, adminUpdateSchema } from "@/lib/zod";
+import { adminUpdateSchema } from "@/lib/zod";
 import { useState } from "react";
 
 const AdminUpdateDialog = ({
@@ -28,7 +28,7 @@ const AdminUpdateDialog = ({
           <UserRoundPen size={15} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Update Administrator Details</DialogTitle>
         </DialogHeader>
