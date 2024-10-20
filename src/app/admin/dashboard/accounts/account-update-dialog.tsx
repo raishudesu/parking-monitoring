@@ -28,7 +28,7 @@ const AccountUpdateDialog = ({
           <UserRoundPen size={15} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Update Gate Pass Owner Account</DialogTitle>
           <DialogDescription>
