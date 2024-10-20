@@ -13,7 +13,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <header className="px-4 lg:px-6 h-14 flex items-center">
+      <header className="w-full overflow-auto px-4 lg:px-6 h-14 flex items-center gap-2">
         <Link
           href="#"
           className="flex items-center justify-center"
@@ -24,35 +24,35 @@ export default function Home() {
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link
-            href="#"
+            href="#features"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
             Features
           </Link>
           <Link
-            href="#"
+            href="#analytics"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
             Analytics
           </Link>
           <Link
-            href="#"
+            href="#visualization"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
             Visualization
           </Link>
           <Link
-            href="#"
+            href="#testimonials"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
             Testimonials
           </Link>
           <Link
-            href="#"
+            href="#contact"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
@@ -65,7 +65,7 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
+                <div className="text-center md:text-start space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Real-Time Parking Monitoring and Analytics
                   </h1>
@@ -75,20 +75,20 @@ export default function Home() {
                     you optimize your parking infrastructure.
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <div className="flex flex-col md:flex-row gap-2">
                   <Link
                     href="/gpo/sign-in"
                     className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}
                   >
-                    Get Started
+                    For Gate Pass Owners
                   </Link>
                   <Link
-                    href="#"
+                    href="/admin/sign-in"
                     className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                     prefetch={false}
                   >
-                    Learn More
+                    For Administrators
                   </Link>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default function Home() {
         >
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
+              <div className="space-y-2 text-center md:text-start">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   Real-Time Parking Monitoring
                 </h2>
@@ -128,7 +128,7 @@ export default function Home() {
                 height="310"
               />
               <div className="flex flex-col justify-center space-y-4">
-                <ul className="grid gap-6">
+                <ul className="grid gap-6 text-center md:text-start ">
                   <li>
                     <div className="grid gap-1">
                       <h3 className="text-xl font-bold">
@@ -166,7 +166,7 @@ export default function Home() {
         <section id="analytics" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
-              <div className="space-y-2">
+              <div className="text-center md:text-start space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                   Powerful Data Analytics
                 </h2>
@@ -175,7 +175,7 @@ export default function Home() {
                   parking usage, helping you make informed decisions to optimize
                   your infrastructure.
                 </p>
-                <ul className="grid gap-2 py-4">
+                <ul className="grid gap-2 py-4 text-center md:text-start ">
                   <li>
                     <CheckIcon className="mr-2 inline-block h-4 w-4" />
                     Customizable dashboards and reports
@@ -213,7 +213,7 @@ export default function Home() {
                 width="550"
                 height="310"
               />
-              <div className="space-y-2">
+              <div className="text-center md:text-start space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                   Intuitive Data Visualization
                 </h2>
@@ -222,7 +222,7 @@ export default function Home() {
                   interpret your parking data, with interactive charts, graphs,
                   and maps.
                 </p>
-                <ul className="grid gap-2 py-4">
+                <ul className="grid gap-2 py-4 text-center md:text-start ">
                   <li>
                     <CheckIcon className="mr-2 inline-block h-4 w-4" />
                     Interactive charts and graphs
@@ -242,8 +242,8 @@ export default function Home() {
         </section>
         <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
+            <div className="text-center md:text-start flex flex-col items-center justify-center space-y-4">
+              <div className=" space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   What Our Customers Say
                 </h2>
@@ -254,7 +254,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="grid max-w-5xl gap-6 sm:grid-cols-2 md:grid-cols-3">
-                <div className="flex flex-col items-start space-y-4 rounded-lg bg-background p-6 shadow-sm">
+                <div className="flex flex-col items-center md:items-start  space-y-4 rounded-lg bg-background p-6 shadow-sm">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8 border">
                       <AvatarImage
@@ -267,11 +267,11 @@ export default function Home() {
                   </div>
                   <p className="text-muted-foreground">
                     &ldquo;The real-time data and analytics provided by this
-                    system\n have been invaluable in helping us optimize our
-                    parking\n infrastructure. Highly recommended!&ldquo;
+                    system have been invaluable in helping us optimize our
+                    parking infrastructure. Highly recommended!&ldquo;
                   </p>
                 </div>
-                <div className="flex flex-col items-start space-y-4 rounded-lg bg-background p-6 shadow-sm">
+                <div className="flex flex-col items-center md:items-start  space-y-4 rounded-lg bg-background p-6 shadow-sm">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8 border">
                       <AvatarImage
@@ -284,11 +284,11 @@ export default function Home() {
                   </div>
                   <p className="text-muted-foreground">
                     &ldquo;The data visualization tools make it easy to
-                    understand\n and interpret our parking data. This has been a
-                    game-changer\n for our organization.&ldquo;
+                    understand and interpret our parking data. This has been a
+                    game-changer for our organization.&ldquo;
                   </p>
                 </div>
-                <div className="flex flex-col items-start space-y-4 rounded-lg bg-background p-6 shadow-sm">
+                <div className="flex flex-col items-center md:items-start space-y-4 rounded-lg bg-background p-6 shadow-sm">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8 border">
                       <AvatarImage
@@ -301,8 +301,8 @@ export default function Home() {
                   </div>
                   <p className="text-muted-foreground">
                     &ldquo;The real-time monitoring capabilities of this system
-                    have\n helped us identify and address parking issues much
-                    more\n quickly. It&lsquo;s been a game-changer for our
+                    have helped us identify and address parking issues much more
+                    quickly. It&lsquo;s been a game-changer for our
                     organization.&ldquo;
                   </p>
                 </div>
@@ -315,7 +315,7 @@ export default function Home() {
           className="w-full py-12 md:py-24 lg:py-32 bg-muted"
         >
           <div className="container grid items-center gap-4 px-4 md:px-6">
-            <div className="space-y-3">
+            <div className="text-center md:text-start space-y-3">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                 Get in Touch
               </h2>
@@ -349,7 +349,7 @@ export default function Home() {
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">
-          &copy; 2024 Parking Monitoring System. All rights reserved.
+          &copy; 2024 ParkSU. All rights reserved.
         </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link
