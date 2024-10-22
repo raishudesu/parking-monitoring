@@ -25,7 +25,7 @@ const GpoSignInForm = () => {
   const form = useForm<z.infer<typeof gpoLoginSchema>>({
     resolver: zodResolver(gpoLoginSchema),
     defaultValues: {
-      gatePassNumber: "",
+      email: "",
       plainTextPassword: "",
     },
   });
@@ -34,7 +34,7 @@ const GpoSignInForm = () => {
     try {
       // Cant use signIn in server-side because it is needed on the client to process tokens and sessions
       const res = await signIn("gpo", {
-        gatePassNumber: values.gatePassNumber,
+        email: values.email,
         plainTextPassword: values.plainTextPassword,
         redirect: false,
       });
@@ -71,16 +71,16 @@ const GpoSignInForm = () => {
       >
         <FormField
           control={form.control}
-          name="gatePassNumber"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Gate Pass Number</FormLabel>
+              <FormLabel>Corporate Email</FormLabel>
               <FormControl>
                 <Input
                   {...field}
                   className="w-full"
-                  placeholder="e.g MT/C-6969"
-                  type="text"
+                  placeholder="parksu@psu.palawan.edu.ph"
+                  type="email"
                   disabled={form.formState.isSubmitting}
                 />
               </FormControl>

@@ -17,17 +17,17 @@ export const authOptions: NextAuthOptions = {
       id: "gpo",
       name: "gpo",
       credentials: {
-        gatePassNumber: { label: "Gate Pass Number", type: "text" },
+        email: { label: "Corporate Email", type: "email" },
         plainTextPassword: { label: "Password", type: "password" },
       },
 
       async authorize(credentials) {
         try {
-          if (!credentials?.gatePassNumber || !credentials?.plainTextPassword)
+          if (!credentials?.email || !credentials?.plainTextPassword)
             return null;
 
           const existingUser = await gpoLoginUseCase(
-            credentials.gatePassNumber,
+            credentials.email,
             credentials.plainTextPassword
           );
 

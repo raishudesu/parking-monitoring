@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const gpoAccountSchema = z.object({
   email: z.string().email(),
-  gatePassNumber: z.string().min(5),
+  gatePassNumber: z.string().min(4),
   password: z.string(),
   accountType: z.enum(["FACULTY", "STUDENT", "STAFF"]),
   collegeId: z.string().or(z.null()),
@@ -15,7 +15,8 @@ export const gpoAccountSchema = z.object({
 });
 
 export const gpoLoginSchema = z.object({
-  gatePassNumber: z.string().min(8),
+  // gatePassNumber: z.string().min(8),
+  email: z.string().email(),
   plainTextPassword: z.string().min(8),
 });
 

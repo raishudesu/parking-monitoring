@@ -7,7 +7,7 @@ import {
   getAllGpoAccounts,
   getCreditScore,
   getCurrentGpoSessionByGpoId,
-  getGpoByGatePassNumber,
+  getGpoByEmail,
   getGpoById,
   getGpoCount,
   reactivateGpoAccount,
@@ -22,10 +22,10 @@ import { GPOAccount } from "@prisma/client";
 
 // USE CASE FOR GPO LOG IN
 export const gpoLoginUseCase = async (
-  gatePassNumber: string,
+  email: string,
   plainTextPassword: string
 ) => {
-  const gpo = await getGpoByGatePassNumber(gatePassNumber);
+  const gpo = await getGpoByEmail(email);
 
   if (!gpo) {
     throw new LoginError();
