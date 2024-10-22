@@ -52,11 +52,11 @@ export const getCurrentGpoSessionByGpoId = async (gpoAccountId: string) => {
   return currentSession;
 };
 
-// GET GPO ACCOUNT BY GATE PASS NUMBER
-export const getGpoByGatePassNumber = async (gatePassNumber: string) => {
+// GET GPO ACCOUNT BY EMAIL
+export const getGpoByEmail = async (email: string) => {
   const gpo = await prisma.gPOAccount.findUnique({
     where: {
-      gatePassNumber,
+      email,
     },
   });
 
