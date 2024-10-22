@@ -6,7 +6,7 @@ export class PublicError extends Error {
 
 export class LoginError extends PublicError {
   constructor() {
-    super("Invalid Gate Pass Number or Password");
+    super("Invalid Email or Password");
     this.name = "LoginError";
   }
 }
