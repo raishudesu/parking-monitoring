@@ -40,7 +40,7 @@ const sendAccountDetailsToGpoEmail = async (
     const emailRes = await emailjs.send(
       process.env.NEXT_PUBLIC_SERVICE_KEY as string,
       process.env.NEXT_PUBLIC_TEMPLATE_ID as string,
-      { to: email, gatePassNumber, password },
+      { to: email, email, gatePassNumber, password },
       process.env.NEXT_PUBLIC_EMAILJS_API_KEY
     );
 
@@ -107,13 +107,11 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
 
       form.reset();
 
-      const res = await sendAccountDetailsToGpoEmail(
+      await sendAccountDetailsToGpoEmail(
         data?.email as string,
         data?.gatePassNumber as string,
         values.password
       );
-
-      console.log(res);
     }
   };
 
