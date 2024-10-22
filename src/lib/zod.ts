@@ -15,8 +15,8 @@ export const gpoAccountSchema = z.object({
 });
 
 export const gpoLoginSchema = z.object({
-  gatePassNumber: z.string().min(8),
-  plainTextPassword: z.string().min(8),
+  gatePassNumber: z.string().min(1),
+  plainTextPassword: z.string().min(4),
 });
 
 export const collegeSchema = z.object({
