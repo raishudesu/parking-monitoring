@@ -69,14 +69,14 @@ const DurationForm = ({
             // Define a radius of 50 meters (50 kilometers)
             const radius = 0.05;
 
-            if (distance > radius) {
-              toast({
-                title: "Error",
-                description: `You are too far from the parking space. Please move closer.`,
-                variant: "destructive",
-              });
-              return;
-            }
+            // if (distance > radius) {
+            //   toast({
+            //     title: "Error",
+            //     description: `You are too far from the parking space. Please move closer.`,
+            //     variant: "destructive",
+            //   });
+            //   return;
+            // }
 
             // If within radius, proceed with session creation
             const [data, err] = await execute({
