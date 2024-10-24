@@ -30,7 +30,7 @@ const QrReader = ({
         scannerRef.current.stop();
       }
 
-      router.replace(`/gpo/dashboard/scan/${result.data}`);
+      router.push(`/gpo/dashboard/scan/${result.data}`);
     },
     [router]
   );

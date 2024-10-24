@@ -49,13 +49,7 @@ import type { GPOAccount, GPOSession, ParkingSpace } from "@prisma/client";
 import ParkingSpaceCreationDialog from "./parking-space-creation-dialog";
 import DeleteParkingSpaceDialog from "./delete-parking-space-dialog";
 import UpdateParkingSpaceDialog from "./parking-space-update-dialog";
-
-// type SessionData = GPOSession & {
-//   parkingSpace: ParkingSpace;
-//   accountParked: GPOAccount;
-// };
-
-const columnHelper = createColumnHelper();
+import ShowQrDialog from "./show-qr-dialog";
 
 const emailFilterFn: FilterFn<any> = (
   row: Row<any>,
@@ -142,6 +136,7 @@ export const columns: ColumnDef<ParkingSpace>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const {
+        id,
         name,
         description,
         longitude,
@@ -168,6 +163,10 @@ export const columns: ColumnDef<ParkingSpace>[] = [
             data={updateFormData}
           />
           <DeleteParkingSpaceDialog parkingSpaceId={row.original.id} />
+          <ShowQrDialog
+            parkingId={row.original.id}
+            parkingName={row.original.name}
+          />
         </div>
       );
     },
