@@ -1,314 +1,352 @@
 "use client";
 
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-} from "react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Marker,
-  DirectionsRenderer,
-} from "@react-google-maps/api";
-import { ParkingSpace } from "@prisma/client";
-import { Button } from "@/components/ui/button";
+import React, {useCallback, useEffect, useMemo, useRef, useState,} from "react";
+import {DirectionsRenderer, GoogleMap, Marker, useJsApiLoader,} from "@react-google-maps/api";
+import {ParkingSpace} from "@prisma/client";
+import {Button} from "@/components/ui/button";
 import MapLoader from "./map-loader";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
 } from "@/components/ui/drawer";
-import { ChevronUp, Crosshair } from "lucide-react";
+import {ChevronUp, Crosshair} from "lucide-react";
 
 interface LatLng {
-  lat: number;
-  lng: number;
+    lat: number;
+    lng: number;
 }
 
-const center: LatLng = { lat: 9.7787, lng: 118.7341 }; // Default center around IT1
+const center: LatLng = {lat: 9.7787, lng: 118.7341};
 const mapContainerStyle: React.CSSProperties = {
-  width: "100%",
-  height: "100vh",
+    width: "100%",
+    height: "100vh",
 };
 
+const defaultMarkerSvg = `data:image/svg+xml;base64,${btoa(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="red">
+    <path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+  </svg>
+`)}`;
+
+const selectedMarkerSvg = `data:image/svg+xml;base64,${btoa(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="#0066ff">
+    <path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+  </svg>
+`)}`;
+
+const userLocationSvg = `data:image/svg+xml;base64,${btoa(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <circle cx="12" cy="12" r="8" fill="#4285F4" stroke="white" stroke-width="2"/>
+  </svg>
+`)}`;
+
+
 const DijkstraMap = ({
-  parkingSpaces,
-}: {
-  parkingSpaces: ParkingSpace[];
+                         parkingSpaces,
+                     }: {
+    parkingSpaces: ParkingSpace[];
 }): JSX.Element => {
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
-    libraries: ["places"],
-  });
+    const {isLoaded, loadError} = useJsApiLoader({
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+        libraries: ["places"],
+    });
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [userLocation, setUserLocation] = useState<LatLng | null>(null);
-  const [closestPoint, setClosestPoint] = useState<LatLng | null>(null);
-  const [directions, setDirections] =
-    useState<google.maps.DirectionsResult | null>(null);
-  const [selectedParkingSpace, setSelectedParkingSpace] =
-    useState<LatLng | null>(null);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [map, setMap] = useState<google.maps.Map | null>(null);
+    const [userLocation, setUserLocation] = useState<LatLng | null>(null);
+    const [closestPoint, setClosestPoint] = useState<LatLng | null>(null);
+    const [directions, setDirections] =
+        useState<google.maps.DirectionsResult | null>(null);
+    const [selectedParkingSpace, setSelectedParkingSpace] =
+        useState<LatLng | null>(null);
 
-  const mapRef = useRef<google.maps.Map | null>(null);
+    const mapRef = useRef<google.maps.Map | null>(null);
 
-  const onLoad = useCallback((map: google.maps.Map) => {
-    mapRef.current = map;
-    setMap(map);
-  }, []);
+    const onLoad = useCallback((map: google.maps.Map) => {
+        mapRef.current = map;
+        setMap(map);
+    }, []);
 
-  const onUnmount = useCallback(() => {
-    mapRef.current = null;
-    setMap(null);
-  }, []);
+    const onUnmount = useCallback(() => {
+        mapRef.current = null;
+        setMap(null);
+    }, []);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const currentLocation: LatLng = { lat: latitude, lng: longitude };
-          setUserLocation(currentLocation);
+    useEffect(() => {
+        if (navigator.geolocation) {
+            const watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const {latitude, longitude} = position.coords;
+                    const currentLocation: LatLng = {lat: latitude, lng: longitude};
+                    setUserLocation(currentLocation);
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0,
+                }
+            );
+
+            if (selectedParkingSpace) {
+                calculateRoute(userLocation as LatLng, selectedParkingSpace);
+            }
+
+            return () => navigator.geolocation.clearWatch(watchId);
+        }
+    }, [selectedParkingSpace]);
+
+    const calculateDistance = (point1: LatLng, point2: LatLng): number => {
+        const lat1 = (point1.lat * Math.PI) / 180;
+        const lat2 = (point2.lat * Math.PI) / 180;
+        const lng1 = (point1.lng * Math.PI) / 180;
+        const lng2 = (point2.lng * Math.PI) / 180;
+
+        const dlat = lat2 - lat1;
+        const dlng = lng2 - lng1;
+
+        const a =
+            Math.sin(dlat / 2) ** 2 +
+            Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        const R = 6371;
+        return R * c;
+    };
+
+    const findClosestPoint = useCallback(
+        (userLocation: LatLng) => {
+            let minDistance = Infinity;
+            let closest = null;
+
+            for (const point of parkingSpaces) {
+                const distance = calculateDistance(userLocation, {
+                    lat: parseFloat(point.latitude),
+                    lng: parseFloat(point.longitude),
+                });
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closest = {
+                        lat: parseFloat(point.latitude),
+                        lng: parseFloat(point.longitude),
+                    };
+                }
+            }
+
+            if (closest) {
+                setClosestPoint(closest);
+                setSelectedParkingSpace(closest);
+                calculateRoute(userLocation, closest);
+                if (mapRef.current) {
+                    mapRef.current.panTo(closest);
+                }
+            }
         },
-        (error) => {
-          console.error("Error getting location:", error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
-        }
-      );
-
-      // Update directions if a parking space is selected
-      if (selectedParkingSpace) {
-        calculateRoute(userLocation as LatLng, selectedParkingSpace);
-      }
-
-      return () => navigator.geolocation.clearWatch(watchId);
-    }
-  }, [selectedParkingSpace]);
-
-  const calculateDistance = (point1: LatLng, point2: LatLng): number => {
-    const lat1 = (point1.lat * Math.PI) / 180;
-    const lat2 = (point2.lat * Math.PI) / 180;
-    const lng1 = (point1.lng * Math.PI) / 180;
-    const lng2 = (point2.lng * Math.PI) / 180;
-
-    const dlat = lat2 - lat1;
-    const dlng = lng2 - lng1;
-
-    const a =
-      Math.sin(dlat / 2) ** 2 +
-      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    // Earth's radius in kilometers
-    const R = 6371;
-    return R * c;
-  };
-
-  const findClosestPoint = useCallback(
-    (userLocation: LatLng) => {
-      let minDistance = Infinity;
-      let closest = null;
-
-      for (const point of parkingSpaces) {
-        const distance = calculateDistance(userLocation, {
-          lat: parseFloat(point.latitude),
-          lng: parseFloat(point.longitude),
-        });
-        if (distance < minDistance) {
-          minDistance = distance;
-          closest = {
-            lat: parseFloat(point.latitude),
-            lng: parseFloat(point.longitude),
-          };
-        }
-      }
-
-      if (closest) {
-        setClosestPoint(closest);
-        calculateRoute(userLocation, closest);
-        if (mapRef.current) {
-          mapRef.current.panTo(closest);
-        }
-      }
-    },
-    [parkingSpaces]
-  );
-
-  const calculateRoute = useCallback((origin: LatLng, destination: LatLng) => {
-    if (!origin || !destination) return;
-
-    const directionsService = new google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin,
-        destination,
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status === google.maps.DirectionsStatus.OK && result) {
-          setDirections(result);
-        } else {
-          console.error(`Error fetching directions: ${status}`);
-        }
-      }
+        [parkingSpaces]
     );
-  }, []);
 
-  const handleParkingSpaceClick = (parkingSpace: {
-    longitude: string;
-    latitude: string;
-  }) => {
-    if (mapRef.current) {
-      const destination: LatLng = {
-        lat: parseFloat(parkingSpace.latitude),
-        lng: parseFloat(parkingSpace.longitude),
-      };
-      setSelectedParkingSpace(destination);
-      mapRef.current.panTo(destination);
-      if (userLocation) {
-        calculateRoute(userLocation, destination);
-      }
-    }
-    setDrawerOpen(false);
-  };
+    const calculateRoute = useCallback((origin: LatLng, destination: LatLng) => {
+        if (!origin || !destination) return;
 
-  const handleShowClosestClick = () => {
-    if (userLocation) {
-      findClosestPoint(userLocation);
-    }
-    setDrawerOpen(false);
-  };
+        const directionsService = new google.maps.DirectionsService();
+        directionsService.route(
+            {
+                origin,
+                destination,
+                travelMode: google.maps.TravelMode.DRIVING,
+            },
+            (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK && result) {
+                    setDirections(result);
+                } else {
+                    console.error(`Error fetching directions: ${status}`);
+                }
+            }
+        );
+    }, []);
 
-  const handleCenterOnUser = () => {
-    if (mapRef.current && userLocation) {
-      mapRef.current.panTo(userLocation);
-    }
-  };
+    const handleParkingSpaceClick = (parkingSpace: {
+        longitude: string;
+        latitude: string;
+    }) => {
+        if (mapRef.current) {
+            const destination: LatLng = {
+                lat: parseFloat(parkingSpace.latitude),
+                lng: parseFloat(parkingSpace.longitude),
+            };
+            setSelectedParkingSpace(destination);
+            mapRef.current.panTo(destination);
+            if (userLocation) {
+                calculateRoute(userLocation, destination);
+            }
+        }
+        setDrawerOpen(false);
+    };
 
-  const mapOptions = useMemo<google.maps.MapOptions>(
-    () => ({
-      disableDefaultUI: true,
-      clickableIcons: false,
-      scrollwheel: true,
-      gestureHandling: "greedy",
-    }),
-    []
-  );
+    const handleShowClosestClick = () => {
+        if (userLocation) {
+            findClosestPoint(userLocation);
+        }
+        setDrawerOpen(false);
+    };
 
-  if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <MapLoader />;
+    const handleCenterOnUser = () => {
+        if (mapRef.current && userLocation) {
+            mapRef.current.panTo(userLocation);
+        }
+    };
 
-  return (
-    <div className="relative w-full h-screen">
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        center={center}
-        zoom={18}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-        options={mapOptions}
-      >
-        {parkingSpaces.map(({ id, name, latitude, longitude }, index) => (
-          <Marker
-            key={id}
-            position={{ lat: parseFloat(latitude), lng: parseFloat(longitude) }}
-            label={name}
-          />
-        ))}
+    const isSelected = (latitude: string, longitude: string): boolean => {
+        if (!selectedParkingSpace) return false;
+        return (
+            selectedParkingSpace.lat === parseFloat(latitude) &&
+            selectedParkingSpace.lng === parseFloat(longitude)
+        );
+    };
 
-        {userLocation && (
-          <Marker
-            position={userLocation}
-            icon="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-          />
-        )}
+    const mapOptions = useMemo<google.maps.MapOptions>(
+        () => ({
+            disableDefaultUI: true,
+            clickableIcons: false,
+            scrollwheel: true,
+            gestureHandling: "greedy",
+        }),
+        []
+    );
 
-        {directions && <DirectionsRenderer directions={directions} />}
-      </GoogleMap>
+    if (loadError) return <div>Error loading maps</div>;
+    if (!isLoaded) return <MapLoader/>;
 
-      <Button
-        size="icon"
-        className="absolute bottom-20 right-6 rounded-full"
-        onClick={handleCenterOnUser}
-      >
-        <Crosshair />
-      </Button>
+    return (
+        <div className="relative w-full h-screen">
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                zoom={18}
+                onLoad={onLoad}
+                onUnmount={onUnmount}
+                options={mapOptions}
+            >
+                {parkingSpaces.map(({id, name, latitude, longitude, currCapacity, maxCapacity}) => (
+                    <Marker
+                        key={id}
+                        position={{lat: parseFloat(latitude), lng: parseFloat(longitude)}}
+                        icon={{
+                            url: defaultMarkerSvg,
+                            // scaledSize: isSelected(latitude, longitude)
+                            //     ? new google.maps.Size(42, 42)
+                            //     : new google.maps.Size(24, 24),
+                            anchor: new google.maps.Point(
+                                isSelected(latitude, longitude) ? 18 : 12,
+                                isSelected(latitude, longitude) ? 36 : 24
+                            ),
+                        }}
+                        label={{
+                            text: name,
+                            // fontSize: isSelected(latitude, longitude) ? "14px" : "12px",
+                            fontWeight: isSelected(latitude, longitude) ? "bold" : "normal",
+                            className: `marker-label mt-14 rounded-xl p-2 border ${isSelected(latitude, longitude) ? "bg-green-500" : "bg-primary"}`,
+                        }}
+                    />
+                ))}
 
-      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <DrawerTrigger asChild>
-          <Button
-            size="lg"
-            className="absolute bottom-20 left-1/2 transform -translate-x-1/2 rounded-full"
-          >
-            <ChevronUp />
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <div className="mx-auto w-full max-w-sm">
-            <DrawerHeader>
-              <DrawerTitle>Select Parking Space</DrawerTitle>
-              <DrawerDescription>
-                You can also view the nearest parking space.
-              </DrawerDescription>
-            </DrawerHeader>
-            <div className="p-4 pb-0">
-              <div className="grid grid-cols-2 gap-3">
-                {parkingSpaces.map(
-                  ({
-                    id,
-                    name,
-                    currCapacity,
-                    maxCapacity,
-                    latitude,
-                    longitude,
-                  }) => (
-                    <div
-                      key={id}
-                      className="p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out"
-                      onClick={() =>
-                        handleParkingSpaceClick({
-                          latitude,
-                          longitude,
-                        })
-                      }
-                    >
-                      <h2>{name}</h2>
-                      {(currCapacity ?? 0) < maxCapacity ? (
-                        <small className="text-green-500">Available</small>
-                      ) : (
-                        <small className="text-red-500">Unavailable</small>
-                      )}
-                    </div>
-                  )
+                {userLocation && (
+                    <Marker
+                        position={userLocation}
+                        icon={{
+                            url: userLocationSvg,
+                            scaledSize: new google.maps.Size(24, 24),
+                            anchor: new google.maps.Point(12, 12),
+                        }}
+                    />
                 )}
-              </div>
 
-              <DrawerFooter>
-                <Button className="mt-6" onClick={handleShowClosestClick}>
-                  Show closest parking space
-                </Button>
-                <DrawerClose asChild>
-                  <Button variant="outline">Close</Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </div>
-          </div>
-        </DrawerContent>
-      </Drawer>
-    </div>
-  );
+                {directions && <DirectionsRenderer directions={directions}/>}
+            </GoogleMap>
+
+            <Button
+                size="icon"
+                className="absolute bottom-20 right-6 rounded-full"
+                onClick={handleCenterOnUser}
+            >
+                <Crosshair/>
+            </Button>
+
+            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+                <DrawerTrigger asChild>
+                    <Button
+                        size="lg"
+                        className="absolute bottom-20 left-1/2 transform -translate-x-1/2 rounded-full"
+                    >
+                        <ChevronUp/>
+                    </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                    <div className="mx-auto w-full max-w-sm">
+                        <DrawerHeader>
+                            <DrawerTitle>Select Parking Space</DrawerTitle>
+                            <DrawerDescription>
+                                You can also view the nearest parking space.
+                            </DrawerDescription>
+                        </DrawerHeader>
+                        <div className="p-4 pb-0">
+                            <div className="grid grid-cols-2 gap-3">
+                                {parkingSpaces.map(
+                                    ({
+                                         id,
+                                         name,
+                                         currCapacity,
+                                         maxCapacity,
+                                         latitude,
+                                         longitude,
+                                     }) => (
+                                        <div
+                                            key={id}
+                                            className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${
+                                                isSelected(latitude, longitude)
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : ""
+                                            }`}
+                                            onClick={() =>
+                                                handleParkingSpaceClick({
+                                                    latitude,
+                                                    longitude,
+                                                })
+                                            }
+                                        >
+                                            <h2>{name}</h2>
+                                            {(currCapacity ?? 0) < maxCapacity ? (
+                                                <small className="text-green-500">Available</small>
+                                            ) : (
+                                                <small className="text-red-500">Unavailable</small>
+                                            )}
+                                        </div>
+                                    )
+                                )}
+                            </div>
+
+                            <DrawerFooter>
+                                <Button className="mt-6" onClick={handleShowClosestClick}>
+                                    Show closest parking space
+                                </Button>
+                                <DrawerClose asChild>
+                                    <Button variant="outline">Close</Button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </div>
+                    </div>
+                </DrawerContent>
+            </Drawer>
+        </div>
+    );
 };
 
 export default DijkstraMap;
