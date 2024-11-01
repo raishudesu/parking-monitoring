@@ -47,11 +47,8 @@ const userLocationSvg = `data:image/svg+xml;base64,${btoa(`
 `)}`;
 
 
-const DijkstraMap = ({
-                         parkingSpaces,
-                     }: {
-    parkingSpaces: ParkingSpace[];
-}): JSX.Element => {
+const DijkstraMap = ({parkingSpaces}: { parkingSpaces: ParkingSpace[] }) => {
+
     const {isLoaded, loadError} = useJsApiLoader({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
         libraries: ["places"],
@@ -324,7 +321,8 @@ const DijkstraMap = ({
                                         >
                                             <h2>{name}</h2>
                                             {(currCapacity ?? 0) < maxCapacity ? (
-                                                <small className="text-green-500">Available</small>
+                                                <small
+                                                    className="text-green-500">Available: {currCapacity}/{maxCapacity}</small>
                                             ) : (
                                                 <small className="text-red-500">Unavailable</small>
                                             )}
