@@ -28,14 +28,14 @@ const mapContainerStyle: React.CSSProperties = {
     height: "100vh",
 };
 
-const defaultMarkerSvg = `data:image/svg+xml;base64,${btoa(`
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="red">
+const unavailableMarkerSvg = `data:image/svg+xml;base64,${btoa(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="red">
     <path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
   </svg>
 `)}`;
 
-const selectedMarkerSvg = `data:image/svg+xml;base64,${btoa(`
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="#0066ff">
+const availableMarkerSvg = `data:image/svg+xml;base64,${btoa(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="green">
     <path d="M12 0C7.58 0 4 3.58 4 8c0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
   </svg>
 `)}`;
@@ -209,6 +209,12 @@ const DijkstraMap = ({parkingSpaces}: { parkingSpaces: ParkingSpace[] }) => {
         );
     };
 
+    const isAvailable = (currCapacity: number, maxCapacity: number) => {
+        if (currCapacity < maxCapacity) return {value: true, icon: availableMarkerSvg}
+
+        return {value: false, icon: unavailableMarkerSvg}
+    }
+
     const mapOptions = useMemo<google.maps.MapOptions>(
         () => ({
             disableDefaultUI: true,
@@ -237,7 +243,7 @@ const DijkstraMap = ({parkingSpaces}: { parkingSpaces: ParkingSpace[] }) => {
                         key={id}
                         position={{lat: parseFloat(latitude), lng: parseFloat(longitude)}}
                         icon={{
-                            url: defaultMarkerSvg,
+                            url: isAvailable(currCapacity as number, maxCapacity).icon,
                             // scaledSize: isSelected(latitude, longitude)
                             //     ? new google.maps.Size(42, 42)
                             //     : new google.maps.Size(24, 24),
@@ -250,7 +256,7 @@ const DijkstraMap = ({parkingSpaces}: { parkingSpaces: ParkingSpace[] }) => {
                             text: name,
                             // fontSize: isSelected(latitude, longitude) ? "14px" : "12px",
                             fontWeight: isSelected(latitude, longitude) ? "bold" : "normal",
-                            className: `marker-label mt-14 rounded-xl p-2 border ${isSelected(latitude, longitude) ? "bg-green-500" : "bg-primary"}`,
+                            className: `marker-label mt-16 rounded-xl p-2 border ${isAvailable(currCapacity as number, maxCapacity).value ? "bg-green-500" : "bg-destructive"}`,
                         }}
                     />
                 ))}
@@ -324,7 +330,9 @@ const DijkstraMap = ({parkingSpaces}: { parkingSpaces: ParkingSpace[] }) => {
                                                 <small
                                                     className="text-green-500">Available: {currCapacity}/{maxCapacity}</small>
                                             ) : (
-                                                <small className="text-red-500">Unavailable</small>
+                                                <small className="text-red-500">Unavailable:
+                                                    : {currCapacity}/{maxCapacity}
+                                                </small>
                                             )}
                                         </div>
                                     )

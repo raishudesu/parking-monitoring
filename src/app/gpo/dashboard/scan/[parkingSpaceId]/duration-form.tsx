@@ -18,10 +18,7 @@ const durationFormSchema = z.object({
     duration: z.string(),
 });
 
-const DurationForm = ({
-                          parkingSpaceId,
-                          parkingSpace,
-                      }: {
+const DurationForm = ({parkingSpaceId, parkingSpace}: {
     parkingSpaceId: string;
     parkingSpace: ParkingSpace | null;
 }) => {
