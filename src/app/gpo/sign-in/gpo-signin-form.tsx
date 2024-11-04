@@ -13,13 +13,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signIn } from "next-auth/react";
+import { signIn, SignInResponse } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { gpoLoginSchema } from "@/lib/zod";
+import { useState } from "react";
 
 const GpoSignInForm = () => {
+  const [loginStatus, setLoginStatus] = useState<SignInResponse | undefined>(
+    undefined
+  );
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof gpoLoginSchema>>({
@@ -56,6 +61,8 @@ const GpoSignInForm = () => {
         title: "Login success!",
         description: "Welcome to ParkSU",
       });
+
+      setLoginStatus(res);
 
       router.push("/gpo/dashboard");
     } catch (error) {
@@ -111,7 +118,7 @@ const GpoSignInForm = () => {
         <Button
           type="submit"
           className="self-stretch flex items-center justify-center gap-2"
-          disabled={form.formState.isSubmitting}
+          disabled={form.formState.isSubmitting || loginStatus?.ok}
         >
           <LoaderCircle
             size={18}

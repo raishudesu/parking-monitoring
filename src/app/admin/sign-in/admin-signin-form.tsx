@@ -13,13 +13,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signIn } from "next-auth/react";
+import { signIn, SignInResponse } from "next-auth/react";
 import { loginSchema } from "@/lib/zod";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
+import { useState } from "react";
 
 const AdminSignInForm = () => {
+  const [loginStatus, setLoginStatus] = useState<SignInResponse | undefined>(
+    undefined
+  );
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -56,6 +60,8 @@ const AdminSignInForm = () => {
         title: "Welcome Admin!",
         description: "Enjoy your session",
       });
+
+      setLoginStatus(res);
 
       router.push("/admin/dashboard");
     } catch (error) {
@@ -111,7 +117,7 @@ const AdminSignInForm = () => {
         <Button
           type="submit"
           className="self-stretch flex items-center justify-center gap-2"
-          disabled={form.formState.isSubmitting}
+          disabled={form.formState.isSubmitting || loginStatus?.ok}
         >
           <LoaderCircle
             size={18}
