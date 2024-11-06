@@ -30,7 +30,7 @@ const SideSheet = () => {
     <div className="flex items-center gap-4 p-6 py-4 lg:hidden border-b-2">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
-          <div className="border py-3 px-4 bg-secondary rounded-lg">
+          <div className="text-primary border py-3 px-4 bg-secondary rounded-lg">
             <Menu />
           </div>
         </SheetTrigger>
