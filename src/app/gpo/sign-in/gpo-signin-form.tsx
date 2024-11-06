@@ -19,11 +19,14 @@ import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { gpoLoginSchema } from "@/lib/zod";
 import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const GpoSignInForm = () => {
   const [loginStatus, setLoginStatus] = useState<SignInResponse | undefined>(
     undefined
   );
+
+  const [showPwd, setShowPwd] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -34,6 +37,10 @@ const GpoSignInForm = () => {
       plainTextPassword: "",
     },
   });
+
+  const onShowPassword = () => {
+    setShowPwd(!showPwd);
+  };
 
   const onSubmit = async (values: z.infer<typeof gpoLoginSchema>) => {
     try {
@@ -107,11 +114,21 @@ const GpoSignInForm = () => {
                   {...field}
                   className="w-full"
                   placeholder="Enter your password"
-                  type="password"
+                  type={showPwd ? "text" : "password"}
                   disabled={form.formState.isSubmitting}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    return false;
+                  }}
                 />
               </FormControl>
               <FormMessage />
+              <div className="pt-2 flex gap-2 items-center">
+                <Checkbox onCheckedChange={onShowPassword} />
+                <small className="text-sm text-muted-foreground">
+                  Show Password
+                </small>
+              </div>
             </FormItem>
           )}
         />

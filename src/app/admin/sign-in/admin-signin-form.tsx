@@ -19,11 +19,14 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const AdminSignInForm = () => {
   const [loginStatus, setLoginStatus] = useState<SignInResponse | undefined>(
     undefined
   );
+  const [showPwd, setShowPwd] = useState<boolean>(false);
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -33,6 +36,10 @@ const AdminSignInForm = () => {
       password: "",
     },
   });
+
+  const onShowPassword = () => {
+    setShowPwd(!showPwd);
+  };
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
@@ -106,11 +113,22 @@ const AdminSignInForm = () => {
                   {...field}
                   className="w-full"
                   placeholder="Admin Password"
-                  type="password"
+                  type={showPwd ? "text" : "password"}
                   disabled={form.formState.isSubmitting}
+                  // prevent user on pasting
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    return false;
+                  }}
                 />
               </FormControl>
               <FormMessage />
+              <div className="pt-2 flex gap-2 items-center">
+                <Checkbox onCheckedChange={onShowPassword} />
+                <small className="text-sm text-muted-foreground">
+                  Show Password
+                </small>
+              </div>
             </FormItem>
           )}
         />

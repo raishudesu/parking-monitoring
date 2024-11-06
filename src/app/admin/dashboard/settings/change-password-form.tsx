@@ -20,6 +20,7 @@ import { useServerAction } from "zsa-react";
 import { updateAdminPasswordAction } from "./actions";
 import { evalPasswordStrength, ReturnEvalPwdStrength } from "@/lib/utils";
 import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const changePasswordSchema = z.object({
   oldPassword: z.string(),
@@ -35,6 +36,9 @@ const ChangePasswordForm = () => {
     containsSpecialChar: false,
     pwdScore: 0,
   });
+
+  const [showOldPwd, setShowOldPwd] = useState<boolean>(false);
+  const [showNewPwd, setShowNewPwd] = useState<boolean>(false);
 
   const session = useSession();
 
@@ -100,6 +104,14 @@ const ChangePasswordForm = () => {
     }
   };
 
+  const onOldPwdChange = () => {
+    setShowOldPwd(!showOldPwd);
+  };
+
+  const onNewPwdChange = () => {
+    setShowNewPwd(!showNewPwd);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -117,11 +129,17 @@ const ChangePasswordForm = () => {
                   {...field}
                   className="w-full"
                   placeholder="Enter your old password"
-                  type="password"
+                  type={showOldPwd ? "text" : "password"}
                   disabled={form.formState.isSubmitting}
                 />
               </FormControl>
               <FormMessage />
+              <div className="pt-2 flex gap-2 items-center">
+                <Checkbox onCheckedChange={onOldPwdChange} />
+                <small className="text-sm text-muted-foreground">
+                  Show Old Password
+                </small>
+              </div>
             </FormItem>
           )}
         />
@@ -136,7 +154,7 @@ const ChangePasswordForm = () => {
                   {...field}
                   className="w-full"
                   placeholder="Enter your new password"
-                  type="password"
+                  type={showNewPwd ? "text" : "password"}
                   disabled={form.formState.isSubmitting}
                   onChange={(e) => {
                     const pwd = e.target.value;
@@ -146,6 +164,12 @@ const ChangePasswordForm = () => {
                 />
               </FormControl>
               <FormMessage />
+              <div className="pt-2 flex gap-2 items-center">
+                <Checkbox onCheckedChange={onNewPwdChange} />
+                <small className="text-sm text-muted-foreground">
+                  Show New Password
+                </small>
+              </div>
             </FormItem>
           )}
         />
