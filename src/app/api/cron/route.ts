@@ -1,9 +1,15 @@
 import { getEndingSessions } from "@/data-access/gpo-sessions";
 import { sendEmailNotification } from "@/lib/utils";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 // import { getEndingSessions, sendEmailNotification } from "@/lib/session-utils";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (
+    req.headers.get("Authorization") !== `Bearer ${process.env.CRON_SECRET}`
+  ) {
+    return NextResponse.json({ status: "Unauthorized" }, { status: 401 });
+  }
+
   // 1. Get sessions ending within the next 30 minutes
   const sessionsEndingSoon = await getEndingSessions(); // Fetch sessions ending in 30 minutes
 
