@@ -40,7 +40,7 @@ enum ParkingSpaceType {
   MOTORCYCLE
   TRICYCLE
   FOURWHEEL
-  HYBRID
+  MIXED
   PWD
   VIP
 }
@@ -142,7 +142,7 @@ model ParkingSpace {
   description     String
   longitude       String
   latitude        String
-  spaceType       ParkingSpaceType @default(HYBRID)
+  spaceType       ParkingSpaceType @default(MIXED)
   currCapacity    Int?             @default(0)
   maxCapacity     Int
   imageUrl        String?
