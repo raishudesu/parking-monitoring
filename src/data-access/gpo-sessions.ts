@@ -54,7 +54,11 @@ export const getAllGpoSessions = async () => {
   const allGpoSessions = await prisma.gPOSession.findMany({
     include: {
       parkingSpace: true,
-      accountParked: true,
+      accountParked: {
+        omit: {
+          password: true,
+        },
+      },
     },
     orderBy: {
       startTime: "desc",
