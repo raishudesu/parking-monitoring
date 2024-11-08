@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import emailjs from "@emailjs/browser";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -96,3 +97,31 @@ export const evalPasswordStrength = (pwd: string): ReturnEvalPwdStrength => {
 
   return pwdStatus;
 };
+
+export const sendEmailNotification = async (email: string) => {
+  try {
+    const emailRes = await emailjs.send(
+      process.env.NEXT_PUBLIC_SERVICE_KEY as string,
+      process.env.NEXT_PUBLIC_NOTIFICATION_TEMPLATE_ID as string,
+      { to: email },
+      process.env.NEXT_PUBLIC_EMAILJS_API_KEY
+    );
+
+    return emailRes;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
+
+export function urlB64ToUint8Array(base64String: string): Uint8Array {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, "+")
+    .replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}

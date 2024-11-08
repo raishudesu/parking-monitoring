@@ -54,7 +54,11 @@ export const getAllGpoSessions = async () => {
   const allGpoSessions = await prisma.gPOSession.findMany({
     include: {
       parkingSpace: true,
-      accountParked: true,
+      accountParked: {
+        omit: {
+          password: true,
+        },
+      },
     },
     orderBy: {
       startTime: "desc",
@@ -157,4 +161,28 @@ export const getSessionsForAnalysis = async () => {
   });
 
   return sessions;
+};
+
+// This function retrieves sessions ending in the next specified number of minutes (e.g., 30).
+export const getEndingSessions = async (minutesBeforeEnd = 30) => {
+  const now = new Date();
+  const endWindow = new Date(now.getTime() + minutesBeforeEnd * 60 * 1000); // 30 minutes from now
+
+  const endingSessions = await prisma.gPOSession.findMany({
+    where: {
+      shouldEndAt: {
+        gte: now, // Sessions that are currently active
+        lte: endWindow, // Sessions that will end within the next 30 minutes
+      },
+    },
+    include: {
+      accountParked: {
+        select: {
+          email: true, // Assuming you have a user email field for notifications
+        },
+      },
+    },
+  });
+
+  return endingSessions;
 };
