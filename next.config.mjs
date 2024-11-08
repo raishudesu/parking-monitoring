@@ -1,4 +1,5 @@
-import nextPwa from "next-pwa";
+import withPWAInit from "@ducanh2912/next-pwa";
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
@@ -10,12 +11,11 @@ const nextConfig = {
       },
     ],
   },
-
   reactStrictMode: false,
   swcMinify: true,
 };
 
-const withPWA = nextPwa({
+const withPWA = withPWAInit({
   dest: "public",
   register: true,
 });
