@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/providers/session-provider";
+import Pwa from "@/components/pwa";
 
 // const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({ weight: "500", subsets: ["latin"] });
@@ -25,6 +26,7 @@ export default async function RootLayout({
           <main>{children}</main>
           <Toaster />
         </AuthProvider>
+        <Pwa />
       </body>
     </html>
   );

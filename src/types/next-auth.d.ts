@@ -5,6 +5,8 @@ import type {
   GPOAccount as GpoPrisma,
   UserRole,
 } from "@prisma/client";
+import { DefaultSession } from "next-auth";
+import { DefaultJWT } from "next-auth/jwt";
 declare module "next-auth" {
   // just extend the User's type from Prisma lol xd
 
@@ -26,5 +28,10 @@ declare module "next-auth" {
   interface Session {
     user: User;
     token: User;
+    access_token: string & DefaultSession;
+  }
+
+  interface JWT {
+    access_token: string & DefaultJWT;
   }
 }
