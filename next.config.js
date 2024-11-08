@@ -1,8 +1,15 @@
+const { WorkboxPlugin } = require("workbox-webpack-plugin");
+
 module.exports = {
   experimental: {
+    // ...
     serviceWorker: {
-      generateInDevMode: false,
-      generation: "client",
+      // ...
+      // Add the Workbox configuration
+      workboxOptions: {
+        exclude: [/swagger-ui/],
+      },
     },
   },
+  // ...
 };
