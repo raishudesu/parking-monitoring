@@ -2,6 +2,7 @@ import NotificationRequest from "@/components/notification";
 import ChangePasswordForm from "./change-password-form";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import TestNotif from "@/components/test-notif";
 
 const SettingsPage = async () => {
   const session = await getServerSession(authOptions);
@@ -22,6 +23,7 @@ const SettingsPage = async () => {
           <ChangePasswordForm />
         </div>
         <NotificationRequest userId={session?.user.id as string} />
+        <TestNotif userId={session?.user.id as string} />
       </div>
     </div>
   );

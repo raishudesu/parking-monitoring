@@ -3,7 +3,11 @@
 import prisma from "@/lib/db";
 import webpush from "web-push";
 
-export const sendPushNotification = async (userId: string, message: string) => {
+export const sendPushNotification = async (
+  userId: string,
+  message: string,
+  title: string
+) => {
   const vapidKeys = {
     publicKey: process.env.NEXT_PUBLIC_VAPID_KEY!,
     privateKey: process.env.VAPID_PRIVATE_KEY!,
@@ -21,10 +25,13 @@ export const sendPushNotification = async (userId: string, message: string) => {
     where: { userId },
   });
 
+  if (subscriptions.length === 0) throw Error("No subscriptions found!");
+
   // Loop over each subscription and send the push notification
   subscriptions.forEach(async (subscription) => {
     const pushSubscription = {
       endpoint: subscription.endpoint,
+      expirationTime: null,
       keys: {
         p256dh: subscription.p256dhKey,
         auth: subscription.authKey,
@@ -32,7 +39,7 @@ export const sendPushNotification = async (userId: string, message: string) => {
     };
 
     const payload = JSON.stringify({
-      title: "Parking Session Reminder",
+      title: title,
       body: String(message),
       icon: "/logo.png",
     });

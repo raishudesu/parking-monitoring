@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "prisma generate && next build",
+    "dev": "next dev && node scripts/merge-sw.js",
+    "build": "prisma generate && next build && node scripts/merge-sw.js",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
@@ -58,6 +58,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/web-push": "^3.6.4",
+    "chokidar-cli": "^3.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",

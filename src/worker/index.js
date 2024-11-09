@@ -1,43 +1,36 @@
-self.addEventListener("push", (event) => {
-  let notificationData;
-  try {
-    notificationData = JSON.parse(event.data.text());
-  } catch (error) {
-    console.error("Error parsing push event data:", error);
-    return;
-  }
+import { clientsClaim } from "workbox-core";
+import { registerRoute } from "workbox-routing";
+import { NetworkFirst, NetworkOnly } from "workbox-strategies";
 
-  self.registration.showNotification(notificationData.title, {
-    body: notificationData.body,
-    icon: notificationData.icon,
-  });
+// Workbox setup
+clientsClaim();
+
+registerRoute("/", new NetworkFirst({ cacheName: "start-url" }));
+
+registerRoute(/.*/i, new NetworkOnly({ cacheName: "dev" }));
+
+// Custom push notification handling
+self.addEventListener("push", (event) => {
+  if (event.data) {
+    const data = event.data.json();
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: data.icon,
+    });
+  }
 });
 
+// Custom notification click handling
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-
   event.waitUntil(
-    clients
-      .matchAll({
-        type: "window",
-      })
-      .then((clientList) => {
-        let focused = false;
-
-        for (const client of clientList) {
-          // Match based on the origin (protocol and domain) and pathname
-          const url = new URL(client.url);
-          if (url.pathname === "/gpo/dashboard" && "focus" in client) {
-            client.focus();
-            focused = true;
-            break;
-          }
+    clients.matchAll({ type: "window" }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes("/gpo/dashboard") && "focus" in client) {
+          return client.focus();
         }
-
-        // If no matching client is found, open a new window
-        if (!focused && clients.openWindow) {
-          return clients.openWindow("/gpo/dashboard");
-        }
-      })
+      }
+      return clients.openWindow("/gpo/dashboard");
+    })
   );
 });
