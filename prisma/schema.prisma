@@ -57,30 +57,30 @@ enum SessionStatus {
 }
 
 model GPOAccount {
-  id                String         @id @default(uuid())
-  gatePassNumber    String         @unique
-  email             String?        @unique
-  password          String
-  accountType       AccountType
-  collegeName       College?       @relation(fields: [collegeId], references: [id])
-  collegeId         String?
-  department        String?
-  isVIP             Boolean        @default(false)
-  isPWD             Boolean        @default(false)
-  imageLink         String?
-  gpoSessions       GPOSession[]
-  violations        GPOViolation[]
-  notifSubscription Subscription?
-  role              UserRole       @default(GPO)
-  creditScore       Int?           @default(100)
-  isActive          Boolean        @default(true)
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  id                 String         @id @default(uuid())
+  gatePassNumber     String         @unique
+  email              String?        @unique
+  password           String
+  accountType        AccountType
+  collegeName        College?       @relation(fields: [collegeId], references: [id])
+  collegeId          String?
+  department         String?
+  isVIP              Boolean        @default(false)
+  isPWD              Boolean        @default(false)
+  imageLink          String?
+  gpoSessions        GPOSession[]
+  violations         GPOViolation[]
+  notifSubscriptions Subscription[]
+  role               UserRole       @default(GPO)
+  creditScore        Int?           @default(100)
+  isActive           Boolean        @default(true)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 }
 
 model Subscription {
   id        String   @id @default(uuid())
-  userId    String   @unique // This should match the ID type in your User model
+  userId    String
   endpoint  String   @unique
   p256dhKey String
   authKey   String

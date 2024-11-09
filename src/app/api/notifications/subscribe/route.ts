@@ -28,6 +28,7 @@ export async function POST(req: Request) {
       await prisma.subscription.update({
         where: { endpoint },
         data: {
+          endpoint,
           p256dhKey: p256dh,
           authKey: auth,
           updatedAt: new Date(),
