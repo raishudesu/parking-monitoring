@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const body = await req.json();
 
-  const { userId, message, title } = body;
+  const { userId, parkingId, startTime, endTime } = body;
 
   try {
-    await sendPushNotification(userId, message, title);
+    await sendPushNotification(userId, parkingId, startTime, endTime);
     return NextResponse.json(
       { success: "Notification sent successfully." },
       { status: 200 }

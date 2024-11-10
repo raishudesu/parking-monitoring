@@ -104,15 +104,107 @@ define(["./workbox-631a4576"], function (workbox) {
 });
 //# sourceMappingURL=sw.js.map
 
-self.addEventListener("push", (event) => {
-  if (event.data) {
-    const data = event.data.json();
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: data.icon,
-    });
-  }
-});
+// const activeTimers = new Map();
+
+// self.addEventListener("push", (event) => {
+//   if (!event.data) return;
+
+//   const data = event.data.json();
+//   const notificationId = data.data.parkingId || Date.now().toString();
+
+//   // Clear existing timer if any
+//   if (activeTimers.has(notificationId)) {
+//     clearInterval(activeTimers.get(notificationId));
+//   }
+
+//   const startTime = new Date(data.data.startTime).getTime();
+//   const endTime = new Date(data.data.endTime).getTime();
+//   const now = Date.now();
+
+//   if (isNaN(startTime) || isNaN(endTime) || endTime <= startTime) {
+//     console.error("Invalid start or end times:", { startTime, endTime });
+//     return;
+//   }
+
+//   let timeLeft = endTime - now;
+
+//   if (timeLeft <= 0) {
+//     showNotification(
+//       "Parking session has ended",
+//       data.title,
+//       notificationId,
+//       data.icon
+//     );
+//     return;
+//   }
+
+//   updateNotification(timeLeft, data, notificationId);
+
+//   const timerId = setInterval(() => {
+//     timeLeft = endTime - Date.now();
+
+//     if (timeLeft <= 0) {
+//       clearInterval(timerId);
+//       activeTimers.delete(notificationId);
+//       showNotification(
+//         "Parking session has ended",
+//         data.title,
+//         notificationId,
+//         data.icon
+//       );
+//     } else {
+//       updateNotification(timeLeft, data, notificationId);
+//     }
+//   }, 1000);
+
+//   activeTimers.set(notificationId, timerId);
+// });
+
+// function updateNotification(timeLeft, data, notificationId) {
+//   const minutes = Math.floor(timeLeft / 60000);
+//   const seconds = Math.floor((timeLeft % 60000) / 1000);
+//   const timeString = `${minutes}m ${seconds}s`;
+
+//   self.registration.showNotification(data.title, {
+//     body: `Time remaining: ${timeString}`,
+//     icon: data.icon || "/logo.png",
+//     requireInteraction: true,
+//     tag: notificationId,
+//     data: {
+//       startTime: data.data.startTime,
+//       endTime: data.data.endTime,
+//       notificationId,
+//     },
+//   });
+// }
+
+// function showNotification(body, title, notificationId, icon) {
+//   self.registration.showNotification(title, {
+//     body,
+//     icon: icon || "/logo.png",
+//     requireInteraction: false,
+//     tag: notificationId,
+//   });
+// }
+
+// self.addEventListener("notificationclose", (event) => {
+//   console.log("Notification closed event detected:", event);
+
+//   const notificationId = event.notification.data?.notificationId;
+//   if (notificationId && activeTimers.has(notificationId)) {
+//     console.log(`Cleaning up timer for notification ID: ${notificationId}`);
+//     clearInterval(activeTimers.get(notificationId));
+//     activeTimers.delete(notificationId);
+//   } else {
+//     console.log("No timer found for the closed notification.");
+//   }
+// });
+
+// self.addEventListener("activate", () => {
+//   console.log("Service worker activated; clearing all active timers.");
+//   activeTimers.forEach(clearInterval);
+//   activeTimers.clear();
+// });
 
 // Custom notification click handling
 self.addEventListener("notificationclick", (event) => {
