@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { createClient } from "@/utils/supabase/client";
 import { ParkingSpace } from "@prisma/client";
-import { CircleParking } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -44,7 +43,7 @@ const AvailableParkingSpaces = ({
         </small>
         <Tabs defaultValue="overview" className="w-full space-y-4">
           <TabsContent value="overview" className="w-full space-y-4">
-            <div className="w-full grid grid-cols-2 gap-4">
+            <div className="w-full grid md:grid-cols-2 gap-4">
               {availableParkingSpaces.length === 0 ? (
                 <Card className="col-span-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -60,16 +59,25 @@ const AvailableParkingSpaces = ({
                 </Card>
               ) : (
                 availableParkingSpaces.map(
-                  ({ id, name, description, currCapacity, maxCapacity }) => (
+                  ({
+                    id,
+                    name,
+                    description,
+                    currCapacity,
+                    maxCapacity,
+                    spaceType,
+                  }) => (
                     <Card key={id}>
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-md font-bold">
+                      <CardHeader className="flex flex-row flex-wrap items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-md font-bold text-primary">
                           {name}
                         </CardTitle>
-                        <CircleParking size={20} className="text-primary" />
+                        <div className="text-sm font-bold text-muted-foreground">
+                          {spaceType}
+                        </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-3 text-xl text-green-500 font-bold">
+                        <div className="mt-3 text-md text-green-500 font-bold">
                           Capacity: {currCapacity}/{maxCapacity}
                         </div>
                         <p className="mt-6 text-xs text-muted-foreground">
@@ -90,7 +98,7 @@ const AvailableParkingSpaces = ({
         </small>
         <Tabs defaultValue="overview" className="w-full space-y-4">
           <TabsContent value="overview" className="w-full space-y-4">
-            <div className="w-full grid grid-cols-2 gap-4">
+            <div className="w-full grid md:grid-cols-2 gap-4">
               {unavailableParkingSpaces.length === 0 ? (
                 <Card className="col-span-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -106,17 +114,26 @@ const AvailableParkingSpaces = ({
                 </Card>
               ) : (
                 unavailableParkingSpaces.map(
-                  ({ id, name, description, currCapacity, maxCapacity }) => (
+                  ({
+                    id,
+                    name,
+                    description,
+                    currCapacity,
+                    maxCapacity,
+                    spaceType,
+                  }) => (
                     <Card key={id}>
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-lg font-bold">
+                        <CardTitle className="text-lg font-bold text-primary">
                           {name}
                         </CardTitle>
-                        <CircleParking size={20} className="text-primary" />
+                        <div className="text-sm font-bold text-muted-foreground">
+                          {spaceType}
+                        </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-3 text-3xl text-red-500 font-bold">
-                          {currCapacity}/{maxCapacity}
+                        <div className="mt-3 text-md text-red-500 font-bold">
+                          Capacity: {currCapacity}/{maxCapacity}
                         </div>
                         <p className="mt-6 text-xs text-muted-foreground">
                           {description}
