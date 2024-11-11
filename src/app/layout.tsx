@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/providers/session-provider";
 import { NotificationProvider } from "@/providers/notification-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 // const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({ weight: "500", subsets: ["latin"] });
@@ -33,12 +34,19 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <AuthProvider>
-          <NotificationProvider>
-            <main>{children}</main>
-            <Toaster />
-          </NotificationProvider>
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <NotificationProvider>
+              <main>{children}</main>
+              <Toaster />
+            </NotificationProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

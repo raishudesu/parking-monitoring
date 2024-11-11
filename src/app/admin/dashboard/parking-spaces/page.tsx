@@ -23,7 +23,7 @@ const ParkingSpacesPage = async () => {
         <div className="text-lg text-muted-foreground">
           Administrator Dashboard
         </div>
-        <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
+        <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
           Parking Spaces
         </h1>
       </div>

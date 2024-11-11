@@ -30,7 +30,7 @@ const SideSheetMap = () => {
           <Menu />
         </div>
       </SheetTrigger>
-      <SheetContent side={"left"} className="overflow-clip">
+      <SheetContent side={"left"} className="w-full dark:bg-zinc-900">
         <SheetHeader>
           <SheetTitle>
             <Logo />

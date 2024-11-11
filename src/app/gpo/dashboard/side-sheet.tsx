@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import SignOutBtn from "@/components/signout-btn";
 import { useSession } from "next-auth/react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const SideSheet = () => {
   const [open, setOpen] = useState(false);
@@ -34,7 +35,10 @@ const SideSheet = () => {
             <Menu />
           </div>
         </SheetTrigger>
-        <SheetContent side={"left"} className="w-full overflow-auto">
+        <SheetContent
+          side={"left"}
+          className="w-full overflow-auto dark:bg-zinc-900"
+        >
           <SheetHeader>
             <SheetTitle>
               <Logo />
@@ -45,6 +49,7 @@ const SideSheet = () => {
               <NavLinks open={open} setOpen={setOpen} />
             </ul>
             <div className="w-full p-3 flex flex-col gap-4 rounded-xl">
+              <ModeToggle />
               <div className="flex gap-2 items-center">
                 <Avatar>
                   <AvatarFallback>GPO</AvatarFallback>
