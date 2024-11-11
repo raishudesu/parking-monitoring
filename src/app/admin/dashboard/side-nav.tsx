@@ -11,7 +11,7 @@ const SideNav = async () => {
   const user = session?.user;
 
   return (
-    <aside className="p-3 py-6 hidden lg:flex flex-col gap-3 border-r min-w-[20rem] overflow-auto">
+    <aside className="dark:bg-zinc-900 p-3 py-6 hidden lg:flex flex-col gap-3 border-r min-w-[20rem] overflow-auto">
       <Logo />
       <div className="text-muted-foreground flex flex-col justify-between gap-3 h-full">
         <div className="flex flex-col gap-3">
