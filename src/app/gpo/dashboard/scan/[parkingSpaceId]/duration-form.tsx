@@ -26,7 +26,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ParkingSpace } from "@prisma/client";
 import { LoaderCircle } from "lucide-react";
-import { notify } from "@/lib/utils";
+import { TIMER_STORAGE_KEY } from "../../end-session-btn";
+import { useState } from "react";
 
 const durationFormSchema = z.object({
   duration: z.string(),
@@ -39,6 +40,17 @@ const DurationForm = ({
   parkingSpaceId: string;
   parkingSpace: ParkingSpace | null;
 }) => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const handleSelectChange = (value: string) => {
+    // Disable the button for 500ms to avoid accidental clicks
+    setIsButtonDisabled(true);
+
+    // Enable the button again after 500ms
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 500);
+  };
   const session = useSession();
   const router = useRouter();
 
@@ -118,7 +130,13 @@ const DurationForm = ({
                 description: "Redirecting you now...",
               });
 
-              notify(values.duration, parkingSpace?.name as string);
+              localStorage.setItem(
+                TIMER_STORAGE_KEY,
+                JSON.stringify({
+                  shouldEndAt: new Date(data.shouldEndAt as Date).toISOString(), // Ensure consistent format
+                  parkingSpaceName: parkingSpace?.name,
+                })
+              );
 
               router.replace("/gpo/dashboard/scan/scan-success");
             }
@@ -178,7 +196,10 @@ const DurationForm = ({
             <FormItem>
               <FormLabel>Select Parking Duration</FormLabel>
               <Select
-                onValueChange={field.onChange}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  handleSelectChange(value); // Handle the select change here
+                }}
                 defaultValue={field.value}
                 disabled={isPending}
               >
@@ -207,7 +228,12 @@ const DurationForm = ({
           size="lg"
           className="w-full flex gap-2 items-center"
           type="submit"
-          disabled={isPending || isSuccess}
+          disabled={
+            isPending ||
+            isSuccess ||
+            isButtonDisabled ||
+            form.getValues("duration") === ""
+          }
         >
           {isPending && <LoaderCircle size={18} className="animate-spin" />}
           Start Session

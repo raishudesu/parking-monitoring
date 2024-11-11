@@ -5,10 +5,54 @@ import { useServerAction } from "zsa-react";
 import { endSessionAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
 import { SquareParkingOff } from "lucide-react";
+import { useNotification } from "@/hooks/notification-hook";
+import { useEffect } from "react";
 
-const EndSessionBtn = ({ gpoAccountId }: { gpoAccountId: string }) => {
+export const TIMER_STORAGE_KEY = "activeParkingTimer";
+
+const EndSessionBtn = ({
+  gpoAccountId,
+  shouldEndAt,
+  parkingSpaceName,
+}: {
+  gpoAccountId: string;
+  shouldEndAt: Date;
+  parkingSpaceName: string;
+}) => {
   const { isPending, execute } = useServerAction(endSessionAction);
+  const { startTimer, stopTimer } = useNotification();
 
+  // Start timer on mount if there's an active timer or session data
+  useEffect(() => {
+    const storedTimerData = JSON.parse(
+      localStorage.getItem(TIMER_STORAGE_KEY) || "{}"
+    );
+
+    const startTimerFn = async (endAt: Date, parkingName: string) => {
+      await startTimer(endAt, parkingName);
+    };
+
+    if (storedTimerData?.shouldEndAt && storedTimerData?.parkingSpaceName) {
+      // Parse shouldEndAt date back from string
+      const endAt = new Date(storedTimerData.shouldEndAt);
+
+      if (endAt > new Date()) {
+        startTimerFn(endAt, storedTimerData.parkingSpaceName);
+      } else {
+        localStorage.removeItem(TIMER_STORAGE_KEY); // Clear if expired
+      }
+    } else {
+      // If no stored data, use provided props to start a new timer
+      startTimerFn(shouldEndAt, parkingSpaceName);
+      localStorage.setItem(
+        TIMER_STORAGE_KEY,
+        JSON.stringify({
+          shouldEndAt: shouldEndAt.toISOString(),
+          parkingSpaceName,
+        })
+      );
+    }
+  }, []);
   const onEndSession = async () => {
     try {
       const [data, err] = await execute(gpoAccountId);
@@ -30,6 +74,8 @@ const EndSessionBtn = ({ gpoAccountId }: { gpoAccountId: string }) => {
           title: "Parking session ended successfully.",
           description: "Thank you for using ParkSU!",
         });
+        stopTimer();
+        localStorage.removeItem(TIMER_STORAGE_KEY);
       }
     } catch (error) {
       console.error(error);
