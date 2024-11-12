@@ -57,39 +57,24 @@ enum SessionStatus {
 }
 
 model GPOAccount {
-  id                 String         @id @default(uuid())
-  gatePassNumber     String         @unique
-  email              String?        @unique
-  password           String
-  accountType        AccountType
-  collegeName        College?       @relation(fields: [collegeId], references: [id])
-  collegeId          String?
-  department         String?
-  isVIP              Boolean        @default(false)
-  isPWD              Boolean        @default(false)
-  imageLink          String?
-  gpoSessions        GPOSession[]
-  violations         GPOViolation[]
-  notifSubscriptions Subscription[]
-  role               UserRole       @default(GPO)
-  creditScore        Int?           @default(100)
-  isActive           Boolean        @default(true)
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
-}
-
-model Subscription {
-  id        String   @id @default(uuid())
-  userId    String
-  endpoint  String   @unique
-  p256dhKey String
-  authKey   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user GPOAccount @relation(fields: [userId], references: [id]) // Adjust to your User model name and field
-
-  @@index([userId]) // Index for fast lookups by user
+  id             String         @id @default(uuid())
+  gatePassNumber String         @unique
+  email          String?        @unique
+  password       String
+  accountType    AccountType
+  collegeName    College?       @relation(fields: [collegeId], references: [id])
+  collegeId      String?
+  department     String?
+  isVIP          Boolean        @default(false)
+  isPWD          Boolean        @default(false)
+  imageLink      String?
+  gpoSessions    GPOSession[]
+  violations     GPOViolation[]
+  role           UserRole       @default(GPO)
+  creditScore    Int?           @default(100)
+  isActive       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model GPOSession {
@@ -114,59 +99,36 @@ model GPOViolation {
   pointsDeducted    Int
 }
 
-model VisitorAccount {
-  id              String             @id @default(uuid())
-  email           String
-  gatePassNumber  String?            @unique
-  password        String
-  isPWD           Boolean            @default(false)
-  imageLink       String?
-  visitorSessions VisitorSession[]
-  violations      VisitorViolation[]
-  creditScore     Int
-  role            UserRole           @default(VISITOR)
-  isActive        Boolean            @default(true)
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
+model VisitorPassCard {
+  id         String           @id @default(uuid())
+  cardNumber Int
+  createdAt  DateTime         @default(now())
+  sessions   VisitorSession[]
 }
 
 model VisitorSession {
-  id                   String         @id @default(uuid())
-  parkingSpace         ParkingSpace   @relation(fields: [parkingSpaceId], references: [id])
-  parkingSpaceId       String
-  visitorAccountParked VisitorAccount @relation(fields: [visitorAccountId], references: [id])
-  visitorAccountId     String
-  startTime            DateTime       @default(now())
-  endTime              DateTime
-  status               SessionStatus
-  endedProperly        Boolean
-}
-
-model VisitorViolation {
-  id                String         @id @default(uuid())
-  accountViolator   VisitorAccount @relation(fields: [accountViolatorId], references: [id])
-  accountViolatorId String
-  violationDate     DateTime       @default(now())
-  violationType     String
-  pointsDeducted    Int
+  id              String          @id @default(uuid())
+  visitTime       DateTime        @default(now())
+  exitTime        DateTime?
+  visitorPassId   String
+  visitorPassCard VisitorPassCard @relation(fields: [visitorPassId], references: [id])
 }
 
 model ParkingSpace {
-  id              String           @id @default(uuid())
-  name            String
-  description     String
-  longitude       String
-  latitude        String
-  spaceType       ParkingSpaceType @default(MIXED)
-  currCapacity    Int?             @default(0)
-  maxCapacity     Int
-  imageUrl        String?
-  gpoSessions     GPOSession[]
-  visitorSessions VisitorSession[]
-  addedAt         DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  polygon         String?
-  isActive        Boolean          @default(true)
+  id           String           @id @default(uuid())
+  name         String
+  description  String
+  longitude    String
+  latitude     String
+  spaceType    ParkingSpaceType @default(MIXED)
+  currCapacity Int?             @default(0)
+  maxCapacity  Int
+  imageUrl     String?
+  gpoSessions  GPOSession[]
+  addedAt      DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  polygon      String?
+  isActive     Boolean          @default(true)
 }
 
 model Admin {
