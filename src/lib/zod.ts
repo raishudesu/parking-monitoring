@@ -55,7 +55,7 @@ export const adminAccountSchema = z.object({
   lastName: z.string(),
   corpEmail: z.string(),
   password: z.string().min(8),
-  role: z.enum(["ADMIN", "SUPERADMIN"]),
+  role: z.enum(["ADMIN", "SUPERADMIN", "SECURITY"]),
 });
 
 export const parkingSpaceSchema = z.object({
@@ -106,7 +106,7 @@ export const adminUpdateSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   corpEmail: z.string(),
-  role: z.enum(["ADMIN", "SUPERADMIN"]),
+  role: z.enum(["ADMIN", "SUPERADMIN", "SECURITY"]),
 });
 
 export const adminUpdateFormSchema = z.object({
@@ -116,6 +116,16 @@ export const adminUpdateFormSchema = z.object({
 
 export const collegeCreationSchema = z.object({
   collegeName: z.string().min(2),
+  auditAdminId: z.string().optional(),
+});
+
+export const visitorCardCreationSchema = z.object({
+  cardNumber: z.string(),
+  auditAdminId: z.string().optional(),
+});
+export const visitorCardUpdateSchema = z.object({
+  cardId: z.string(),
+  cardNumber: z.string(),
   auditAdminId: z.string().optional(),
 });
 
@@ -131,7 +141,7 @@ export const auditLogSchema = z.object({
   table: z.enum([
     "ADMIN",
     "ACCOUNT",
-    "VISITORACCOUNT",
+    "VISITORPASSCARD",
     "PARKINGSPACE",
     "COLLEGE",
   ]),

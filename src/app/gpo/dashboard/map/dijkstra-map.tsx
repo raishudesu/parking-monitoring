@@ -356,8 +356,8 @@ const DijkstraMap = ({ parkingSpaces }: { parkingSpaces: ParkingSpace[] }) => {
             <ChevronUp />
           </Button>
         </DrawerTrigger>
-        <DrawerContent>
-          <div className="mx-auto w-full max-w-sm">
+        <DrawerContent className="max-h-screen">
+          <div className="overflow-auto mx-auto w-full max-w-sm">
             <DrawerHeader>
               <DrawerTitle>Select Parking Space</DrawerTitle>
               <DrawerDescription>
@@ -365,7 +365,7 @@ const DijkstraMap = ({ parkingSpaces }: { parkingSpaces: ParkingSpace[] }) => {
               </DrawerDescription>
             </DrawerHeader>
             <div className="p-4 pb-0">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid  gap-3">
                 {parkingSpaces.map(
                   ({
                     id,

@@ -185,6 +185,7 @@ const AdminCreationForm = () => {
                 <SelectContent>
                   <SelectItem value="ADMIN">ADMIN</SelectItem>
                   <SelectItem value="SUPERADMIN">SUPERADMIN</SelectItem>
+                  <SelectItem value="SECURITY">SECURITY</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

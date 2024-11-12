@@ -14,34 +14,37 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { collegeCreationSchema, collegeSchema } from "@/lib/zod";
+import { visitorCardCreationSchema, visitorCardUpdateSchema } from "@/lib/zod";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "zsa-react";
-import { updateCollegeAction } from "./actions";
 import { useSession } from "next-auth/react";
+import { Dispatch, SetStateAction } from "react";
+import { createVisitorCardAction, updateVisitorCardAction } from "./actions";
 
-const CollegeUpdateForm = ({
-  id: collegeId,
-  collegeName,
-}: z.infer<typeof collegeSchema>) => {
+const VisitorCardUpdateForm = ({
+  cardId,
+  cardNumber,
+  setOpen,
+}: {
+  cardId: string;
+  cardNumber: string;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const session = useSession();
+  const { isPending, execute } = useServerAction(updateVisitorCardAction);
 
-  const { isPending, execute } = useServerAction(updateCollegeAction);
-
-  const form = useForm<z.infer<typeof collegeCreationSchema>>({
-    resolver: zodResolver(collegeCreationSchema),
+  const form = useForm<z.infer<typeof visitorCardUpdateSchema>>({
+    resolver: zodResolver(visitorCardUpdateSchema),
     defaultValues: {
-      collegeName: collegeName,
+      cardNumber: cardNumber,
+      cardId: cardId,
+      auditAdminId: session.data?.user.id,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof collegeCreationSchema>) => {
+  const onSubmit = async (values: z.infer<typeof visitorCardUpdateSchema>) => {
     try {
-      const [data, err] = await execute({
-        auditAdminId: session.data?.user.id as string,
-        collegeId,
-        collegeName: values.collegeName,
-      });
+      const [data, err] = await execute(values);
 
       if (err) {
         let errorMessage = "An unknown error occurred";
@@ -68,10 +71,11 @@ const CollegeUpdateForm = ({
       if (data) {
         toast({
           title: "Success!",
-          description: "College updated successfully.",
+          description: "Visitor Card updated",
         });
 
         form.reset();
+        setOpen(false);
       }
     } catch (error: any) {
       toast({
@@ -88,15 +92,15 @@ const CollegeUpdateForm = ({
       <form onSubmit={form.handleSubmit(onSubmit)} className="h-full space-y-6">
         <FormField
           control={form.control}
-          name="collegeName"
+          name="cardNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>College Name</FormLabel>
+              <FormLabel>Card ID</FormLabel>
               <FormControl>
                 <Input
                   {...field}
                   className="w-full"
-                  placeholder="e.g CS"
+                  placeholder="e.g 25"
                   type="text"
                   disabled={isPending}
                 />
@@ -113,4 +117,4 @@ const CollegeUpdateForm = ({
   );
 };
 
-export default CollegeUpdateForm;
+export default VisitorCardUpdateForm;

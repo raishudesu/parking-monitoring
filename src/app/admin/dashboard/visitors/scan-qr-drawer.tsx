@@ -20,19 +20,19 @@ const ScanQrDrawer = () => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        {/*<div className="py-6 w-full h-full bg-background border border-primary hover:bg-slate-100 ease-in-out transition-colors rounded-xl flex flex-col gap-6 justify-center items-center">*/}
-        {/*  <ScanLine size={100} className="text-primary" />*/}
-        {/*  <span className="text-xl font-bold">Scan QR</span>*/}
-        {/*</div>*/}
-        <Button className="flex gap-2">
+        <div className="py-6 w-full h-full bg-background border border-primary hover:bg-slate-100 dark:hover:bg-zinc-900 ease-in-out transition-colors rounded-xl flex flex-col gap-6 justify-center items-center">
+          <ScanLine size={100} className="text-primary" />
+          <span className="text-xl font-bold">Scan Visitor Pass</span>
+        </div>
+        {/* <Button className="flex gap-2">
           <ScanLine size={18} />
           Scan QR
-        </Button>
+        </Button> */}
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
-            <DrawerTitle>Scan Parking QR Code</DrawerTitle>
+            <DrawerTitle>Scan Visitor Pass QR</DrawerTitle>
             <DrawerDescription>
               Place the QR code inside the frame to scan.
             </DrawerDescription>
