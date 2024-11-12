@@ -55,7 +55,7 @@ export const adminAccountSchema = z.object({
   lastName: z.string(),
   corpEmail: z.string(),
   password: z.string().min(8),
-  role: z.enum(["ADMIN", "SUPERADMIN"]),
+  role: z.enum(["ADMIN", "SUPERADMIN", "SECURITY"]),
 });
 
 export const parkingSpaceSchema = z.object({
@@ -106,7 +106,7 @@ export const adminUpdateSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   corpEmail: z.string(),
-  role: z.enum(["ADMIN", "SUPERADMIN"]),
+  role: z.enum(["ADMIN", "SUPERADMIN", "SECURITY"]),
 });
 
 export const adminUpdateFormSchema = z.object({

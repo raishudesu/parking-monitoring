@@ -37,6 +37,7 @@ import {
 import type { VisitorPassCard } from "@prisma/client";
 import { parseDate } from "@/lib/utils";
 import VisitorCardCreationDialog from "./visitor-card-creation-dialog";
+import ShowQRCardDialog from "./show-card-qr-dialog";
 
 export const columns: ColumnDef<VisitorPassCard>[] = [
   // {
@@ -82,11 +83,11 @@ export const columns: ColumnDef<VisitorPassCard>[] = [
             parkingSpaceId={row.original.id}
             data={updateFormData}
           />
-          <DeleteParkingSpaceDialog parkingSpaceId={row.original.id} />
-          <ShowQrDialog
-            parkingId={row.original.id}
-            parkingName={row.original.name}
-          /> */}
+          <DeleteParkingSpaceDialog parkingSpaceId={row.original.id} /> */}
+          <ShowQRCardDialog
+            cardId={row.original.id}
+            cardNumber={row.original.cardNumber}
+          />
         </div>
       );
     },
