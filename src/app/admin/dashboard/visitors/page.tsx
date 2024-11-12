@@ -1,9 +1,16 @@
-import { getAllVisitorSession } from "@/data-access/visitors";
 import React from "react";
 import { VisitorSessionsTable } from "./visitor-sessions-table";
+import {
+  getAllVisitorCardsUseCase,
+  getAllVisitorSessionUseCase,
+} from "@/use-cases/visitors";
+import { VisitorCardsTable } from "./visitor-cards-table";
 
 const VisitorsPage = async () => {
-  const visitorSessions = await getAllVisitorSession();
+  const [visitorSessions, visitorCards] = await Promise.all([
+    getAllVisitorSessionUseCase(),
+    getAllVisitorCardsUseCase(),
+  ]);
 
   console.log(visitorSessions);
   return (
@@ -16,9 +23,13 @@ const VisitorsPage = async () => {
           Visitors
         </h1>
       </div>
-      <h2 className="text-muted-foreground scroll-m-20 text-xl tracking-tight lg:text-2xl">
+      <p className="text-muted-foreground scroll-m-20 text-xl tracking-tight lg:text-2xl">
+        Visitor Pass Cards
+      </p>
+      <VisitorCardsTable data={visitorCards} />
+      <p className="text-muted-foreground scroll-m-20 text-xl tracking-tight lg:text-2xl">
         Visitor Sessions
-      </h2>
+      </p>
       <VisitorSessionsTable data={visitorSessions} />
     </div>
   );

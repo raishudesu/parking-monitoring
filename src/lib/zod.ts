@@ -119,6 +119,11 @@ export const collegeCreationSchema = z.object({
   auditAdminId: z.string().optional(),
 });
 
+export const visitorCardCreationSchema = z.object({
+  cardNumber: z.string(),
+  auditAdminId: z.string().optional(),
+});
+
 export const auditLogSchema = z.object({
   action: z.enum([
     "CREATE",
@@ -131,7 +136,7 @@ export const auditLogSchema = z.object({
   table: z.enum([
     "ADMIN",
     "ACCOUNT",
-    "VISITORACCOUNT",
+    "VISITORPASSCARD",
     "PARKINGSPACE",
     "COLLEGE",
   ]),

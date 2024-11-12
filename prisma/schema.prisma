@@ -12,6 +12,7 @@ datasource db {
 enum AdminRole {
   ADMIN
   SUPERADMIN
+  SECURITY
 }
 
 enum UserRole {
@@ -31,7 +32,7 @@ enum AduitAction {
 enum AuditTable {
   ADMIN
   ACCOUNT
-  VISITORACCOUNT
+  VISITORPASSCARD
   PARKINGSPACE
   COLLEGE
 }
@@ -101,7 +102,7 @@ model GPOViolation {
 
 model VisitorPassCard {
   id         String           @id @default(uuid())
-  cardNumber Int
+  cardNumber Int              @unique
   createdAt  DateTime         @default(now())
   sessions   VisitorSession[]
 }

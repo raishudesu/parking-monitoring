@@ -10,6 +10,12 @@ export const createVisitorCard = async (cardNumber: number) => {
   return card;
 };
 
+export const getAllVisitorCards = async () => {
+  const cards = await prisma.visitorPassCard.findMany();
+
+  return cards;
+};
+
 export const deleteVisitorCard = async (cardId: string) => {
   await prisma.visitorPassCard.delete({
     where: {

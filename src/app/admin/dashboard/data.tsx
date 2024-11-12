@@ -1,4 +1,5 @@
 import {
+  BookUser,
   Building2,
   ChartColumnIncreasing,
   History,
@@ -51,6 +52,11 @@ export const sideNavLinks = [
     name: "Violations",
     icon: <TriangleAlert />,
     link: "/admin/dashboard/violations",
+  },
+  {
+    name: "Visitors",
+    icon: <BookUser />,
+    link: "/admin/dashboard/visitors",
   },
   {
     name: "Analytics",

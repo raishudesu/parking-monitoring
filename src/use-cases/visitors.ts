@@ -1,14 +1,31 @@
+import { createAuditLog } from "@/data-access/audit-log";
 import {
   createVisitorCard,
   createVisitorSession,
   deleteVisitorCard,
+  getAllVisitorCards,
   getAllVisitorSession,
 } from "@/data-access/visitors";
 
-export const createVisitorCardUseCase = async (cardNumber: number) => {
-  const card = await createVisitorCard(cardNumber);
+export const createVisitorCardUseCase = async (
+  cardNumber: string,
+  auditAdminId: string
+) => {
+  const card = await createVisitorCard(Number(cardNumber));
+
+  await createAuditLog({
+    action: "CREATE",
+    table: "VISITORPASSCARD",
+    adminId: auditAdminId,
+  });
 
   return card;
+};
+
+export const getAllVisitorCardsUseCase = async () => {
+  const cards = await getAllVisitorCards();
+
+  return cards;
 };
 
 export const deleteVisitorCardUseCase = async (cardId: string) => {
