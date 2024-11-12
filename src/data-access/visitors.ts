@@ -16,6 +16,19 @@ export const getAllVisitorCards = async () => {
   return cards;
 };
 
+export const updateVisitorCard = async (cardId: string, cardNumber: number) => {
+  const card = await prisma.visitorPassCard.update({
+    where: {
+      id: cardId,
+    },
+    data: {
+      cardNumber,
+    },
+  });
+
+  return card;
+};
+
 export const deleteVisitorCard = async (cardId: string) => {
   await prisma.visitorPassCard.delete({
     where: {

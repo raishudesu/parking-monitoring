@@ -123,6 +123,11 @@ export const visitorCardCreationSchema = z.object({
   cardNumber: z.string(),
   auditAdminId: z.string().optional(),
 });
+export const visitorCardUpdateSchema = z.object({
+  cardId: z.string(),
+  cardNumber: z.string(),
+  auditAdminId: z.string().optional(),
+});
 
 export const auditLogSchema = z.object({
   action: z.enum([

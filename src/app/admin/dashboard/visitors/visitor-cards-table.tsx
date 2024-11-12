@@ -38,6 +38,8 @@ import type { VisitorPassCard } from "@prisma/client";
 import { parseDate } from "@/lib/utils";
 import VisitorCardCreationDialog from "./visitor-card-creation-dialog";
 import ShowQRCardDialog from "./show-card-qr-dialog";
+import VisitorCardUpdateDialog from "./visitor-card-update-dialog";
+import VisitorCardDeletionDialog from "./visitor-card-deletion-dialog";
 
 export const columns: ColumnDef<VisitorPassCard>[] = [
   // {
@@ -79,11 +81,11 @@ export const columns: ColumnDef<VisitorPassCard>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex gap-2">
-          {/* <UpdateParkingSpaceDialog
-            parkingSpaceId={row.original.id}
-            data={updateFormData}
+          <VisitorCardUpdateDialog
+            cardId={row.original.id}
+            cardNumber={String(row.original.cardNumber)}
           />
-          <DeleteParkingSpaceDialog parkingSpaceId={row.original.id} /> */}
+          <VisitorCardDeletionDialog cardId={row.original.id} />
           <ShowQRCardDialog
             cardId={row.original.id}
             cardNumber={row.original.cardNumber}

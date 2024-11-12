@@ -1,12 +1,20 @@
 "use server";
 
-import { collegeCreationSchema, visitorCardCreationSchema } from "@/lib/zod";
+import {
+  collegeCreationSchema,
+  visitorCardCreationSchema,
+  visitorCardUpdateSchema,
+} from "@/lib/zod";
 import {
   createCollegeUseCase,
   deleteCollegeByIdUseCase,
   updateCollegeByIdUseCase,
 } from "@/use-cases/colleges";
-import { createVisitorCardUseCase } from "@/use-cases/visitors";
+import {
+  createVisitorCardUseCase,
+  deleteVisitorCardUseCase,
+  updateVisitorCardUseCase,
+} from "@/use-cases/visitors";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createServerAction } from "zsa";
@@ -24,40 +32,34 @@ export const createVisitorCardAction = createServerAction()
     return college;
   });
 
-// export const updateCollegeAction = createServerAction()
-//   .input(
-//     z.object({
-//       auditAdminId: z.string(),
-//       collegeId: z.string(),
-//       collegeName: z.string(),
-//     })
-//   )
-//   .handler(async ({ input }) => {
-//     const res = await updateCollegeByIdUseCase(
-//       input.auditAdminId,
-//       input.collegeId,
-//       input.collegeName
-//     );
+export const updateVisitorCardAction = createServerAction()
+  .input(visitorCardUpdateSchema)
+  .handler(async ({ input }) => {
+    const res = await updateVisitorCardUseCase(
+      input.cardId,
+      input.cardNumber,
+      input.auditAdminId as string
+    );
 
-//     revalidatePath("/admin/dashboard/colleges");
+    revalidatePath("/admin/dashboard/colleges");
 
-//     return res;
-//   });
+    return res;
+  });
 
-// export const deleteCollegeAction = createServerAction()
-//   .input(
-//     z.object({
-//       auditAdminId: z.string(),
-//       collegeId: z.string(),
-//     })
-//   )
-//   .handler(async ({ input }) => {
-//     const res = await deleteCollegeByIdUseCase(
-//       input.auditAdminId,
-//       input.collegeId
-//     );
+export const deleteCollegeAction = createServerAction()
+  .input(
+    z.object({
+      cardId: z.string(),
+      auditAdminId: z.string(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const res = await deleteVisitorCardUseCase(
+      input.cardId,
+      input.auditAdminId
+    );
 
-//     revalidatePath("/admin/dashboard/colleges");
+    revalidatePath("/admin/dashboard/colleges");
 
-//     return res;
-//   });
+    return res;
+  });

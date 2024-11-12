@@ -5,6 +5,7 @@ import {
   deleteVisitorCard,
   getAllVisitorCards,
   getAllVisitorSession,
+  updateVisitorCard,
 } from "@/data-access/visitors";
 
 export const createVisitorCardUseCase = async (
@@ -28,8 +29,33 @@ export const getAllVisitorCardsUseCase = async () => {
   return cards;
 };
 
-export const deleteVisitorCardUseCase = async (cardId: string) => {
+export const updateVisitorCardUseCase = async (
+  cardId: string,
+  cardNumber: string,
+  auditAdminId: string
+) => {
+  const card = await updateVisitorCard(cardId, Number(cardNumber));
+
+  await createAuditLog({
+    action: "UPDATE",
+    table: "VISITORPASSCARD",
+    adminId: auditAdminId,
+  });
+
+  return card;
+};
+
+export const deleteVisitorCardUseCase = async (
+  cardId: string,
+  auditAdminId: string
+) => {
   const res = await deleteVisitorCard(cardId);
+
+  await createAuditLog({
+    action: "DELETE",
+    table: "VISITORPASSCARD",
+    adminId: auditAdminId,
+  });
 
   return res;
 };
