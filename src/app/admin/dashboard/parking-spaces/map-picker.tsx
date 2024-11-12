@@ -12,11 +12,14 @@ const center = {
   lng: 118.7332374,
 };
 
-const MapPicker: React.FC<MapPickerProps> = ({ onLocationPicked }) => {
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-  });
+const MapPicker: React.FC<MapPickerProps> = ({
+  onLocationPicked,
+  isLoaded,
+}) => {
+  // const { isLoaded } = useJsApiLoader({
+  //   id: "google-map-script",
+  //   googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+  // });
 
   const [map, setMap] = React.useState<google.maps.Map | null>(null);
   const [marker, setMarker] = React.useState<MarkerPosition | null>(null);

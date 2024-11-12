@@ -165,6 +165,7 @@ model ParkingSpace {
   visitorSessions VisitorSession[]
   addedAt         DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+  polygon         String?
   isActive        Boolean          @default(true)
 }
 

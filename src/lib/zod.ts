@@ -72,6 +72,7 @@ export const parkingSpaceSchema = z.object({
     "PWD",
     "VIP",
   ]),
+  polygon: z.string().or(z.null()),
   maxCapacity: z.number(),
   imageUrl: z.string().optional(),
 });
@@ -81,6 +82,7 @@ export const parkingSpaceFormSchema = z.object({
   description: z.string(),
   longitude: z.string(),
   latitude: z.string(),
+  polygon: z.string().or(z.null()),
   spaceType: z.enum([
     "MOTORCYCLE",
     "TRICYCLE",
@@ -89,6 +91,7 @@ export const parkingSpaceFormSchema = z.object({
     "PWD",
     "VIP",
   ]),
+
   maxCapacity: z.string(),
   imageUrl: z.string().optional(),
 });

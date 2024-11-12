@@ -137,6 +137,7 @@ export const columns: ColumnDef<ParkingSpace>[] = [
         latitude,
         spaceType,
         maxCapacity,
+        polygon,
         // imageUrl,
       } = row.original;
 
@@ -147,6 +148,7 @@ export const columns: ColumnDef<ParkingSpace>[] = [
         latitude,
         spaceType,
         maxCapacity: maxCapacity.toString(),
+        polygon,
         // imageUrl: imageUrl as string,
       };
 

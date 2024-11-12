@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/providers/session-provider";
 import { NotificationProvider } from "@/providers/notification-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { GoogleMapsProvider } from "@/providers/google-maps-provider";
 
 // const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({ weight: "500", subsets: ["latin"] });
@@ -42,8 +43,10 @@ export default async function RootLayout({
         >
           <AuthProvider>
             <NotificationProvider>
-              <main>{children}</main>
-              <Toaster />
+              <GoogleMapsProvider>
+                <main>{children}</main>
+                <Toaster />
+              </GoogleMapsProvider>
             </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>

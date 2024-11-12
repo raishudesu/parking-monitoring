@@ -44,7 +44,7 @@ export const getOngoingGpoSession = async (accountId: string) => {
     },
   });
 
-  console.log(currentGpoSession);
+  // console.log(currentGpoSession);
 
   return currentGpoSession;
 };
