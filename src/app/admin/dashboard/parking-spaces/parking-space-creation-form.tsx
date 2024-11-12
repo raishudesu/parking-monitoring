@@ -224,7 +224,7 @@ const ParkingSpaceCreationForm = () => {
                   <SelectItem value="MOTORCYCLE">MOTORCYCLE</SelectItem>
                   <SelectItem value="TRICYCLE">TRICYCLE</SelectItem>
                   <SelectItem value="FOURWHEEL">FOURWHEEL</SelectItem>
-                  <SelectItem value="HYBRID">HYBRID</SelectItem>
+                  <SelectItem value="MIXED">MIXED</SelectItem>
                   <SelectItem value="PWD">PWD</SelectItem>
                   <SelectItem value="VIP">VIP</SelectItem>
                 </SelectContent>

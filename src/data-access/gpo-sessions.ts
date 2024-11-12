@@ -74,6 +74,7 @@ export const getGpoSessionsByGpoId = async (accountId: string) => {
     where: {
       accountId,
     },
+    take: 10,
     include: {
       parkingSpace: true,
     },
