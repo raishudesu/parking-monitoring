@@ -75,7 +75,18 @@ export const endVisitorSession = async (sessionId: string) => {
 };
 
 export const getAllVisitorSession = async () => {
-  const sessions = await prisma.visitorSession.findMany();
+  const sessions = await prisma.visitorSession.findMany({
+    include: {
+      visitorPassCard: {
+        select: {
+          cardNumber: true,
+        },
+      },
+    },
+    orderBy: {
+      visitTime: "desc",
+    },
+  });
 
   return sessions;
 };

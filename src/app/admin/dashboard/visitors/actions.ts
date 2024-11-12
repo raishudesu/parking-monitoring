@@ -77,10 +77,10 @@ export const scanVisitorCardAction = createServerAction()
     const currentSession = await getOngoingVisitorSessionUseCase(input.cardId);
 
     if (!currentSession) {
-      await createVisitorSessionUseCase(input.cardId);
+      const res = await createVisitorSessionUseCase(input.cardId);
+      return res;
     } else {
-      await endVisitorSessionUseCase(input.cardId);
+      const res = await endVisitorSessionUseCase(input.cardId);
+      return res;
     }
-
-    return currentSession;
   });

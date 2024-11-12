@@ -45,7 +45,11 @@ export type AuditLogsData = AuditLog & {
   >;
 };
 
-export type VisitorSessionData = VisitorSession;
+export type VisitorSessionData = VisitorSession & {
+  visitorPassCard: {
+    cardNumber: number;
+  };
+};
 
 const columnHelper = createColumnHelper();
 
@@ -79,6 +83,15 @@ export const columns: ColumnDef<VisitorSessionData>[] = [
   //       />
   //     ),
   //   },
+  {
+    accessorKey: "cardNumber",
+    header: "Card Number",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        #{row.original.visitorPassCard.cardNumber}
+      </div>
+    ),
+  },
   {
     accessorKey: "visitTime",
     header: "Visit Time",

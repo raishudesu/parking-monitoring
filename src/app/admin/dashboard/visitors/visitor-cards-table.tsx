@@ -66,7 +66,7 @@ export const columns: ColumnDef<VisitorPassCard>[] = [
     accessorKey: "cardNumber",
     header: "Card #",
     cell: ({ row }) => (
-      <div className="capitalize">{row.original.cardNumber}</div>
+      <div className="capitalize">#{row.original.cardNumber}</div>
     ),
   },
   {
