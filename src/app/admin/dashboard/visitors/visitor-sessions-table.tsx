@@ -95,6 +95,11 @@ export const columns: ColumnDef<VisitorSessionData>[] = [
       </div>
     ),
   },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => <div>{row.original.status}</div>,
+  },
 ];
 
 export function VisitorSessionsTable({ data }: { data: VisitorSessionData[] }) {

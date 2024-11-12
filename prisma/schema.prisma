@@ -112,6 +112,7 @@ model VisitorSession {
   visitTime       DateTime        @default(now())
   exitTime        DateTime?
   visitorPassId   String
+  status          SessionStatus   @default(ONGOING)
   visitorPassCard VisitorPassCard @relation(fields: [visitorPassId], references: [id])
 }
 

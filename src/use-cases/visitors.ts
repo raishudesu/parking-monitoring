@@ -1,10 +1,13 @@
 import { createAuditLog } from "@/data-access/audit-log";
+import { getOngoingGpoSession } from "@/data-access/gpo-sessions";
 import {
   createVisitorCard,
   createVisitorSession,
   deleteVisitorCard,
+  endVisitorSession,
   getAllVisitorCards,
   getAllVisitorSession,
+  getOngoingVisitorSession,
   updateVisitorCard,
 } from "@/data-access/visitors";
 
@@ -61,7 +64,31 @@ export const deleteVisitorCardUseCase = async (
 };
 
 export const createVisitorSessionUseCase = async (cardId: string) => {
+  // include func checker if theres ongoing session via cardId
+  const currentSession = await getOngoingVisitorSession(cardId);
+
+  if (currentSession)
+    throw new Error("There is an ongoing session with this card.");
+
   const session = await createVisitorSession(cardId);
+
+  return session;
+};
+
+export const getOngoingVisitorSessionUseCase = async (cardId: string) => {
+  const session = await getOngoingVisitorSession(cardId);
+
+  return session;
+};
+
+export const endVisitorSessionUseCase = async (cardId: string) => {
+  // check current session first to get its ID
+  const currentSession = await getOngoingVisitorSession(cardId);
+
+  if (!currentSession)
+    throw new Error("There is no session ongoing with this card.");
+
+  const session = await endVisitorSession(currentSession.id);
 
   return session;
 };

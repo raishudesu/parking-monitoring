@@ -12,7 +12,10 @@ import {
 } from "@/use-cases/colleges";
 import {
   createVisitorCardUseCase,
+  createVisitorSessionUseCase,
   deleteVisitorCardUseCase,
+  endVisitorSessionUseCase,
+  getOngoingVisitorSessionUseCase,
   updateVisitorCardUseCase,
 } from "@/use-cases/visitors";
 import { revalidatePath } from "next/cache";
@@ -62,4 +65,22 @@ export const deleteCollegeAction = createServerAction()
     revalidatePath("/admin/dashboard/colleges");
 
     return res;
+  });
+
+export const scanVisitorCardAction = createServerAction()
+  .input(
+    z.object({
+      cardId: z.string(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const currentSession = await getOngoingVisitorSessionUseCase(input.cardId);
+
+    if (!currentSession) {
+      await createVisitorSessionUseCase(input.cardId);
+    } else {
+      await endVisitorSessionUseCase(input.cardId);
+    }
+
+    return currentSession;
   });

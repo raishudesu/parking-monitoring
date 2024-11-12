@@ -4,6 +4,7 @@ import Link from "next/link";
 import { sideNavLinks } from "./data";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
+import { useSession } from "next-auth/react";
 
 const NavLinks = ({
   open,
@@ -13,6 +14,8 @@ const NavLinks = ({
   setOpen?: Dispatch<SetStateAction<boolean>>;
 }) => {
   const path = usePathname();
+  const { data: session } = useSession();
+  const userRole = session?.user?.role;
 
   const handleClick = () => {
     if (open && setOpen) {
@@ -20,9 +23,19 @@ const NavLinks = ({
     }
   };
 
+  // Filter links based on user role
+  const filteredLinks = sideNavLinks.filter(({ name }) => {
+    if (userRole === "SECURITY") {
+      // Only show "Visitors" and "Settings" for SECURITY role
+      return ["Visitors", "Settings"].includes(name);
+    }
+    // Show all links for other roles
+    return true;
+  });
+
   return (
     <>
-      {sideNavLinks.map(({ name, icon, link }) => (
+      {filteredLinks.map(({ name, icon, link }) => (
         <li key={name}>
           <Link
             onClick={handleClick}
@@ -34,7 +47,6 @@ const NavLinks = ({
             }`}
           >
             {icon}
-
             {name}
           </Link>
         </li>

@@ -49,6 +49,31 @@ export const createVisitorSession = async (cardId: string) => {
   return visitorSession;
 };
 
+export const getOngoingVisitorSession = async (cardId: string) => {
+  const session = await prisma.visitorSession.findFirst({
+    where: {
+      visitorPassId: cardId,
+      status: "ONGOING",
+    },
+  });
+
+  return session;
+};
+
+export const endVisitorSession = async (sessionId: string) => {
+  const visitorSession = await prisma.visitorSession.update({
+    where: {
+      id: sessionId,
+    },
+    data: {
+      exitTime: new Date(),
+      status: "ENDED",
+    },
+  });
+
+  return visitorSession;
+};
+
 export const getAllVisitorSession = async () => {
   const sessions = await prisma.visitorSession.findMany();
 
