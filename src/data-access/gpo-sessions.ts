@@ -44,7 +44,7 @@ export const getOngoingGpoSession = async (accountId: string) => {
     },
   });
 
-  console.log(currentGpoSession);
+  // console.log(currentGpoSession);
 
   return currentGpoSession;
 };
@@ -74,6 +74,7 @@ export const getGpoSessionsByGpoId = async (accountId: string) => {
     where: {
       accountId,
     },
+    take: 10,
     include: {
       parkingSpace: true,
     },

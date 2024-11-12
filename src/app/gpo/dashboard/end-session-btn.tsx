@@ -7,6 +7,7 @@ import { toast } from "@/components/ui/use-toast";
 import { SquareParkingOff } from "lucide-react";
 import { useNotification } from "@/hooks/notification-hook";
 import { useEffect } from "react";
+import Timer from "./parking-timer";
 
 export const TIMER_STORAGE_KEY = "activeParkingTimer";
 
@@ -83,17 +84,22 @@ const EndSessionBtn = ({
   };
 
   return (
-    <Button
-      onClick={onEndSession}
-      disabled={isPending}
-      className="p-0 self-stretch lg:self-start h-full w-full"
-      variant={"ghost"}
-    >
-      <div className="py-6 w-full h-full bg-background border border-primary hover:bg-slate-100 dark:hover:bg-zinc-900 ease-in-out transition-colors rounded-xl flex flex-col gap-6 justify-center items-center">
-        <SquareParkingOff size={100} className="text-primary" />
-        <span className="text-xl font-bold">End Session</span>
+    <>
+      <div className="py-6">
+        <Timer endTime={shouldEndAt} />
       </div>
-    </Button>
+      <Button
+        onClick={onEndSession}
+        disabled={isPending}
+        className="p-0 self-stretch lg:self-start h-full w-full"
+        variant={"ghost"}
+      >
+        <div className="py-6 w-full h-full bg-background border border-primary hover:bg-slate-100 dark:hover:bg-zinc-900 ease-in-out transition-colors rounded-xl flex flex-col gap-6 justify-center items-center">
+          <SquareParkingOff size={100} className="text-primary" />
+          <span className="text-xl font-bold">End Session</span>
+        </div>
+      </Button>
+    </>
   );
 };
 

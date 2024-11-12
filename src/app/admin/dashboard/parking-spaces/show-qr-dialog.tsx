@@ -92,13 +92,15 @@ const ShowQrDialog = ({
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center gap-4">
-          <QRCode
-            size={256}
-            style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-            value={parkingId}
-            viewBox="0 0 256 256"
-            className="qr-code-svg"
-          />
+          <div className="bg-white p-4 w-full">
+            <QRCode
+              size={256}
+              style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+              value={parkingId}
+              viewBox="0 0 256 256"
+              className="qr-code-svg"
+            />
+          </div>
           <Button
             onClick={handleDownload}
             className="flex gap-2 w-full"

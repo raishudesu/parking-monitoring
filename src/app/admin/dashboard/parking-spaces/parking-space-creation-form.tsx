@@ -27,8 +27,13 @@ import { createParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
 import MapPicker from "./map-picker";
+import MapPolygonCreator from "./map-polygon-creator";
+import { useJsApiLoader } from "@react-google-maps/api";
+import { useGoogleMaps } from "@/providers/google-maps-provider";
 
 const ParkingSpaceCreationForm = () => {
+  const { isLoaded, loadError } = useGoogleMaps();
+
   const session = useSession();
 
   const { isPending, execute } = useServerAction(createParkingSpaceAction);
@@ -43,6 +48,7 @@ const ParkingSpaceCreationForm = () => {
       spaceType: "FOURWHEEL",
       maxCapacity: "",
       imageUrl: "",
+      polygon: "",
     },
   });
 
@@ -52,6 +58,7 @@ const ParkingSpaceCreationForm = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof parkingSpaceFormSchema>) => {
+    // console.log(values);
     try {
       const newValues: z.infer<typeof parkingSpaceSchema> = {
         ...values,
@@ -143,8 +150,12 @@ const ParkingSpaceCreationForm = () => {
         />
         <FormItem>
           <FormLabel>Location</FormLabel>
-          <MapPicker onLocationPicked={handleLocationPicked} />
+          <MapPicker
+            onLocationPicked={handleLocationPicked}
+            isLoaded={isLoaded}
+          />
         </FormItem>
+
         <FormField
           control={form.control}
           name="longitude"
@@ -183,6 +194,16 @@ const ParkingSpaceCreationForm = () => {
             </FormItem>
           )}
         />
+        <FormItem>
+          <FormLabel>Polygon </FormLabel>
+          <MapPolygonCreator
+            onLocationPicked={handleLocationPicked}
+            onPolygonComplete={(polygonString) => {
+              form.setValue("polygon", polygonString);
+            }}
+            isLoaded={isLoaded}
+          />
+        </FormItem>
         <FormField
           control={form.control}
           name="spaceType"
@@ -203,7 +224,7 @@ const ParkingSpaceCreationForm = () => {
                   <SelectItem value="MOTORCYCLE">MOTORCYCLE</SelectItem>
                   <SelectItem value="TRICYCLE">TRICYCLE</SelectItem>
                   <SelectItem value="FOURWHEEL">FOURWHEEL</SelectItem>
-                  <SelectItem value="HYBRID">HYBRID</SelectItem>
+                  <SelectItem value="MIXED">MIXED</SelectItem>
                   <SelectItem value="PWD">PWD</SelectItem>
                   <SelectItem value="VIP">VIP</SelectItem>
                 </SelectContent>

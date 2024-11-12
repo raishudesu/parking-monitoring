@@ -3,6 +3,7 @@ import { ParkingSpaceTable } from "./parking-space-table";
 import { ParkingSpace } from "@prisma/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import DijkstraMap from "@/app/gpo/dashboard/map/dijkstra-map";
 
 const ParkingSpacesPage = async () => {
   let parkingSpaces: ParkingSpace[] | null = null;
@@ -34,7 +35,13 @@ const ParkingSpacesPage = async () => {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : parkingSpaces ? (
-        <ParkingSpaceTable data={parkingSpaces} />
+        <>
+          <ParkingSpaceTable data={parkingSpaces} />
+          <h2 className="py-6 text-muted-foreground scroll-m-20 text-2xl tracking-tight lg:text-3xl">
+            Parking Space Visualization
+          </h2>
+          <DijkstraMap parkingSpaces={parkingSpaces} />
+        </>
       ) : (
         <Alert>
           <AlertTriangle className="h-4 w-4" />

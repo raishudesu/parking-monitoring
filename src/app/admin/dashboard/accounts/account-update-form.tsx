@@ -122,7 +122,7 @@ const AccountUpdateForm = ({
         values.password
       );
 
-      console.log(res);
+      // console.log(res);
     }
   };
 

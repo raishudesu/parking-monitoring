@@ -28,6 +28,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dispatch, SetStateAction } from "react";
 import { useSession } from "next-auth/react";
 import MapPicker from "./map-picker";
+import MapPolygonCreator from "./map-polygon-creator";
+import { useGoogleMaps } from "@/providers/google-maps-provider";
 
 const ParkingSpaceUpdateForm = ({
   parkingSpaceId,
@@ -38,6 +40,12 @@ const ParkingSpaceUpdateForm = ({
   data: z.infer<typeof parkingSpaceFormSchema>;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  // const { isLoaded } = useJsApiLoader({
+  //   id: "google-map-script",
+  //   googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+  // });
+  const { isLoaded, loadError } = useGoogleMaps();
+
   const session = useSession();
 
   const { isPending, execute } = useServerAction(updateParkingSpaceAction);
@@ -51,6 +59,7 @@ const ParkingSpaceUpdateForm = ({
       latitude: data.latitude,
       spaceType: data.spaceType,
       maxCapacity: data.maxCapacity,
+      polygon: data.polygon,
     },
   });
 
@@ -152,7 +161,10 @@ const ParkingSpaceUpdateForm = ({
         />
         <FormItem>
           <FormLabel>Location</FormLabel>
-          <MapPicker onLocationPicked={handleLocationPicked} />
+          <MapPicker
+            onLocationPicked={handleLocationPicked}
+            isLoaded={isLoaded}
+          />
         </FormItem>
         <FormField
           control={form.control}
@@ -192,6 +204,16 @@ const ParkingSpaceUpdateForm = ({
             </FormItem>
           )}
         />
+        <FormItem>
+          <FormLabel>Polygon </FormLabel>
+          <MapPolygonCreator
+            onLocationPicked={handleLocationPicked}
+            onPolygonComplete={(polygonString) => {
+              form.setValue("polygon", polygonString);
+            }}
+            isLoaded={isLoaded}
+          />
+        </FormItem>
         <FormField
           control={form.control}
           name="spaceType"
@@ -212,7 +234,7 @@ const ParkingSpaceUpdateForm = ({
                   <SelectItem value="MOTORCYCLE">MOTORCYCLE</SelectItem>
                   <SelectItem value="TRICYCLE">TRICYCLE</SelectItem>
                   <SelectItem value="FOURWHEEL">FOURWHEEL</SelectItem>
-                  <SelectItem value="HYBRID">HYBRID</SelectItem>
+                  <SelectItem value="MIXED">MIXED</SelectItem>
                   <SelectItem value="PWD">PWD</SelectItem>
                   <SelectItem value="VIP">VIP</SelectItem>
                 </SelectContent>
