@@ -57,9 +57,10 @@ const ShowQRCardDialog = ({
               const imageUrl = URL.createObjectURL(blob);
               const link = document.createElement("a");
               link.href = imageUrl;
-              link.download = `${cardNumber
-                .toLowerCase()
-                .replace(/\s+/g, "-")}-qr-code.png`;
+              link.download = `VISITOR-PASS-#${String(cardNumber).replace(
+                /\s+/g,
+                "-"
+              )}-qr-code.png`;
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);
