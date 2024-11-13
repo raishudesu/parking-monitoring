@@ -15,9 +15,9 @@ const GpoDashboardLayout = async ({ children }: { children: ReactNode }) => {
   return (
     <div className="w-full flex h-screen">
       <SideNav />
-      <div className="w-full">
+      <div className="w-full h-full overflow-y-scroll">
         <SideSheet />
-        <div className="h-full md:overflow-y-scroll bg-slate-50">
+        <div className="min-h-screen bg-slate-50 dark:bg-zinc-800">
           {children}
         </div>
       </div>

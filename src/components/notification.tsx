@@ -1,106 +1,68 @@
 "use client";
-import { urlB64ToUint8Array } from "@/lib/utils";
-import { BellOff, BellRing } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 import { toast } from "./ui/use-toast";
-import { Button } from "./ui/button";
+import { Switch } from "./ui/switch";
 
 export default function NotificationRequest({ userId }: { userId: string }) {
-  const [notificationPermission, setNotificationPermission] = useState<
-    "granted" | "denied" | "default"
+  const [permission, setPermission] = useState<
+    "granted" | "default" | "denied"
   >("default");
 
-  // Check permission status when component mounts
+  // Check initial subscription status when component mounts
   useEffect(() => {
-    setNotificationPermission(Notification.permission);
+    Notification.requestPermission((permission) => {
+      setPermission(permission);
+    });
   }, []);
 
-  const showNotification = () => {
-    if ("Notification" in window) {
-      Notification.requestPermission().then((permission) => {
-        setNotificationPermission(permission);
-        if (permission === "granted") {
-          subscribeUser();
-        } else {
-          toast({ title: "Please go to settings and enable notifications." });
-        }
-      });
-    } else {
+  const handleToggle = async (checked: boolean) => {
+    if (checked) {
+      await enableNotifications();
+    }
+  };
+
+  const enableNotifications = async () => {
+    if (!("Notification" in window)) {
       toast({ title: "This browser does not support notifications." });
+      return;
     }
-  };
 
-  const subscribeUser = async () => {
-    if ("serviceWorker" in navigator) {
-      try {
-        // Check if service worker is already registered
-        const registration = await navigator.serviceWorker.getRegistration();
-        const swRegistration =
-          registration || (await navigator.serviceWorker.register("/sw.js"));
-        // Subscribe to push notifications
-        await generateSubscribeEndPoint(swRegistration);
-      } catch (error) {
+    try {
+      const permission = await Notification.requestPermission();
+
+      if (permission === "granted") {
+        toast({ title: "Notification permission granted." });
+      } else {
         toast({
-          title: "Error during service worker registration or subscription.",
+          title: "Notification permission denied.",
+          description:
+            "Allow notifications in your browser settings for this site.",
+          variant: "destructive",
         });
-        console.error(error);
       }
-    } else {
-      toast({ title: "Service workers are not supported in this browser." });
-    }
-  };
-
-  const generateSubscribeEndPoint = async (
-    swRegistration: ServiceWorkerRegistration
-  ) => {
-    const applicationServerKey = urlB64ToUint8Array(
-      process.env.NEXT_PUBLIC_VAPID_KEY!
-    );
-    try {
-      const subscription = await swRegistration.pushManager.subscribe({
-        applicationServerKey,
-        userVisibleOnly: true,
-      });
-
-      // Save the subscription details to the backend
-      await saveSubscription(subscription);
     } catch (error) {
-      toast({ title: "Failed to subscribe to notifications." });
-      console.error(error);
+      console.error("Error enabling notifications:", error);
+      toast({ title: "Failed to enable notifications." });
     }
-  };
-
-  const saveSubscription = async (subscription: PushSubscription) => {
-    try {
-      const response = await fetch("/api/notifications/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subscription,
-          userId,
-        }),
-      });
-
-      if (!response.ok)
-        throw new Error("Failed to save subscription on the server.");
-      toast({ title: "Notification subscription saved successfully." });
-    } catch (error) {
-      toast({ title: "Failed to save subscription on the server." });
-      console.error(error);
-    }
-  };
-
-  const removeNotification = () => {
-    setNotificationPermission("denied");
   };
 
   return (
-    <div className="cursor-pointer transition-all">
-      {notificationPermission === "granted" ? (
-        <BellRing onClick={removeNotification} />
-      ) : (
-        <BellOff onClick={showNotification} />
-      )}
+    <div className="max-w-screen-sm my-12 flex justify-between items-center">
+      <div>
+        <h2 className="scroll-m-20 pb-2 text-xl tracking-tight first:mt-0">
+          Notifications
+        </h2>
+        <small className="text-sm text-muted-foreground">
+          Allow notifications to receive parking session timer.
+        </small>
+      </div>
+      <div className="cursor-pointer transition-all mt-6 flex items-center gap-2">
+        <Switch
+          checked={permission === "granted"}
+          onCheckedChange={handleToggle}
+        />
+      </div>
     </div>
   );
 }

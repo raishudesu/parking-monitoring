@@ -1,6 +1,6 @@
-import nextPwa from "next-pwa";
-/** @type {import('next').NextConfig} */
+import withPWAInit from "@ducanh2912/next-pwa";
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -8,20 +8,29 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "fcm.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "senkeortgypgwmdhdnoj.supabase.co",
+      },
     ],
   },
-
   reactStrictMode: false,
   swcMinify: true,
 };
 
-const withPWA = nextPwa({
-  dest: "public",
-  register: true,
-});
+// const withPWA = withPWAInit({
+//   dest: "public",
+//   register: true,
+//   customWorkerSrc: "src/worker/index.js",
+//   // disable: process.env.NODE_ENV === "development", // Optional: disable during development
+//   // buildExcludes: [/app-build-manifest\.json$/], // Recommended for Next.js 13+
+// });
 
-const config = withPWA({
-  ...nextConfig,
-});
+// const config = withPWA(nextConfig);
 
-export default config;
+// export default config;
+export default nextConfig;

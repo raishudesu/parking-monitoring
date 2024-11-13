@@ -1,9 +1,11 @@
 import {
+  BookUser,
   Building2,
   ChartColumnIncreasing,
   History,
   LayoutGrid,
   Logs,
+  MessageCircle,
   Settings,
   Shield,
   SquareParking,
@@ -38,6 +40,11 @@ export const sideNavLinks = [
     link: "/admin/dashboard/colleges",
   },
   {
+    name: "Feedbacks",
+    icon: <MessageCircle />,
+    link: "/admin/dashboard/feedbacks",
+  },
+  {
     name: "Parking Spaces",
     icon: <SquareParking />,
     link: "/admin/dashboard/parking-spaces",
@@ -51,6 +58,11 @@ export const sideNavLinks = [
     name: "Violations",
     icon: <TriangleAlert />,
     link: "/admin/dashboard/violations",
+  },
+  {
+    name: "Visitors",
+    icon: <BookUser />,
+    link: "/admin/dashboard/visitors",
   },
   {
     name: "Analytics",

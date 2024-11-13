@@ -18,7 +18,7 @@ const ParkingSpaceCreationDialog = () => {
           <CirclePlus size={18} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-screen overflow-auto">
+      <DialogContent className="sm:max-w-screen-xl max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Add parking space</DialogTitle>
         </DialogHeader>

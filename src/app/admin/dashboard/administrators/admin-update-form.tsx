@@ -179,13 +179,18 @@ const AdminUpdateForm = ({
                 <SelectContent>
                   <SelectItem value="ADMIN">ADMIN</SelectItem>
                   <SelectItem value="SUPERADMIN">SUPERADMIN</SelectItem>
+                  <SelectItem value="SECURITY">SECURITY</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending || isAdmin}>
+        <Button
+          type="submit"
+          disabled={isPending || isAdmin}
+          className="w-full"
+        >
           Update
         </Button>
       </form>

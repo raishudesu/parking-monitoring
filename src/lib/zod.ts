@@ -55,7 +55,7 @@ export const adminAccountSchema = z.object({
   lastName: z.string(),
   corpEmail: z.string(),
   password: z.string().min(8),
-  role: z.enum(["ADMIN", "SUPERADMIN"]),
+  role: z.enum(["ADMIN", "SUPERADMIN", "SECURITY"]),
 });
 
 export const parkingSpaceSchema = z.object({
@@ -72,8 +72,16 @@ export const parkingSpaceSchema = z.object({
     "PWD",
     "VIP",
   ]),
+  polygon: z.string().or(z.null()),
   maxCapacity: z.number(),
-  imageUrl: z.string().optional(),
+  // imageUrl: z.string().optional(),
+  images: z.array(
+    z.object({
+      url: z.string(),
+      parkingSpaceId: z.string().optional(),
+      path: z.string(),
+    })
+  ),
 });
 
 export const parkingSpaceFormSchema = z.object({
@@ -81,6 +89,7 @@ export const parkingSpaceFormSchema = z.object({
   description: z.string(),
   longitude: z.string(),
   latitude: z.string(),
+  polygon: z.string().or(z.null()),
   spaceType: z.enum([
     "MOTORCYCLE",
     "TRICYCLE",
@@ -90,7 +99,15 @@ export const parkingSpaceFormSchema = z.object({
     "VIP",
   ]),
   maxCapacity: z.string(),
-  imageUrl: z.string().optional(),
+  // imageUrl: z.string().optional(),
+  images: z.array(
+    z.object({
+      id: z.string().optional(),
+      url: z.string(),
+      parkingSpaceId: z.string().optional(),
+      path: z.string(),
+    })
+  ),
 });
 
 export const parkingSpaceUpdateFormSchema = z.object({
@@ -103,7 +120,7 @@ export const adminUpdateSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   corpEmail: z.string(),
-  role: z.enum(["ADMIN", "SUPERADMIN"]),
+  role: z.enum(["ADMIN", "SUPERADMIN", "SECURITY"]),
 });
 
 export const adminUpdateFormSchema = z.object({
@@ -113,6 +130,16 @@ export const adminUpdateFormSchema = z.object({
 
 export const collegeCreationSchema = z.object({
   collegeName: z.string().min(2),
+  auditAdminId: z.string().optional(),
+});
+
+export const visitorCardCreationSchema = z.object({
+  cardNumber: z.string(),
+  auditAdminId: z.string().optional(),
+});
+export const visitorCardUpdateSchema = z.object({
+  cardId: z.string(),
+  cardNumber: z.string(),
   auditAdminId: z.string().optional(),
 });
 
@@ -128,9 +155,15 @@ export const auditLogSchema = z.object({
   table: z.enum([
     "ADMIN",
     "ACCOUNT",
-    "VISITORACCOUNT",
+    "VISITORPASSCARD",
     "PARKINGSPACE",
     "COLLEGE",
   ]),
   adminId: z.string(),
+});
+
+export const userFeedBackSchema = z.object({
+  name: z.string().min(2, "Name should be at least 2 characters"),
+  email: z.string().email(),
+  message: z.string().min(6, "Message should be at least 6 characters"),
 });

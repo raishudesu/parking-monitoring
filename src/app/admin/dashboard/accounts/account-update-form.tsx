@@ -122,7 +122,7 @@ const AccountUpdateForm = ({
         values.password
       );
 
-      console.log(res);
+      // console.log(res);
     }
   };
 
@@ -302,7 +302,7 @@ const AccountUpdateForm = ({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
+        <Button type="submit" disabled={isPending} className="w-full">
           Update
         </Button>
       </form>

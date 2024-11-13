@@ -4,6 +4,7 @@ import { z } from "zod";
 // Types for MapPicker component
 export interface MapPickerProps {
   onLocationPicked: (lat: number, lng: number) => void;
+  isLoaded: any;
 }
 
 export interface MarkerPosition {

@@ -61,6 +61,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
+  // Handle SECURITY role access restrictions
+  if (userRole === "SECURITY") {
+    const allowedPaths = [
+      "/admin/dashboard/visitors",
+      "/admin/dashboard/settings",
+      "/admin/sign-in",
+    ];
+
+    // If the current path is not in allowed paths, redirect to visitors page
+    if (!allowedPaths.includes(pathname)) {
+      return NextResponse.redirect(
+        new URL("/admin/dashboard/visitors", request.url)
+      );
+    }
+  }
+
   // Allow access to all other routes
   return NextResponse.next();
 }

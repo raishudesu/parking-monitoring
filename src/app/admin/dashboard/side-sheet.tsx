@@ -30,7 +30,10 @@ const SideSheet = () => {
           <Menu />
         </div>
       </SheetTrigger>
-      <SheetContent side={"left"} className="w-full overflow-auto">
+      <SheetContent
+        side={"left"}
+        className="w-full overflow-auto dark:bg-zinc-900"
+      >
         <SheetHeader>
           <SheetTitle>
             <Logo />

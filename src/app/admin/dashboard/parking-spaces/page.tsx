@@ -3,14 +3,18 @@ import { ParkingSpaceTable } from "./parking-space-table";
 import { ParkingSpace } from "@prisma/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import DijkstraMap, {
+  ParkingSpaceWithImages,
+} from "@/app/gpo/dashboard/map/dijkstra-map";
+import PanoramaView from "./360-viewer";
 
 const ParkingSpacesPage = async () => {
-  let parkingSpaces: ParkingSpace[] | null = null;
+  let parkingSpaces: ParkingSpaceWithImages[] | null = null;
   let error: string | null = null;
 
   try {
     const fetchedParkingSpaces = await getAllParkingSpacesUseCase();
-    parkingSpaces = fetchedParkingSpaces as ParkingSpace[];
+    parkingSpaces = fetchedParkingSpaces as ParkingSpaceWithImages[];
   } catch (err) {
     console.error("Error fetching data:", err);
     error =
@@ -23,10 +27,11 @@ const ParkingSpacesPage = async () => {
         <div className="text-lg text-muted-foreground">
           Administrator Dashboard
         </div>
-        <h1 className="scroll-m-20 text-4xl tracking-tight lg:text-5xl">
+        <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
           Parking Spaces
         </h1>
       </div>
+      {/* <PanoramaView /> */}
       {error ? (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
@@ -34,7 +39,13 @@ const ParkingSpacesPage = async () => {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : parkingSpaces ? (
-        <ParkingSpaceTable data={parkingSpaces} />
+        <>
+          <ParkingSpaceTable data={parkingSpaces} />
+          <h2 className="py-6 text-muted-foreground scroll-m-20 text-2xl tracking-tight lg:text-3xl">
+            Parking Space Visualization
+          </h2>
+          <DijkstraMap parkingSpaces={parkingSpaces} />
+        </>
       ) : (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
