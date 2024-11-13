@@ -409,7 +409,7 @@ const DijkstraMap = ({
                       key={id}
                       className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${
                         isSelected(latitude, longitude)
-                          ? "border-blue-500 bg-blue-50"
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900 dark:border-blue-700"
                           : ""
                       }`}
                       onClick={() =>
