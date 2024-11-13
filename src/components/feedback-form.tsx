@@ -81,7 +81,6 @@ const FeedbackForm = () => {
                   placeholder="John Doe"
                   type="text"
                   disabled={form.formState.isSubmitting}
-                  autoFocus
                 />
               </FormControl>
               <FormMessage />
@@ -101,7 +100,6 @@ const FeedbackForm = () => {
                   placeholder="e.g johndoe@psu.palawan.edu.ph"
                   type="text"
                   disabled={form.formState.isSubmitting}
-                  autoFocus
                 />
               </FormControl>
               <FormMessage />
