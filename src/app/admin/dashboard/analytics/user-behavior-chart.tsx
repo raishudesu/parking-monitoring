@@ -16,6 +16,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { CSVLink } from "react-csv";
 
 // Define props type
 interface BarChartProps {
@@ -81,7 +82,9 @@ const UserBehaviorChart = ({
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm"></CardFooter>
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <CSVLink data={data}>Download CSV</CSVLink>
+      </CardFooter>
     </Card>
   );
 };

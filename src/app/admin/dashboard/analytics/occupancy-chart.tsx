@@ -20,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CSVLink } from "react-csv";
 
 export function OccupancyChart({
   chartData,
@@ -118,13 +119,14 @@ export function OccupancyChart({
         </ResponsiveContainer>
       </CardContent>
       <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
+        <div className="flex justify-between w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               Data from {sortedData[0]?.timeLabel} to{" "}
               {sortedData[sortedData.length - 1]?.timeLabel}
             </div>
           </div>
+          <CSVLink data={chartData}>Download CSV</CSVLink>
         </div>
       </CardFooter>
     </Card>

@@ -11,6 +11,7 @@ import {
   Legend,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CSVLink, CSVDownload } from "react-csv";
 
 interface PeakHoursChartProps {
   data: {
@@ -24,6 +25,13 @@ const PeakHoursChart: React.FC<PeakHoursChartProps> = ({
   data,
   title = "Peak Hours Analysis",
 }) => {
+  const csvData = [
+    ["Hour", "Count"],
+    ...data.hourCounts.map((count, index) => [index, count]),
+    ["", ""],
+    ["Day", "Count"],
+    ...data.dayCounts.map((count, index) => [index, count]),
+  ];
   const hoursChartData = data.hourCounts.map((count, index) => ({
     hour: index,
     sessions: count,
@@ -81,7 +89,6 @@ const PeakHoursChart: React.FC<PeakHoursChartProps> = ({
             </BarChart>
           </ResponsiveContainer>
         </div>
-
         <div className="py-6 w-full max-h-96">
           <h3 className="text-lg font-semibold mb-2">Sessions by Day</h3>
           <ResponsiveContainer width="100%" height="100%">
@@ -108,6 +115,7 @@ const PeakHoursChart: React.FC<PeakHoursChartProps> = ({
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <CSVLink data={csvData}>Download CSV</CSVLink>
       </CardContent>
     </Card>
   );
