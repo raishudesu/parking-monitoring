@@ -12,6 +12,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "fcm.googleapis.com",
       },
+      {
+        protocol: "https",
+        hostname: "senkeortgypgwmdhdnoj.supabase.co",
+      },
     ],
   },
   reactStrictMode: false,

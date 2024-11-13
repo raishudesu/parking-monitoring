@@ -3,15 +3,18 @@ import { ParkingSpaceTable } from "./parking-space-table";
 import { ParkingSpace } from "@prisma/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import DijkstraMap from "@/app/gpo/dashboard/map/dijkstra-map";
+import DijkstraMap, {
+  ParkingSpaceWithImages,
+} from "@/app/gpo/dashboard/map/dijkstra-map";
+import PanoramaView from "./360-viewer";
 
 const ParkingSpacesPage = async () => {
-  let parkingSpaces: ParkingSpace[] | null = null;
+  let parkingSpaces: ParkingSpaceWithImages[] | null = null;
   let error: string | null = null;
 
   try {
     const fetchedParkingSpaces = await getAllParkingSpacesUseCase();
-    parkingSpaces = fetchedParkingSpaces as ParkingSpace[];
+    parkingSpaces = fetchedParkingSpaces as ParkingSpaceWithImages[];
   } catch (err) {
     console.error("Error fetching data:", err);
     error =
@@ -28,6 +31,7 @@ const ParkingSpacesPage = async () => {
           Parking Spaces
         </h1>
       </div>
+      {/* <PanoramaView /> */}
       {error ? (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />

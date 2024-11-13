@@ -162,8 +162,8 @@ const MapPolygonCreator = ({
           onUnmount={onUnmount}
           onClick={addPoint}
           options={{
-            streetViewControl: false,
-            mapTypeControl: false,
+            streetViewControl: true,
+            mapTypeControl: true,
           }}
         >
           {/* Show selected location marker when not drawing */}

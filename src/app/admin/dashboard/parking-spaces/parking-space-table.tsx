@@ -40,6 +40,7 @@ import DeleteParkingSpaceDialog from "./delete-parking-space-dialog";
 import UpdateParkingSpaceDialog from "./parking-space-update-dialog";
 import ShowQrDialog from "./show-qr-dialog";
 import { parseDate } from "@/lib/utils";
+import { ParkingSpaceWithImages } from "@/app/gpo/dashboard/map/dijkstra-map";
 
 const emailFilterFn: FilterFn<any> = (
   row: Row<any>,
@@ -50,7 +51,7 @@ const emailFilterFn: FilterFn<any> = (
   return email.toLowerCase().includes(filterValue.toLowerCase());
 };
 
-export const columns: ColumnDef<ParkingSpace>[] = [
+export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
   // {
   //     id: "select",
   //     header: ({table}) => (
@@ -138,6 +139,7 @@ export const columns: ColumnDef<ParkingSpace>[] = [
         spaceType,
         maxCapacity,
         polygon,
+        images,
         // imageUrl,
       } = row.original;
 
@@ -150,6 +152,7 @@ export const columns: ColumnDef<ParkingSpace>[] = [
         maxCapacity: maxCapacity.toString(),
         polygon,
         // imageUrl: imageUrl as string,
+        images,
       };
 
       return (
@@ -169,7 +172,11 @@ export const columns: ColumnDef<ParkingSpace>[] = [
   },
 ];
 
-export function ParkingSpaceTable({ data }: { data: ParkingSpace[] }) {
+export function ParkingSpaceTable({
+  data,
+}: {
+  data: ParkingSpaceWithImages[];
+}) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
