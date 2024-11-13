@@ -98,7 +98,7 @@ const FeedbackForm = () => {
                 <Input
                   {...field}
                   className="w-full"
-                  placeholder="e.g administrator@psu.palawan.edu.ph"
+                  placeholder="e.g johndoe@psu.palawan.edu.ph"
                   type="text"
                   disabled={form.formState.isSubmitting}
                   autoFocus
