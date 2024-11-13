@@ -85,7 +85,9 @@ const SpaceUtilizationChart = ({
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <CSVLink data={chartData}>Download CSV</CSVLink>
+        <CSVLink data={chartData} className="bg-primary py-2 px-4 rounded-xl">
+          Download CSV
+        </CSVLink>
       </CardFooter>
     </Card>
   );

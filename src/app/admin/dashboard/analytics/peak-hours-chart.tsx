@@ -10,7 +10,13 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { CSVLink, CSVDownload } from "react-csv";
 
 interface PeakHoursChartProps {
@@ -115,7 +121,11 @@ const PeakHoursChart: React.FC<PeakHoursChartProps> = ({
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <CSVLink data={csvData}>Download CSV</CSVLink>
+        <CardFooter className="text-sm">
+          <CSVLink data={csvData} className="bg-primary py-2 px-4 rounded-xl">
+            Download CSV
+          </CSVLink>
+        </CardFooter>
       </CardContent>
     </Card>
   );

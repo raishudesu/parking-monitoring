@@ -119,14 +119,16 @@ export function OccupancyChart({
         </ResponsiveContainer>
       </CardContent>
       <CardFooter>
-        <div className="flex justify-between w-full items-start gap-2 text-sm">
+        <div className="flex flex-col md:flex-row justify-between w-full items-start gap-6 text-sm">
+          <CSVLink data={chartData} className="bg-primary py-2 px-4 rounded-xl">
+            Download CSV
+          </CSVLink>
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               Data from {sortedData[0]?.timeLabel} to{" "}
               {sortedData[sortedData.length - 1]?.timeLabel}
             </div>
           </div>
-          <CSVLink data={chartData}>Download CSV</CSVLink>
         </div>
       </CardFooter>
     </Card>
