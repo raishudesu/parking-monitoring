@@ -113,7 +113,7 @@ const FeedbackForm = () => {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Your Message</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}

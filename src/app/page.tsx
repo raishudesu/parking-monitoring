@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import FeedbackForm from "@/components/feedback-form";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
           <ParkingMeterIcon className="h-6 w-6" />
           <span className="sr-only">Parking Monitoring System</span>
         </Link>
+
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link
             href="#features"
@@ -332,6 +334,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <ModeToggle />
         <p className="text-xs text-muted-foreground">
           &copy; 2024 ParkSU. All rights reserved.
         </p>
