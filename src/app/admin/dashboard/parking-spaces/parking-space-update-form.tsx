@@ -412,7 +412,7 @@ const ParkingSpaceUpdateForm = ({
               onClick={() => handleRemoveImageField(index)}
               className="text-destructive self-start"
             >
-              Remove Reward Tier
+              Remove Image
             </Button>
           </div>
         ))}
@@ -429,7 +429,11 @@ const ParkingSpaceUpdateForm = ({
         >
           Add Image
         </Button>
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button
+          type="submit"
+          disabled={isPending || Object.values(uploadingFields).some(Boolean)}
+          className="w-full"
+        >
           Update
         </Button>
       </form>

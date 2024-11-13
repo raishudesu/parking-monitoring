@@ -16,6 +16,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { UtilizationData } from "@/types/analytics";
+import { CSVLink } from "react-csv";
 
 interface BarChartProps {
   data: UtilizationData;
@@ -83,7 +84,9 @@ const SpaceUtilizationChart = ({
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm"></CardFooter>
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <CSVLink data={chartData}>Download CSV</CSVLink>
+      </CardFooter>
     </Card>
   );
 };
