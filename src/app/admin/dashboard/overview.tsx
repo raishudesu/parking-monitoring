@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   LucideIcon,
 } from "lucide-react";
+import { getAllUserFeedbackUseCase } from "@/use-cases/user-feedback";
 
 type CardProps = {
   title: string;
@@ -28,9 +29,11 @@ const Overview = async () => {
     getParkingSpaceCountUseCase(),
     getGpoCountUseCase(),
     getActiveGpoCountUseCase(),
+    getAllUserFeedbackUseCase(),
   ]);
 
-  const [parkingSpaceResult, gpoCountResult, activeGpoCountResult] = results;
+  const [parkingSpaceResult, gpoCountResult, activeGpoCountResult, feedbacks] =
+    results;
 
   const renderCard = ({ title, value, icon: Icon, error }: CardProps) => (
     <Card>
@@ -96,8 +99,11 @@ const Overview = async () => {
                 : null,
           })}
           {renderCard({
-            title: "Survey Responses",
-            value: "Not available",
+            title: "Feedbacks",
+            value:
+              feedbacks.status === "fulfilled"
+                ? feedbacks.value.length
+                : "Not Available",
             icon: ClipboardMinus,
           })}
         </div>

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import FeedbackForm from "@/components/feedback-form";
 
 export default function Home() {
   return (
@@ -314,7 +315,7 @@ export default function Home() {
           id="contact"
           className="w-full py-12 md:py-24 lg:py-32 bg-muted"
         >
-          <div className="container grid items-center gap-4 px-4 md:px-6">
+          <div className="container grid md:grid-cols-2 items-center gap-4 px-4 md:px-6">
             <div className="text-center md:text-start space-y-3">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                 Get in Touch
@@ -324,25 +325,8 @@ export default function Home() {
                 below and we&lsquo;ll be in touch.
               </p>
             </div>
-            <div className="mx-auto w-full max-w-sm space-y-2">
-              <form className="flex flex-col gap-2">
-                <Input
-                  type="text"
-                  placeholder="Name"
-                  className="max-w-lg flex-1"
-                />
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  className="max-w-lg flex-1"
-                />
-                <Textarea
-                  placeholder="Message"
-                  rows={4}
-                  className="max-w-lg flex-1"
-                />
-                <Button type="submit">Submit</Button>
-              </form>
+            <div className="max-w-screen-sm">
+              <FeedbackForm />
             </div>
           </div>
         </section>

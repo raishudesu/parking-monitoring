@@ -5,6 +5,7 @@ import {
   History,
   LayoutGrid,
   Logs,
+  MessageCircle,
   Settings,
   Shield,
   SquareParking,
@@ -37,6 +38,11 @@ export const sideNavLinks = [
     name: "Colleges",
     icon: <Building2 />,
     link: "/admin/dashboard/colleges",
+  },
+  {
+    name: "Feedbacks",
+    icon: <MessageCircle />,
+    link: "/admin/dashboard/feedbacks",
   },
   {
     name: "Parking Spaces",

@@ -147,3 +147,9 @@ export const auditLogSchema = z.object({
   ]),
   adminId: z.string(),
 });
+
+export const userFeedBackSchema = z.object({
+  name: z.string().min(2, "Name should be at least 2 characters"),
+  email: z.string().email(),
+  message: z.string().min(6, "Message should be at least 6 characters"),
+});
