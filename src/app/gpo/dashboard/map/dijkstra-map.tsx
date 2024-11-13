@@ -1,7 +1,9 @@
 "use client";
 
 import React, {
+  Dispatch,
   Fragment,
+  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
@@ -15,7 +17,7 @@ import {
   useJsApiLoader,
   Polygon,
 } from "@react-google-maps/api";
-import { ParkingSpace } from "@prisma/client";
+import { ParkingSpace, ParkingSpaceImage } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import MapLoader from "./map-loader";
 import {
@@ -29,6 +31,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { ChevronUp, Crosshair } from "lucide-react";
+import PanellumViewerDialog from "./panellum-viewer-dialog";
 
 interface LatLng {
   lat: number;
@@ -59,7 +62,20 @@ const userLocationSvg = `data:image/svg+xml;base64,${btoa(`
   </svg>
 `)}`;
 
-const DijkstraMap = ({ parkingSpaces }: { parkingSpaces: ParkingSpace[] }) => {
+export type ParkingSpaceWithImages = ParkingSpace & {
+  images: ParkingSpaceImage[];
+};
+
+export type PannellumProps = {
+  parkingName: string;
+  images: ParkingSpaceImage[] | undefined;
+};
+
+const DijkstraMap = ({
+  parkingSpaces,
+}: {
+  parkingSpaces: ParkingSpaceWithImages[];
+}) => {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ["places"],
@@ -73,6 +89,8 @@ const DijkstraMap = ({ parkingSpaces }: { parkingSpaces: ParkingSpace[] }) => {
     useState<google.maps.DirectionsResult | null>(null);
   const [selectedParkingSpace, setSelectedParkingSpace] =
     useState<LatLng | null>(null);
+  const [selectedParkingSpaceData, setSelectedParkingSpaceData] =
+    useState<PannellumProps | null>(null);
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -258,6 +276,14 @@ const DijkstraMap = ({ parkingSpaces }: { parkingSpaces: ParkingSpace[] }) => {
 
   return (
     <div className="relative w-full h-screen">
+      <PanellumViewerDialog
+        parkingName={selectedParkingSpaceData?.parkingName || ""}
+        images={selectedParkingSpaceData?.images}
+        open={selectedParkingSpaceData !== null}
+        setOpen={(value) =>
+          setSelectedParkingSpaceData(value ? selectedParkingSpaceData : null)
+        }
+      />
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
@@ -275,6 +301,7 @@ const DijkstraMap = ({ parkingSpaces }: { parkingSpaces: ParkingSpace[] }) => {
             currCapacity,
             maxCapacity,
             polygon,
+            images,
           }) => (
             <Fragment key={id}>
               <Marker
@@ -282,6 +309,9 @@ const DijkstraMap = ({ parkingSpaces }: { parkingSpaces: ParkingSpace[] }) => {
                   lat: parseFloat(latitude),
                   lng: parseFloat(longitude),
                 }}
+                onClick={() =>
+                  setSelectedParkingSpaceData({ parkingName: name, images })
+                }
                 icon={{
                   url: isAvailable(currCapacity as number, maxCapacity).icon,
                   // scaledSize: isSelected(latitude, longitude)

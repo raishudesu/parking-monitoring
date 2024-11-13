@@ -6,15 +6,28 @@ import { z } from "zod";
 export const createParkingSpace = async (
   data: z.infer<typeof parkingSpaceSchema>
 ) => {
+  const { images, ...parkingSpaceData } = data;
   const parkingSpace = await prisma.parkingSpace.create({
-    data,
+    data: {
+      ...parkingSpaceData,
+      images: {
+        create: images.map((image) => ({
+          url: image.url,
+          path: image.path,
+        })),
+      },
+    },
   });
 
   return parkingSpace;
 };
 
 export const getAllParkingSpaces = async () => {
-  const parkingSpaces = await prisma.parkingSpace.findMany();
+  const parkingSpaces = await prisma.parkingSpace.findMany({
+    include: {
+      images: true,
+    },
+  });
 
   return parkingSpaces;
 };
@@ -33,11 +46,22 @@ export const updateParkingSpaceById = async (
   parkingSpaceId: string,
   data: z.infer<typeof parkingSpaceSchema>
 ) => {
+  const { images, ...parkingSpaceData } = data;
   const parkingSpace = await prisma.parkingSpace.update({
     where: {
       id: parkingSpaceId,
     },
-    data,
+    data: {
+      ...parkingSpaceData,
+    },
+  });
+
+  await prisma.parkingSpaceImage.createMany({
+    data: images.map((image) => ({
+      url: image.url,
+      path: image.path,
+      parkingSpaceId,
+    })),
   });
 
   return parkingSpace;

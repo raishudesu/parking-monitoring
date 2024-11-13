@@ -74,7 +74,14 @@ export const parkingSpaceSchema = z.object({
   ]),
   polygon: z.string().or(z.null()),
   maxCapacity: z.number(),
-  imageUrl: z.string().optional(),
+  // imageUrl: z.string().optional(),
+  images: z.array(
+    z.object({
+      url: z.string(),
+      parkingSpaceId: z.string().optional(),
+      path: z.string(),
+    })
+  ),
 });
 
 export const parkingSpaceFormSchema = z.object({
@@ -91,9 +98,16 @@ export const parkingSpaceFormSchema = z.object({
     "PWD",
     "VIP",
   ]),
-
   maxCapacity: z.string(),
-  imageUrl: z.string().optional(),
+  // imageUrl: z.string().optional(),
+  images: z.array(
+    z.object({
+      id: z.string().optional(),
+      url: z.string(),
+      parkingSpaceId: z.string().optional(),
+      path: z.string(),
+    })
+  ),
 });
 
 export const parkingSpaceUpdateFormSchema = z.object({

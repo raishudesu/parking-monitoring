@@ -29,7 +29,7 @@ const UpdateParkingSpaceDialog = ({
           <UserRoundPen size={15} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-screen overflow-auto">
+      <DialogContent className="sm:max-w-screen-xl max-h-screen overflow-auto">
         <DialogHeader>
           <DialogTitle>Update parking space</DialogTitle>
         </DialogHeader>

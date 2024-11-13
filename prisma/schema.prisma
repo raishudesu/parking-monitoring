@@ -117,20 +117,30 @@ model VisitorSession {
 }
 
 model ParkingSpace {
-  id           String           @id @default(uuid())
+  id           String              @id @default(uuid())
   name         String
   description  String
   longitude    String
   latitude     String
-  spaceType    ParkingSpaceType @default(MIXED)
-  currCapacity Int?             @default(0)
+  spaceType    ParkingSpaceType    @default(MIXED)
+  currCapacity Int?                @default(0)
   maxCapacity  Int
-  imageUrl     String?
+  // imageUrl     String?
   gpoSessions  GPOSession[]
-  addedAt      DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  images       ParkingSpaceImage[]
+  addedAt      DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
   polygon      String?
-  isActive     Boolean          @default(true)
+  isActive     Boolean             @default(true)
+}
+
+model ParkingSpaceImage {
+  id             String       @id @default(uuid())
+  url            String
+  path           String
+  parkingSpaceId String
+  parkingSpace   ParkingSpace @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
+  uploadedAt     DateTime     @default(now())
 }
 
 model Admin {
