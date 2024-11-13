@@ -169,3 +169,11 @@ model College {
   collegeName String
   accounts    GPOAccount[]
 }
+
+model UserFeedback {
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  message     String
+  submittedAt DateTime @default(now())
+}
