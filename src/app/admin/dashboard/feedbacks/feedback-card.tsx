@@ -1,14 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Mail } from "lucide-react";
+import DeleteUserFeedbackDialog from "./delete-feedback-dialog";
 
 type FeedbackCardProps = {
+  id: string;
   name: string;
   email: string;
   message: string;
 };
 
 export default function FeedbackCard({
+  id,
   name = "John Doe",
   email = "john@example.com",
   message = "Great product! I really enjoyed using it.",
@@ -32,6 +35,7 @@ export default function FeedbackCard({
             {email}
           </div>
         </div>
+        <DeleteUserFeedbackDialog feedbackId={id} />
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">{message}</p>

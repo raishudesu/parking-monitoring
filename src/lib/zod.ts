@@ -158,6 +158,8 @@ export const auditLogSchema = z.object({
     "VISITORPASSCARD",
     "PARKINGSPACE",
     "COLLEGE",
+    "USERFEEDBACK",
+    "REPORTGENERATIONLOG",
   ]),
   adminId: z.string(),
 });
