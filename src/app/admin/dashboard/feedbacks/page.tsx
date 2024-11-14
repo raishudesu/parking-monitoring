@@ -14,8 +14,9 @@ const FeedbacksPage = async () => {
         </h1>
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {feedbacks.map(({ name, email, message }, index) => (
+        {feedbacks.map(({ id, name, email, message }, index) => (
           <FeedbackCard
+            id={id}
             name={name}
             email={email}
             message={message}

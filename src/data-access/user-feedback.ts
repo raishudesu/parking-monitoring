@@ -17,3 +17,13 @@ export const getAllUserFeedback = async () => {
 
   return feedbacks;
 };
+
+export const deleteUserFeedback = async (feedbackId: string) => {
+  const feedback = await prisma.userFeedback.delete({
+    where: {
+      id: feedbackId,
+    },
+  });
+
+  return feedback;
+};

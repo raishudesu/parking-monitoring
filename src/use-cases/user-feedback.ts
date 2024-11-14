@@ -1,5 +1,7 @@
+import { createAuditLog } from "@/data-access/audit-log";
 import {
   createUserFeedback,
+  deleteUserFeedback,
   getAllUserFeedback,
 } from "@/data-access/user-feedback";
 import { userFeedBackSchema } from "@/lib/zod";
@@ -17,4 +19,19 @@ export const getAllUserFeedbackUseCase = async () => {
   const feedbacks = await getAllUserFeedback();
 
   return feedbacks;
+};
+
+export const deleteUserFeedbackUseCase = async (
+  feedbackId: string,
+  auditAdminId: string
+) => {
+  const feedback = await deleteUserFeedback(feedbackId);
+
+  await createAuditLog({
+    action: "DELETE",
+    adminId: auditAdminId,
+    table: "USERFEEDBACK",
+  });
+
+  return feedback;
 };
