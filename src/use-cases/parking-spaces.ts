@@ -19,6 +19,7 @@ export const createParkingSpaceUseCase = async (
     latitude: data.latitude,
     spaceType: data.spaceType,
     maxCapacity: data.maxCapacity,
+    reservedCapacity: data.reservedCapacity,
     polygon: data.polygon,
     images: data.images,
   };
@@ -75,6 +76,7 @@ export const updateParkingSpaceByIdUseCase = async (
     latitude: data.latitude,
     spaceType: data.spaceType,
     maxCapacity: data.maxCapacity,
+    reservedCapacity: data.reservedCapacity,
     polygon: data.polygon,
     images: data.images,
   };

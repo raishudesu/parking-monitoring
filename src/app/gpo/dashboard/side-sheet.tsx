@@ -56,6 +56,13 @@ const SideSheet = () => {
                 </Avatar>
                 <div className="w-full flex flex-col pr-6">
                   <span className="font-semibold">{user?.gatePassNumber}</span>
+                  {user?.isPWD && (
+                    <small className="text-primary font-bold">PWD</small>
+                  )}
+
+                  {user?.isVIP && (
+                    <small className="text-primary font-bold">VIP</small>
+                  )}
                   <small className="truncate text-muted-foreground">
                     {user?.corpEmail}
                   </small>

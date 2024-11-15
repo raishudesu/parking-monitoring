@@ -101,6 +101,18 @@ export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
     ),
   },
   {
+    accessorKey: "currReservedCapacity",
+    header: "Current Reserved Capacity",
+    cell: ({ row }) => <div>{`${row.getValue("currReservedCapacity")}`}</div>,
+  },
+  {
+    accessorKey: "reservedCapacity",
+    header: "Reserved Capacity",
+    cell: ({ row }) => (
+      <div className="capitalize">{`${row.getValue("reservedCapacity")}`}</div>
+    ),
+  },
+  {
     accessorKey: "addedAt",
     header: "Added at",
     cell: ({ row }) => (
@@ -138,6 +150,7 @@ export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
         latitude,
         spaceType,
         maxCapacity,
+        reservedCapacity,
         polygon,
         images,
         // imageUrl,
@@ -150,6 +163,7 @@ export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
         latitude,
         spaceType,
         maxCapacity: maxCapacity.toString(),
+        reservedCapacity: reservedCapacity.toString(),
         polygon,
         // imageUrl: imageUrl as string,
         images,

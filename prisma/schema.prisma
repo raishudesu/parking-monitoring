@@ -119,21 +119,22 @@ model VisitorSession {
 }
 
 model ParkingSpace {
-  id           String              @id @default(uuid())
-  name         String
-  description  String
-  longitude    String
-  latitude     String
-  spaceType    ParkingSpaceType    @default(MIXED)
-  currCapacity Int?                @default(0)
-  maxCapacity  Int
-  // imageUrl     String?
-  gpoSessions  GPOSession[]
-  images       ParkingSpaceImage[]
-  addedAt      DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
-  polygon      String?
-  isActive     Boolean             @default(true)
+  id                   String              @id @default(uuid())
+  name                 String
+  description          String
+  longitude            String
+  latitude             String
+  spaceType            ParkingSpaceType    @default(MIXED)
+  currCapacity         Int?                @default(0)
+  maxCapacity          Int
+  currReservedCapacity Int?                @default(0)
+  reservedCapacity     Int                 @default(1)
+  gpoSessions          GPOSession[]
+  images               ParkingSpaceImage[]
+  addedAt              DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  polygon              String?
+  isActive             Boolean             @default(true)
 }
 
 model ParkingSpaceImage {

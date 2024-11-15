@@ -18,6 +18,8 @@ declare module "next-auth" {
     role: AdminRole | UserRole;
     creditScore: number | null;
     isActive: boolean;
+    isPWD: boolean;
+    isVIP: boolean;
     error: string | null;
     firstName: string;
     lastName: string;

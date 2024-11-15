@@ -402,6 +402,8 @@ const DijkstraMap = ({
                     name,
                     currCapacity,
                     maxCapacity,
+                    currReservedCapacity,
+                    reservedCapacity,
                     latitude,
                     longitude,
                   }) => (
@@ -420,15 +422,25 @@ const DijkstraMap = ({
                       }
                     >
                       <h2>{name}</h2>
-                      {(currCapacity ?? 0) < maxCapacity ? (
-                        <small className="text-green-500">
-                          Available: {currCapacity}/{maxCapacity}
+                      <div className="flex justify-between">
+                        <small
+                          className={`mt-3 text-sm ${
+                            currCapacity === maxCapacity
+                              ? "text-destructive"
+                              : "text-green-500"
+                          }`}
+                        >
+                          Slots: {currCapacity}/{maxCapacity}
                         </small>
-                      ) : (
-                        <small className="text-red-500">
-                          Unavailable: : {currCapacity}/{maxCapacity}
+                        <small
+                          className={`mt-3 text-sm text-green-500 ${
+                            currReservedCapacity === reservedCapacity
+                          }  ? "text-destructive"
+                              : "text-green-500"`}
+                        >
+                          Reserved: {currReservedCapacity}/{reservedCapacity}
                         </small>
-                      )}
+                      </div>
                     </div>
                   )
                 )}
