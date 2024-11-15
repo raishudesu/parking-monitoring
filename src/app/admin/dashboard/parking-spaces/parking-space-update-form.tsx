@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,10 +50,6 @@ const ParkingSpaceUpdateForm = ({
   data: z.infer<typeof parkingSpaceFormSchema>;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  // const { isLoaded } = useJsApiLoader({
-  //   id: "google-map-script",
-  //   googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-  // });
   const { isLoaded, loadError } = useGoogleMaps();
   const [uploadingFields, setUploadingFields] = useState<
     Record<string, boolean>
@@ -71,6 +68,7 @@ const ParkingSpaceUpdateForm = ({
       latitude: data.latitude,
       spaceType: data.spaceType,
       maxCapacity: data.maxCapacity,
+      reservedCapacity: data.reservedCapacity,
       polygon: data.polygon,
       images: data.images,
     },
@@ -91,6 +89,7 @@ const ParkingSpaceUpdateForm = ({
       const newValues: z.infer<typeof parkingSpaceSchema> = {
         ...values,
         maxCapacity: parseInt(values.maxCapacity, 10),
+        reservedCapacity: parseInt(values.reservedCapacity, 10),
         auditAdminId: session.data?.user.id,
       };
 
@@ -345,6 +344,25 @@ const ParkingSpaceUpdateForm = ({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="reservedCapacity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reserved Capacity</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full"
+                  placeholder="Enter Reserved Capacity"
+                  type="number"
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {fields.map((field, index) => (
           <div key={field.id} className="mt-6 flex flex-col gap-6">
             <FormField
@@ -376,9 +394,11 @@ const ParkingSpaceUpdateForm = ({
                     </div>
                   </FormControl>
 
-                  {/* <FormDescription>
-                    Upload an image for tier {index + 1} reward.
-                  </FormDescription> */}
+                  <FormDescription className="text-destructive">
+                    Once you remove this image while the form is open and you
+                    have unsaved image changes, you have to re-upload the image
+                    again.
+                  </FormDescription>
                   <FormMessage />
                   <div>
                     {field.value && (

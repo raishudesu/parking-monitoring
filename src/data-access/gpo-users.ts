@@ -51,6 +51,21 @@ export const getCurrentGpoSessionByGpoId = async (gpoAccountId: string) => {
   return currentSession;
 };
 
+//GET DETAILS OF USER ISVIP AND ISPWD
+export const getUserPrioritiesById = async (gpoAccountId: string) => {
+  const data = await prisma.gPOAccount.findUnique({
+    where: {
+      id: gpoAccountId,
+    },
+    select: {
+      isPWD: true,
+      isVIP: true,
+    },
+  });
+
+  return data;
+};
+
 // GET GPO ACCOUNT BY EMAIL
 export const getGpoByEmail = async (email: string) => {
   const gpo = await prisma.gPOAccount.findUnique({

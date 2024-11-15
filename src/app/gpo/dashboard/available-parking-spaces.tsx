@@ -5,17 +5,21 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { createClient } from "@/utils/supabase/client";
 import { ParkingSpace } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { PannellumProps, ParkingSpaceWithImages } from "./map/dijkstra-map";
+import PanellumViewerDialog from "./map/panellum-viewer-dialog";
 
 const supabase = createClient();
 
 const AvailableParkingSpaces = ({
-  availableParkingSpaces,
-  unavailableParkingSpaces,
-}: {
-  availableParkingSpaces: ParkingSpace[];
-  unavailableParkingSpaces: ParkingSpace[];
+  parkingSpaces,
+}: // unavailableParkingSpaces,
+{
+  parkingSpaces: ParkingSpaceWithImages[];
+  // unavailableParkingSpaces: ParkingSpace[];
 }) => {
+  const [selectedParkingSpaceData, setSelectedParkingSpaceData] =
+    useState<PannellumProps | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,14 +41,20 @@ const AvailableParkingSpaces = ({
 
   return (
     <>
+      <PanellumViewerDialog
+        parkingName={selectedParkingSpaceData?.parkingName || ""}
+        images={selectedParkingSpaceData?.images}
+        open={selectedParkingSpaceData !== null}
+        setOpen={(value) =>
+          setSelectedParkingSpaceData(value ? selectedParkingSpaceData : null)
+        }
+      />
       <div className="w-full h-full gap-4">
-        <small className="text-green-500 font-bold">
-          Available Parking Spaces
-        </small>
+        <small className="text-primary font-bold">Parking Spaces</small>
         <Tabs defaultValue="overview" className="w-full space-y-4">
           <TabsContent value="overview" className="w-full space-y-4">
             <div className="w-full grid md:grid-cols-2 gap-4">
-              {availableParkingSpaces.length === 0 ? (
+              {parkingSpaces.length === 0 ? (
                 <Card className="col-span-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-md font-medium">
@@ -58,16 +68,28 @@ const AvailableParkingSpaces = ({
                   </CardContent>
                 </Card>
               ) : (
-                availableParkingSpaces.map(
+                parkingSpaces.map(
                   ({
                     id,
                     name,
                     description,
                     currCapacity,
                     maxCapacity,
+                    currReservedCapacity,
+                    reservedCapacity,
                     spaceType,
+                    images,
                   }) => (
-                    <Card key={id}>
+                    <Card
+                      key={id}
+                      onClick={() =>
+                        setSelectedParkingSpaceData({
+                          parkingName: name,
+                          images,
+                        })
+                      }
+                      className="cursor-pointer"
+                    >
                       <CardHeader className="flex flex-row flex-wrap items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-md font-bold text-primary">
                           {name}
@@ -77,8 +99,22 @@ const AvailableParkingSpaces = ({
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-3 text-md text-green-500 font-bold">
-                          Capacity: {currCapacity}/{maxCapacity}
+                        <div
+                          className={`mt-3 text-sm font-bold ${
+                            currCapacity === maxCapacity
+                              ? "text-destructive"
+                              : "text-green-500"
+                          }`}
+                        >
+                          Slots: {currCapacity}/{maxCapacity}
+                        </div>
+                        <div
+                          className={`mt-3 text-sm text-green-500 font-bold ${
+                            currReservedCapacity === reservedCapacity
+                          }  ? "text-destructive"
+                              : "text-green-500"`}
+                        >
+                          Reserved: {currReservedCapacity}/{reservedCapacity}
                         </div>
                         <p className="mt-6 text-xs text-muted-foreground">
                           {description}
@@ -92,7 +128,7 @@ const AvailableParkingSpaces = ({
           </TabsContent>
         </Tabs>
       </div>
-      <div className="mt-6 w-full h-full gap-4 ">
+      {/* <div className="mt-6 w-full h-full gap-4 ">
         <small className="text-destructive font-bold">
           Unavailable Parking Spaces
         </small>
@@ -120,6 +156,8 @@ const AvailableParkingSpaces = ({
                     description,
                     currCapacity,
                     maxCapacity,
+                    currReservedCapacity,
+                    reservedCapacity,
                     spaceType,
                   }) => (
                     <Card key={id}>
@@ -132,8 +170,11 @@ const AvailableParkingSpaces = ({
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-3 text-md text-red-500 font-bold">
+                        <div className="mt-3 text-sm text-red-500 font-bold">
                           Capacity: {currCapacity}/{maxCapacity}
+                        </div>
+                        <div className="mt-3 text-sm text-green-500 font-bold">
+                          Reserved: {currReservedCapacity}/{reservedCapacity}
                         </div>
                         <p className="mt-6 text-xs text-muted-foreground">
                           {description}
@@ -146,7 +187,7 @@ const AvailableParkingSpaces = ({
             </div>
           </TabsContent>
         </Tabs>
-      </div>
+      </div> */}
     </>
   );
 };

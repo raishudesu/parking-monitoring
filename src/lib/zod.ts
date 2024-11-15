@@ -74,7 +74,7 @@ export const parkingSpaceSchema = z.object({
   ]),
   polygon: z.string().or(z.null()),
   maxCapacity: z.number(),
-  // imageUrl: z.string().optional(),
+  reservedCapacity: z.number(),
   images: z.array(
     z.object({
       url: z.string(),
@@ -99,7 +99,7 @@ export const parkingSpaceFormSchema = z.object({
     "VIP",
   ]),
   maxCapacity: z.string(),
-  // imageUrl: z.string().optional(),
+  reservedCapacity: z.string(),
   images: z.array(
     z.object({
       id: z.string().optional(),

@@ -6,13 +6,18 @@ import {
   getGpoSessionsByGpoId,
   getRecentSessions,
   getSessionsForAnalysis,
+  createGpoSessionByPriority,
+  endGpoSessionByPriority,
 } from "@/data-access/gpo-sessions";
 import { getParkingSpaceById } from "@/data-access/parking-spaces";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { createGpoViolationUseCase } from "./gpo-violations";
 import { addCreditScoreToGpoUseCase } from "./gpo-users";
-import { deactivateGpoAccount } from "@/data-access/gpo-users";
+import {
+  deactivateGpoAccount,
+  getUserPrioritiesById,
+} from "@/data-access/gpo-users";
 
 // CREATE GPO SESSION
 export const createGpoSessionUseCase = async (
@@ -70,6 +75,32 @@ export const createGpoSessionUseCase = async (
   // Assign the Date object to shouldEndAt
   shouldEndAt = new Date(now);
 
+  const userPriorities = await getUserPrioritiesById(gpoAccountId);
+
+  const isReservedCapacityFull =
+    currentParkingSpace?.currReservedCapacity! >=
+    currentParkingSpace?.reservedCapacity!;
+
+  console.log(userPriorities, isReservedCapacityFull);
+
+  // check if user is vip or pwd to use the reserved slot
+  // if user is vip or pwd but the reserved space is full, they will just use the normal slots if not full
+
+  const priorityValidated =
+    (userPriorities?.isPWD || userPriorities?.isVIP) && !isReservedCapacityFull;
+
+  console.log(priorityValidated);
+
+  if (priorityValidated) {
+    const createdGpoSessionByPriority = await createGpoSessionByPriority(
+      parkingSpaceId,
+      gpoAccountId,
+      shouldEndAt // This is now a Date object
+    );
+
+    return createdGpoSessionByPriority;
+  }
+
   // Create GPO session with Date object
   const createdGpoSession = await createGpoSession(
     parkingSpaceId,
@@ -113,8 +144,6 @@ export const endGpoSessionUseCase = async (accountId: string) => {
   const endedProperly =
     lastGpoSession.startTime <= (lastGpoSession.shouldEndAt ?? 0);
 
-  const endedGpoSession = await endGpoSession(lastGpoSession.id, endedProperly);
-
   // APPLY VIOLATION IF DID NOT END ON TIME
   if (!endedProperly) {
     const { GatePassOwner } = await createGpoViolationUseCase(
@@ -128,6 +157,20 @@ export const endGpoSessionUseCase = async (accountId: string) => {
   } else {
     await addCreditScoreToGpoUseCase(accountId);
   }
+
+  const userPriorities = await getUserPrioritiesById(accountId);
+
+  // check if user is vip or pwd
+  if (userPriorities?.isPWD || userPriorities?.isVIP) {
+    const endedGpoSessionByPriority = await endGpoSessionByPriority(
+      lastGpoSession.id,
+      endedProperly
+    );
+
+    return endedGpoSessionByPriority;
+  }
+
+  const endedGpoSession = await endGpoSession(lastGpoSession.id, endedProperly);
 
   return endedGpoSession;
 };

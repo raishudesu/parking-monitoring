@@ -30,6 +30,15 @@ const SideNav = async () => {
             </Avatar>
             <div className="flex flex-col">
               <span className="font-semibold">{user?.gatePassNumber}</span>
+
+              {user?.isPWD && (
+                <small className="text-primary font-bold">PWD</small>
+              )}
+
+              {user?.isVIP && (
+                <small className="text-primary font-bold">VIP</small>
+              )}
+
               <small className="text-muted-foreground">{user?.corpEmail}</small>
             </div>
           </div>

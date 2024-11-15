@@ -29,6 +29,63 @@ export const createGpoSession = async (
   return gpoSession;
 };
 
+export const createGpoSessionByPriority = async (
+  parkingSpaceId: string,
+  gpoAccountId: string,
+  shouldEndAt: Date
+) => {
+  const gpoSession = await prisma.gPOSession.create({
+    data: {
+      accountId: gpoAccountId,
+      parkingSpaceId,
+      shouldEndAt,
+    },
+  });
+
+  await prisma.parkingSpace.update({
+    where: {
+      id: parkingSpaceId,
+    },
+    data: {
+      currReservedCapacity: {
+        increment: 1,
+      },
+    },
+  });
+
+  return gpoSession;
+};
+
+export const endGpoSessionByPriority = async (
+  gpoSessionId: string,
+  endedProperly: boolean
+) => {
+  // UPDATE GPO SESSION'S END TIME, STATUS, AND IF ENDED PROPERLY
+  const gpoSession = await prisma.gPOSession.update({
+    where: {
+      id: gpoSessionId,
+    },
+    data: {
+      endTime: new Date(),
+      status: "ENDED",
+      endedProperly,
+    },
+  });
+
+  await prisma.parkingSpace.update({
+    where: {
+      id: gpoSession.parkingSpaceId,
+    },
+    data: {
+      currReservedCapacity: {
+        decrement: 1,
+      },
+    },
+  });
+
+  return gpoSession;
+};
+
 // GET CURRENT/ONGOING GPO'S SESSION
 export const getOngoingGpoSession = async (accountId: string) => {
   const currentGpoSession = await prisma.gPOSession.findFirst({

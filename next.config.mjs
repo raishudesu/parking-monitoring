@@ -22,15 +22,14 @@ const nextConfig = {
   swcMinify: true,
 };
 
-// const withPWA = withPWAInit({
-//   dest: "public",
-//   register: true,
-//   customWorkerSrc: "src/worker/index.js",
-//   // disable: process.env.NODE_ENV === "development", // Optional: disable during development
-//   // buildExcludes: [/app-build-manifest\.json$/], // Recommended for Next.js 13+
-// });
+const withPWA = withPWAInit({
+  dest: "public",
+  register: true,
+  disable: process.env.NODE_ENV === "development", // Optional: disable during development
+  // buildExcludes: [/app-build-manifest\.json$/], // Recommended for Next.js 13+
+});
 
-// const config = withPWA(nextConfig);
+const config = withPWA(nextConfig);
 
-// export default config;
-export default nextConfig;
+export default config;
+// export default nextCon/fig;

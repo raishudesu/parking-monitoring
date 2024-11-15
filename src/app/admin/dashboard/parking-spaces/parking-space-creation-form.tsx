@@ -54,6 +54,7 @@ const ParkingSpaceCreationForm = () => {
       latitude: "",
       spaceType: "FOURWHEEL",
       maxCapacity: "",
+      reservedCapacity: "",
       images: [
         {
           url: "",
@@ -81,6 +82,7 @@ const ParkingSpaceCreationForm = () => {
       const newValues: z.infer<typeof parkingSpaceSchema> = {
         ...values,
         maxCapacity: parseInt(values.maxCapacity, 10),
+        reservedCapacity: parseInt(values.reservedCapacity, 10),
         auditAdminId: session.data?.user.id,
       };
 
@@ -330,6 +332,25 @@ const ParkingSpaceCreationForm = () => {
                   {...field}
                   className="w-full"
                   placeholder="Enter Max Capacity"
+                  type="number"
+                  disabled={isPending}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="reservedCapacity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reserved Capacity</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="w-full"
+                  placeholder="Enter Reserved Capacity"
                   type="number"
                   disabled={isPending}
                 />
