@@ -38,13 +38,6 @@ import {
 import type { Admin, AuditLog, VisitorSession } from "@prisma/client";
 import { parseDate } from "@/lib/utils";
 
-export type AuditLogsData = AuditLog & {
-  admin: Omit<
-    Admin,
-    "password" | "isActive" | "role" | "updatedAt" | "id" | "createdAt"
-  >;
-};
-
 export type VisitorSessionData = VisitorSession & {
   visitorPassCard: {
     cardNumber: number;
@@ -53,39 +46,28 @@ export type VisitorSessionData = VisitorSession & {
 
 const columnHelper = createColumnHelper();
 
-const emailFilterFn: FilterFn<any> = (
-  row: Row<any>,
-  columnId: string,
-  filterValue: string
+// Custom filter function for exact number matching
+const numberFilterFn: FilterFn<VisitorSessionData> = (
+  row,
+  columnId,
+  filterValue
 ) => {
-  const email = (row.getValue(columnId) as { email?: string })?.email ?? "";
-  return email.toLowerCase().includes(filterValue.toLowerCase());
+  const value = row.getValue(columnId) as number;
+  const searchValue = filterValue.trim();
+
+  // If no search value, show all rows
+  if (!searchValue) return true;
+
+  // Convert both to strings and check if the card number starts with the search value
+  return value.toString().startsWith(searchValue);
 };
 
 export const columns: ColumnDef<VisitorSessionData>[] = [
-  //   {
-  //     id: "select",
-  //     header: ({ table }) => (
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     ),
-  //     cell: ({ row }) => (
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     ),
-  //   },
   {
-    accessorKey: "cardNumber",
+    id: "cardNumber",
     header: "Card Number",
+    accessorFn: (row) => row.visitorPassCard.cardNumber,
+    filterFn: numberFilterFn,
     cell: ({ row }) => (
       <div className="capitalize">
         #{row.original.visitorPassCard.cardNumber}
@@ -147,10 +129,12 @@ export function VisitorSessionsTable({ data }: { data: VisitorSessionData[] }) {
     <div className="w-full">
       <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
-          placeholder="Filter by Action"
-          value={(table.getColumn("action")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by Card #"
+          value={
+            (table.getColumn("cardNumber")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("action")?.setFilterValue(event.target.value)
+            table.getColumn("cardNumber")?.setFilterValue(event.target.value)
           }
           className="md:max-w-sm"
         />

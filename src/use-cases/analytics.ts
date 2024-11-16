@@ -3,6 +3,7 @@ import {
   getPeakHoursData,
   getSpaceUtilData,
   getUserBehaviorData,
+  getVisitorPeakHoursData,
 } from "@/data-access/analytics";
 import {
   AggregationMap,
@@ -134,7 +135,7 @@ interface PeakHoursData {
 }
 
 // Helper to initialize empty data
-const initializePeakHoursData = (): PeakHoursData => ({
+export const initializePeakHoursData = (): PeakHoursData => ({
   hourCounts: Array(24).fill(0), // Initialize 24 hours with 0 counts
   dayCounts: Array(7).fill(0), // Initialize 7 days (Sunday-Saturday) with 0 counts
 });
@@ -145,6 +146,22 @@ export const getPeakHoursDataUseCase = async () => {
 
   sessions.forEach((session) => {
     const date = new Date(session.startTime);
+    const hour = date.getHours(); // Get hour (0-23)
+    const day = date.getDay(); // Get day of the week (0: Sunday, 1: Monday, ..., 6: Saturday)
+
+    peakData.hourCounts[hour] += 1; // Increment hour count
+    peakData.dayCounts[day] += 1; // Increment day count
+  });
+
+  return peakData;
+};
+
+export const getVisitorPeakHoursDataUseCase = async () => {
+  const sessions = await getVisitorPeakHoursData();
+  const peakData = initializePeakHoursData();
+
+  sessions.forEach((session) => {
+    const date = new Date(session.visitTime);
     const hour = date.getHours(); // Get hour (0-23)
     const day = date.getDay(); // Get day of the week (0: Sunday, 1: Monday, ..., 6: Saturday)
 
