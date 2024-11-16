@@ -41,6 +41,21 @@ import ShowQRCardDialog from "./show-card-qr-dialog";
 import VisitorCardUpdateDialog from "./visitor-card-update-dialog";
 import VisitorCardDeletionDialog from "./visitor-card-deletion-dialog";
 
+const numberFilterFn: FilterFn<VisitorPassCard> = (
+  row,
+  columnId,
+  filterValue
+) => {
+  const value = row.getValue(columnId) as number;
+  const searchValue = filterValue.trim();
+
+  // If no search value, show all rows
+  if (!searchValue) return true;
+
+  // Convert both to strings and check if the card number starts with the search value
+  return value.toString().startsWith(searchValue);
+};
+
 export const columns: ColumnDef<VisitorPassCard>[] = [
   // {
   //     id: "select",
@@ -63,8 +78,10 @@ export const columns: ColumnDef<VisitorPassCard>[] = [
   //     ),
   // },
   {
-    accessorKey: "cardNumber",
-    header: "Card #",
+    id: "cardNumber",
+    header: "Card Number",
+    accessorFn: (row) => row.cardNumber,
+    filterFn: numberFilterFn,
     cell: ({ row }) => (
       <div className="capitalize">#{row.original.cardNumber}</div>
     ),
@@ -128,10 +145,12 @@ export function VisitorCardsTable({ data }: { data: VisitorPassCard[] }) {
     <div className="w-full">
       <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
-          placeholder="Filter by Name"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by Card #"
+          value={
+            (table.getColumn("cardNumber")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("cardNumber")?.setFilterValue(event.target.value)
           }
           className="md:max-w-sm"
         />

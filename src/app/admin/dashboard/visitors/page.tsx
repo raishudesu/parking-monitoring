@@ -6,11 +6,15 @@ import {
 } from "@/use-cases/visitors";
 import { VisitorCardsTable } from "./visitor-cards-table";
 import ScanQrDrawer from "./scan-qr-drawer";
+import { SessionDurationLineChart } from "./session-duration-line-chart";
+import { getVisitorPeakHoursDataUseCase } from "@/use-cases/analytics";
+import PeakHoursChart from "../analytics/peak-hours-chart";
 
 const VisitorsPage = async () => {
-  const [visitorSessions, visitorCards] = await Promise.all([
+  const [visitorSessions, visitorCards, visitorPeakData] = await Promise.all([
     getAllVisitorSessionUseCase(),
     getAllVisitorCardsUseCase(),
+    getVisitorPeakHoursDataUseCase(),
   ]);
 
   return (
@@ -26,6 +30,13 @@ const VisitorsPage = async () => {
       <div className="pb-6">
         <ScanQrDrawer />
       </div>
+      <div className="pb-6 text-xl">
+        VISITORS INSIDE:{" "}
+        {
+          visitorSessions.filter((session) => session.status === "ONGOING")
+            .length
+        }
+      </div>
       <p className="text-muted-foreground scroll-m-20 text-xl tracking-tight lg:text-2xl">
         Visitor Pass Cards
       </p>
@@ -34,6 +45,13 @@ const VisitorsPage = async () => {
         Visitor Sessions
       </p>
       <VisitorSessionsTable data={visitorSessions} />
+      <p className="text-muted-foreground scroll-m-20 text-xl tracking-tight lg:text-2xl">
+        Analytics
+      </p>
+      <div className="py-6 grid md:grid-cols-2 gap-6">
+        <PeakHoursChart data={visitorPeakData} />
+        <SessionDurationLineChart data={visitorSessions} />
+      </div>
     </div>
   );
 };

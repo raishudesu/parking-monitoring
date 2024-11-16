@@ -452,8 +452,8 @@
     }
   ],
   "theme_color": "#FFFFFF",
-  "background_color": "#FFFFFF",
-  "start_url": "/",
+  "background_color": "#FE7D55",
+  "start_url": "/gpo/sign-in",
   "display": "standalone",
   "orientation": "portrait"
 }

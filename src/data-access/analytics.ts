@@ -86,3 +86,14 @@ export const getPeakHoursData = async () => {
 
   return sessions;
 };
+
+export const getVisitorPeakHoursData = async () => {
+  const session = await prisma.visitorSession.findMany({
+    select: {
+      visitTime: true,
+      exitTime: true,
+    },
+  });
+
+  return session;
+};
