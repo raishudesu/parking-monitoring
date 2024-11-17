@@ -126,7 +126,7 @@ export function SessionDurationLineChart({ data }: { data: VisitorSession[] }) {
         </div>
         <CSVLink
           data={sessionDurationData}
-          className="mt-6 bg-primary py-2 px-4 rounded-xl"
+          className="mt-6 bg-primary text-primary-foreground py-2 px-4 rounded-xl"
         >
           Download CSV
         </CSVLink>
