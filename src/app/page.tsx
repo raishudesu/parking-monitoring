@@ -93,7 +93,6 @@ export default function Home() {
                 <div className="flex flex-col items-center gap-6 text-center space-y-2">
                   <Logo />
                   <h1
-                    style={{ lineHeight: "5rem" }}
                     className={`text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none ${textAnimation} py-2`}
                   >
                     Real-Time Parking Monitoring with Analytics and
