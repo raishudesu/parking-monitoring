@@ -14,7 +14,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import Logo from "@/components/logo";
 
 export default function Home() {
-  const textAnimation = `animate-text bg-gradient-to-r from-[#FF6200] via-purple-400 to-orange-500 bg-clip-text font-black text-transparent`;
+  const textAnimation = `animate-text bg-gradient-to-r from-[#FE7D55] via-purple-400 to-orange-500 bg-clip-text font-black text-transparent`;
 
   return (
     <div className="flex flex-col min-h-[100dvh]">
@@ -93,9 +93,11 @@ export default function Home() {
                 <div className="flex flex-col items-center gap-6 text-center space-y-2">
                   <Logo />
                   <h1
+                    style={{ lineHeight: "5rem" }}
                     className={`text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none ${textAnimation} py-2`}
                   >
-                    Real-Time Parking Monitoring and Analytics
+                    Real-Time Parking Monitoring with Analytics and
+                    Visualization
                   </h1>
                   <p className="text-center text-muted-foreground md:text-xl">
                     Our web-based parking monitoring system provides real-time
