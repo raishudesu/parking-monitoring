@@ -65,7 +65,7 @@ const GpoSignInForm = () => {
       form.reset();
 
       toast({
-        title: "Login success!",
+        title: "Log in success!",
         description: "Welcome to ParkSU",
       });
 

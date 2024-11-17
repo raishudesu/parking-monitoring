@@ -30,6 +30,11 @@ export const sideNavLinks = [
     link: "/admin/dashboard/administrators",
   },
   {
+    name: "Analytics",
+    icon: <ChartColumnIncreasing />,
+    link: "/admin/dashboard/analytics",
+  },
+  {
     name: "Audit Logs",
     icon: <Logs />,
     link: "/admin/dashboard/audit-logs",
@@ -64,11 +69,7 @@ export const sideNavLinks = [
     icon: <BookUser />,
     link: "/admin/dashboard/visitors",
   },
-  {
-    name: "Analytics",
-    icon: <ChartColumnIncreasing />,
-    link: "/admin/dashboard/analytics",
-  },
+
   {
     name: "Settings",
     icon: <Settings />,

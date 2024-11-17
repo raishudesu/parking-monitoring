@@ -122,7 +122,10 @@ const PeakHoursChart: React.FC<PeakHoursChartProps> = ({
           </ResponsiveContainer>
         </div>
         <CardFooter className="text-sm">
-          <CSVLink data={csvData} className="bg-primary py-2 px-4 rounded-xl">
+          <CSVLink
+            data={csvData}
+            className="bg-primary text-primary-foreground py-2 px-4 rounded-xl"
+          >
             Download CSV
           </CSVLink>
         </CardFooter>
