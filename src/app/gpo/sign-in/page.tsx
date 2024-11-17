@@ -12,7 +12,7 @@ const SignInPage = async () => {
             <div className="py-6 w-full justify-center items-center flex flex-col">
               <div className="flex items-center gap-2 p-3 py-6">
                 <svg
-                  fill="#FE7D55"
+                  fill="#FFFFFF"
                   viewBox="0 0 512 512"
                   id="icons"
                   xmlns="http://www.w3.org/2000/svg"

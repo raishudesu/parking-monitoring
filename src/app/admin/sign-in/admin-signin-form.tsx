@@ -64,8 +64,8 @@ const AdminSignInForm = () => {
       form.reset();
 
       toast({
-        title: "Welcome Admin!",
-        description: "Enjoy your session",
+        title: "Log in success!",
+        description: "Welcome admin!",
       });
 
       setLoginStatus(res);
