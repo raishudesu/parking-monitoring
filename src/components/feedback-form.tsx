@@ -19,8 +19,11 @@ import { LoaderCircle } from "lucide-react";
 import { useServerAction } from "zsa-react";
 import { createUserFeedbackAction } from "@/app/actions";
 import { Textarea } from "./ui/textarea";
+import { useSession } from "next-auth/react";
 
 const FeedbackForm = () => {
+  const session = useSession();
+
   const { isPending, isSuccess, execute } = useServerAction(
     createUserFeedbackAction
   );
@@ -29,7 +32,7 @@ const FeedbackForm = () => {
     resolver: zodResolver(userFeedBackSchema),
     defaultValues: {
       name: "",
-      email: "",
+      email: session?.data?.user.corpEmail || "",
       message: "",
     },
   });

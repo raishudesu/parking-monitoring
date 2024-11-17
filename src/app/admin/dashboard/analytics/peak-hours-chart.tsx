@@ -64,7 +64,7 @@ const PeakHoursChart: React.FC<PeakHoursChartProps> = ({
   };
 
   return (
-    <Card className="col-span-2">
+    <Card className="md:col-span-2">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

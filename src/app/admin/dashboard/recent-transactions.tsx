@@ -68,10 +68,15 @@ const RecentTransactions = async () => {
                       <small className="text-sm text-muted-foreground">
                         {accountParked.email}
                       </small>
+                      <div
+                        className={`md:hidden text-primary md:ml-auto font-semibold text-sm`}
+                      >
+                        {status}
+                      </div>
                     </div>
                   </div>
                   <div
-                    className={`text-primary ml-auto md:mt-0 md:ml-auto font-semibold text-sm`}
+                    className={`hidden md:block text-primary md:ml-auto font-semibold text-sm`}
                   >
                     {status}
                   </div>
