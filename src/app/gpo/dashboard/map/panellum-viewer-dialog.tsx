@@ -52,7 +52,7 @@ const PanellumViewerDialog = ({
       </DialogTrigger>
       <DialogContent className="py-6 md:min-w-[64rem]">
         <DialogHeader>
-          <DialogTitle>{parkingName} 360 View</DialogTitle>
+          <DialogTitle>{parkingName} Panoramic View</DialogTitle>
         </DialogHeader>
         <div className="w-full min-h-[32rem]">
           {images && images.length > 0 ? (
