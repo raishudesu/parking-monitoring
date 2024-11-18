@@ -1,5 +1,6 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import ChangePasswordForm from "./change-password-form";
+import Link from "next/link";
 
 const SettingsPage = () => {
   return (
@@ -29,6 +30,22 @@ const SettingsPage = () => {
           </div>
           <ModeToggle />
         </div>
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <Link
+            href="/terms-and-conditions"
+            className="text-sm text-blue-500 hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Terms and Conditions
+          </Link>
+          <Link
+            href="/privacy-policy"
+            className="text-sm text-blue-500 hover:underline underline-offset-4"
+            prefetch={false}
+          >
+            Privacy Policy
+          </Link>
+        </nav>
       </div>
     </div>
   );

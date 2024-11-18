@@ -2,6 +2,7 @@ import NotificationRequest from "@/components/notification";
 import ChangePasswordForm from "./change-password-form";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import Link from "next/link";
 
 const SettingsPage = async () => {
   const session = await getServerSession(authOptions);
@@ -23,6 +24,22 @@ const SettingsPage = async () => {
         </div>
         <NotificationRequest userId={session?.user.id as string} />
       </div>
+      <nav className="flex gap-4 sm:gap-6">
+        <Link
+          href="/terms-and-conditions"
+          className="text-sm text-blue-500 hover:underline underline-offset-4"
+          prefetch={false}
+        >
+          Terms and Conditions
+        </Link>
+        <Link
+          href="/privacy-policy"
+          className="text-sm text-blue-500 hover:underline underline-offset-4"
+          prefetch={false}
+        >
+          Privacy Policy
+        </Link>
+      </nav>
     </div>
   );
 };
