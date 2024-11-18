@@ -187,6 +187,7 @@ model College {
 model UserFeedback {
   id          String      @id @default(uuid())
   name        String
+  email       String
   message     String
   userGpo     GPOAccount? @relation(fields: [userGpoId], references: [id])
   userGpoId   String?
