@@ -1,5 +1,6 @@
 "use client";
 
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
@@ -8,12 +9,14 @@ export default function PrivacyPolicy() {
   const router = useRouter();
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container text-zinc-900 dark:text-primary-foreground mx-auto px-4 py-8 max-w-4xl">
       <Button onClick={() => router.back()}>Go back</Button>
 
-      <h1 className="text-primary text-3xl font-bold mb-2 text-center">
+      <h1 className="py-6 text-primary text-3xl font-bold mb-2 text-center">
         ParkSU Privacy Policy
       </h1>
+      <ModeToggle />
+
       <p className="text-sm text-gray-600 mb-2 text-center">
         Effective Date: November 18, 2025
       </p>
