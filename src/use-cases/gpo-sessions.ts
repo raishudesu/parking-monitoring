@@ -141,8 +141,9 @@ export const endGpoSessionUseCase = async (accountId: string) => {
     throw Error("Last GPO Session has ended.");
 
   // PUT LOGIC HERE IF ENDED PROPERLY ON TIME
-  const endedProperly =
-    lastGpoSession.startTime <= (lastGpoSession.shouldEndAt ?? 0);
+  const now = new Date();
+
+  const endedProperly = now < (lastGpoSession.shouldEndAt ?? 0);
 
   // APPLY VIOLATION IF DID NOT END ON TIME
   if (!endedProperly) {
