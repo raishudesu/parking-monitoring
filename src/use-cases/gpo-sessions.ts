@@ -152,8 +152,11 @@ export const endGpoSessionUseCase = async (accountId: string) => {
       "Did not end on time.",
       10
     );
-    if (GatePassOwner?.creditScore ?? 0 <= 60) {
-      await deactivateGpoAccount(accountId);
+    // console.log(GatePassOwner);
+    if (GatePassOwner) {
+      if ((GatePassOwner.creditScore as number) <= 60) {
+        await deactivateGpoAccount(accountId);
+      }
     }
   } else {
     await addCreditScoreToGpoUseCase(accountId);
