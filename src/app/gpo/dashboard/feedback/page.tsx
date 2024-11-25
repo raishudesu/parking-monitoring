@@ -1,4 +1,5 @@
 import FeedbackForm from "@/components/feedback-form";
+import UserSurveyForm from "@/components/userSurveryForm";
 import React from "react";
 
 const FeedbackPage = () => {
@@ -10,7 +11,8 @@ const FeedbackPage = () => {
           Submit Feedback
         </h1>
       </div>
-      <FeedbackForm />
+      {/* <FeedbackForm /> */}
+      <UserSurveyForm />
     </div>
   );
 };

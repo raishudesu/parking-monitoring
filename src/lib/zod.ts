@@ -169,3 +169,23 @@ export const userFeedBackSchema = z.object({
   email: z.string().email(),
   message: z.string().min(6, "Message should be at least 6 characters"),
 });
+
+// SURVEY QUESTIONS
+
+export const ratings = z.enum([
+  "EXCELLENT",
+  "GOOD",
+  "NEUTRAL",
+  "POOR",
+  "VERY POOR",
+]);
+
+export const userFeedbackSurveySchema = z.object({
+  overallExperience: ratings,
+  easeOfUse: ratings,
+  realtimeFeatures: ratings,
+  qrFunctionality: ratings,
+  notifications: ratings,
+  suggestions: z.string().min(2).max(1500),
+  toRecommend: ratings,
+});
