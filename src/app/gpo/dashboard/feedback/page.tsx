@@ -1,6 +1,6 @@
-import FeedbackForm from "@/components/feedback-form";
-import UserSurveyForm from "@/components/userSurveryForm";
 import React from "react";
+import ParkingSystemSurvey from "./user-survey-form";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const FeedbackPage = () => {
   return (
@@ -12,7 +12,9 @@ const FeedbackPage = () => {
         </h1>
       </div>
       {/* <FeedbackForm /> */}
-      <UserSurveyForm />
+      <ScrollArea>
+        <ParkingSystemSurvey />
+      </ScrollArea>
     </div>
   );
 };

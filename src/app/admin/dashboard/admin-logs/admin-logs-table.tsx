@@ -111,7 +111,7 @@ export const columns: ColumnDef<AuditLogsData>[] = [
   },
 ];
 
-export function AuditLogsTable({ data }: { data: AuditLogsData[] }) {
+export function AdminLogsTable({ data }: { data: AuditLogsData[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

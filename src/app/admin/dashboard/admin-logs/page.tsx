@@ -1,5 +1,5 @@
 import { getAuditLogsUseCase } from "@/use-cases/audit-log";
-import { AuditLogsData, AuditLogsTable } from "./audit-logs-table";
+import { AdminLogsTable, AuditLogsData } from "./admin-logs-table";
 import { Admin, AuditLog } from "@prisma/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
@@ -25,7 +25,7 @@ const AuditLogsPage = async () => {
           Administrator Dashboard
         </div>
         <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Audit Logs
+          Admin Logs
         </h1>
       </div>
       {error ? (
@@ -35,7 +35,7 @@ const AuditLogsPage = async () => {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : logs ? (
-        <AuditLogsTable data={logs} />
+        <AdminLogsTable data={logs} />
       ) : (
         <Alert>
           <AlertTriangle className="h-4 w-4" />

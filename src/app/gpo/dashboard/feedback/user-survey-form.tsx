@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -25,54 +25,15 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-
-const parkingFeedbackSchema = z.object({
-  overallExperience: z.enum([
-    "Excellent",
-    "Good",
-    "Neutral",
-    "Poor",
-    "Very Poor",
-  ]),
-  easeOfUse: z.enum([
-    "Very Easy",
-    "Easy",
-    "Neutral",
-    "Difficult",
-    "Very Difficult",
-  ]),
-  realtimeFeatures: z.enum([
-    "Very Helpful",
-    "Helpful",
-    "Neutral",
-    "Not Helpful",
-    "Not At All Helpful",
-  ]),
-  qrFunctionality: z.enum([
-    "Yes, it worked perfectly.",
-    "It was okay, but could be improved.",
-    "No, I faced issues.",
-  ]),
-  notifications: z.enum([
-    "Yes, they were timely and clear.",
-    "Somewhat, but improvements are needed.",
-    "No, I missed or didn't understand the notifications.",
-  ]),
-  suggestions: z
-    .string()
-    .min(1, "Please provide your suggestions")
-    .max(500, "Suggestion is too long"),
-  likelyToRecommend: z.enum([
-    "Very Likely",
-    "Likely",
-    "Neutral",
-    "Unlikely",
-    "Very Unlikely",
-  ]),
-});
+import { parkingFeedbackSchema } from "@/lib/zod";
+import { useServerAction } from "zsa-react";
+import { submitSurveyAction } from "@/app/gpo/dashboard/feedback/actions";
+import { useSession } from "next-auth/react";
+import { StarRating } from "@/app/gpo/dashboard/feedback/star-rating";
 
 const ParkingSystemSurvey = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const session = useSession();
+  const { isPending, execute } = useServerAction(submitSurveyAction);
 
   const form = useForm<z.infer<typeof parkingFeedbackSchema>>({
     resolver: zodResolver(parkingFeedbackSchema),
@@ -81,18 +42,29 @@ const ParkingSystemSurvey = () => {
       easeOfUse: undefined,
       realtimeFeatures: undefined,
       qrFunctionality: undefined,
-      notifications: undefined,
+      notificationFeedback: undefined,
       suggestions: "",
       likelyToRecommend: undefined,
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof parkingFeedbackSchema>) => {
-    setIsSubmitting(true);
+  const onSubmit = async (values: z.infer<typeof parkingFeedbackSchema>) => {
     try {
-      // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log(data);
+      const [data, err] = await execute({
+        userId: session.data?.user.id ?? undefined,
+        ...values,
+      });
+
+      if (err) {
+        toast({
+          title: "Oops... Something went wrong",
+          description: "Try again later",
+          variant: "destructive",
+        });
+        console.error(err);
+        return;
+      }
+
       toast({
         title: "Feedback Submitted",
         description: "Thank you for your valuable feedback!",
@@ -104,8 +76,7 @@ const ParkingSystemSurvey = () => {
         description: "There was a problem submitting your feedback.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
+      console.error(error);
     }
   };
 
@@ -123,7 +94,7 @@ const ParkingSystemSurvey = () => {
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
-              defaultValue={field.value}
+              defaultValue={String(field.value)}
               className="flex flex-col space-y-1"
             >
               {options.map((option) => (
@@ -154,11 +125,31 @@ const ParkingSystemSurvey = () => {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {renderRadioGroup(
-              "overallExperience",
-              "1. How would you rate your overall experience with the parking monitoring system?",
-              ["Excellent", "Good", "Neutral", "Poor", "Very Poor"]
-            )}
+            <FormField
+              control={form.control}
+              name="overallExperience"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    1. How would you rate your overall experience with the
+                    parking monitoring system?
+                  </FormLabel>
+                  <FormControl>
+                    <Controller
+                      name="overallExperience"
+                      control={form.control}
+                      render={({ field }) => (
+                        <StarRating
+                          rating={field.value}
+                          onRatingChange={(rating) => field.onChange(rating)}
+                        />
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {renderRadioGroup(
               "easeOfUse",
@@ -189,7 +180,7 @@ const ParkingSystemSurvey = () => {
             )}
 
             {renderRadioGroup(
-              "notifications",
+              "notificationFeedback",
               "5. Did the session reminders and end-time notifications meet your expectations?",
               [
                 "Yes, they were timely and clear.",
@@ -225,8 +216,8 @@ const ParkingSystemSurvey = () => {
               ["Very Likely", "Likely", "Neutral", "Unlikely", "Very Unlikely"]
             )}
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? (
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Submitting...

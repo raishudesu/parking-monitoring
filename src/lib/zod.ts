@@ -189,3 +189,43 @@ export const userFeedbackSurveySchema = z.object({
   suggestions: z.string().min(2).max(1500),
   toRecommend: ratings,
 });
+
+export const parkingFeedbackSchema = z.object({
+  userId: z.string().optional(),
+  overallExperience: z.number(),
+  easeOfUse: z.enum([
+    "Very Easy",
+    "Easy",
+    "Neutral",
+    "Difficult",
+    "Very Difficult",
+  ]),
+  realtimeFeatures: z.enum([
+    "Very Helpful",
+    "Helpful",
+    "Neutral",
+    "Not Helpful",
+    "Not At All Helpful",
+  ]),
+  qrFunctionality: z.enum([
+    "Yes, it worked perfectly.",
+    "It was okay, but could be improved.",
+    "No, I faced issues.",
+  ]),
+  notificationFeedback: z.enum([
+    "Yes, they were timely and clear.",
+    "Somewhat, but improvements are needed.",
+    "No, I missed or didn't understand the notifications.",
+  ]),
+  suggestions: z
+    .string()
+    .min(1, "Please provide your suggestions")
+    .max(500, "Suggestion is too long"),
+  likelyToRecommend: z.enum([
+    "Very Likely",
+    "Likely",
+    "Neutral",
+    "Unlikely",
+    "Very Unlikely",
+  ]),
+});

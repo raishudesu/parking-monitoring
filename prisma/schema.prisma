@@ -79,6 +79,7 @@ model GPOAccount {
   isActive       Boolean        @default(true)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+  surveys        UserSurvey[]
 }
 
 model GPOSession {
@@ -192,4 +193,17 @@ model UserFeedback {
   userGpo     GPOAccount? @relation(fields: [userGpoId], references: [id])
   userGpoId   String?
   submittedAt DateTime    @default(now())
+}
+
+model UserSurvey {
+  id                   String     @id @default(uuid())
+  overallExperience    Int
+  easeOfUse            String
+  realtimeFeatures     String
+  qrFunctionality      String
+  notificationFeedback String
+  suggestions          String
+  likelyToRecommend    String
+  user                 GPOAccount @relation(fields: [userId], references: [id])
+  userId               String
 }

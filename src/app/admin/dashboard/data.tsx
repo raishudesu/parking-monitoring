@@ -13,6 +13,42 @@ import {
   Users,
 } from "lucide-react";
 
+export const accountsTab = [
+  {
+    name: "Administrators",
+    icon: <Shield />,
+    link: "/admin/dashboard/administrators",
+  },
+  {
+    name: "Gate Pass Owners",
+    icon: <Users />,
+    link: "/admin/dashboard/accounts",
+  },
+];
+
+export const logsTab = [
+  {
+    name: "Admin Logs",
+    icon: <Logs />,
+    link: "/admin/dashboard/admin-logs",
+  },
+  {
+    name: "Visitors",
+    icon: <BookUser />,
+    link: "/admin/dashboard/visitors",
+  },
+  {
+    name: "Violations",
+    icon: <TriangleAlert />,
+    link: "/admin/dashboard/violations",
+  },
+  {
+    name: "Sessions",
+    icon: <History />,
+    link: "/admin/dashboard/sessions",
+  },
+];
+
 export const sideNavLinks = [
   {
     name: "Dashboard",
@@ -20,25 +56,19 @@ export const sideNavLinks = [
     link: "/admin/dashboard",
   },
   {
-    name: "Accounts",
-    icon: <Users />,
-    link: "/admin/dashboard/accounts",
-  },
-  {
-    name: "Administrators",
-    icon: <Shield />,
-    link: "/admin/dashboard/administrators",
-  },
-  {
     name: "Analytics",
     icon: <ChartColumnIncreasing />,
     link: "/admin/dashboard/analytics",
   },
+
   {
-    name: "Audit Logs",
-    icon: <Logs />,
-    link: "/admin/dashboard/audit-logs",
+    name: "Parking Spaces",
+    icon: <SquareParking />,
+    link: "/admin/dashboard/parking-spaces",
   },
+];
+
+export const othersTab = [
   {
     name: "Colleges",
     icon: <Building2 />,
@@ -48,31 +78,5 @@ export const sideNavLinks = [
     name: "Feedbacks",
     icon: <MessageCircle />,
     link: "/admin/dashboard/feedbacks",
-  },
-  {
-    name: "Parking Spaces",
-    icon: <SquareParking />,
-    link: "/admin/dashboard/parking-spaces",
-  },
-  {
-    name: "Sessions",
-    icon: <History />,
-    link: "/admin/dashboard/sessions",
-  },
-  {
-    name: "Violations",
-    icon: <TriangleAlert />,
-    link: "/admin/dashboard/violations",
-  },
-  {
-    name: "Visitors",
-    icon: <BookUser />,
-    link: "/admin/dashboard/visitors",
-  },
-
-  {
-    name: "Settings",
-    icon: <Settings />,
-    link: "/admin/dashboard/settings",
   },
 ];

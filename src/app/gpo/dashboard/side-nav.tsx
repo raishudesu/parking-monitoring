@@ -15,7 +15,7 @@ const SideNav = async () => {
       <Logo />
       <div className="text-muted-foreground flex flex-col justify-between gap-3 h-full">
         <div className="flex flex-col gap-3">
-          <span className="font-mono">Navigate</span>
+          <small className="font-bold">Navigate</small>
           <nav>
             <ul className="flex flex-col gap-3">
               <NavLinks />
