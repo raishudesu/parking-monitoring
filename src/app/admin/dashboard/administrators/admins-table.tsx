@@ -49,6 +49,7 @@ import AdminUpdateDialog from "./admin-update-dialog";
 import DeleteAdminDialog from "./admin-delete-dialog";
 import AdminDeleteDialog from "./admin-delete-dialog";
 import { useSession } from "next-auth/react";
+import { Badge } from "@/components/ui/badge";
 
 export type AdminAccountData = Omit<Admin, "password">;
 
@@ -92,15 +93,27 @@ export const columns: ColumnDef<AdminAccountData>[] = [
   },
   {
     accessorKey: "isActive",
-    header: "isActive",
+    header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{`${row.getValue("isActive")}`}</div>
+      <div className="capitalize">{`${
+        row.getValue("isActive") === true ? "ACTIVE" : "INACTIVE"
+      }`}</div>
     ),
   },
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("role")}</div>,
+    cell: ({ row }) => (
+      <Badge
+        className={`${
+          row.getValue("role") === "SUPERADMIN"
+            ? "bg-destructive"
+            : "bg-green-500"
+        }`}
+      >
+        {row.getValue("role")}
+      </Badge>
+    ),
   },
   {
     id: "actions",

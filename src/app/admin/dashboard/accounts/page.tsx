@@ -40,7 +40,7 @@ const AccountsPage = async () => {
           Administrator Dashboard
         </div>
         <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Accounts
+          Gate Pass Owners
         </h1>
       </div>
       {error ? (

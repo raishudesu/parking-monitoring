@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import SignOutBtn from "@/components/signout-btn";
 import { useSession } from "next-auth/react";
+import { Badge } from "@/components/ui/badge";
 
 const SideSheet = () => {
   const [open, setOpen] = useState(false);
@@ -57,15 +58,15 @@ const SideSheet = () => {
                 <span className="font-semibold">
                   {user?.firstName} {user?.lastName}
                 </span>
-                <small
-                  className={`font-semibold ${
+                <Badge
+                  className={`self-start ${
                     user?.role === "SUPERADMIN"
-                      ? "text-destructive"
-                      : "text-green-500"
+                      ? "bg-destructive"
+                      : "bg-green-500"
                   }`}
                 >
                   {user?.role}
-                </small>
+                </Badge>
                 <small className="text-muted-foreground">
                   {user?.corpEmail}
                 </small>

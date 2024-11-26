@@ -76,14 +76,14 @@ export const columns: ColumnDef<ViolationsData>[] = [
   //         />
   //     ),
   // },
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => <div className="capitalize">{row.original.id}</div>,
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "ID",
+  //   cell: ({ row }) => <div className="capitalize">{row.original.id}</div>,
+  // },
   {
     accessorKey: "accountViolator",
-    header: "Account Violated",
+    header: "Account Email",
     cell: ({ row }) => <div>{row.original.accountViolator.email}</div>,
     filterFn: emailFilterFn,
   },
@@ -96,7 +96,7 @@ export const columns: ColumnDef<ViolationsData>[] = [
   },
   {
     accessorKey: "violationType",
-    header: "Violation Type",
+    header: "Reason",
     cell: ({ row }) => <div>{`${row.getValue("violationType")}`}</div>,
   },
   {

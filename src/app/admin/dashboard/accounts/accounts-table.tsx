@@ -118,20 +118,7 @@ export function AccountsTable({
         </div>
       ),
     },
-    {
-      accessorKey: "isVIP",
-      header: "isVIP",
-      cell: ({ row }) => (
-        <div className="capitalize">{`${row.getValue("isVIP")}`}</div>
-      ),
-    },
-    {
-      accessorKey: "isPWD",
-      header: "isPWD",
-      cell: ({ row }) => (
-        <div className="capitalize">{`${row.getValue("isPWD")}`}</div>
-      ),
-    },
+
     {
       accessorKey: "creditScore",
       header: "Credit Score",
@@ -142,9 +129,13 @@ export function AccountsTable({
     },
     {
       accessorKey: "isActive",
-      header: "isActive",
+      header: "Status",
       cell: ({ row }) => (
-        <div className="capitalize">{`${row.getValue("isActive")}`}</div>
+        <div
+          className={`${
+            row.getValue("isActive") ? "text-green-500" : "text-destructive"
+          }`}
+        >{`${row.getValue("isActive") === true ? "ACTIVE" : "INACTIVE"}`}</div>
       ),
     },
     {

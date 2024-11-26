@@ -80,3 +80,16 @@ export const othersTab = [
     link: "/admin/dashboard/feedbacks",
   },
 ];
+
+export const securityRoleTabs = [
+  {
+    name: "Visitors",
+    icon: <BookUser />,
+    link: "/admin/dashboard/visitors",
+  },
+  {
+    name: "Settings",
+    icon: <Settings />,
+    link: "/admin/dashboard/settings",
+  },
+];

@@ -88,25 +88,25 @@ export const columns: ColumnDef<SessionData>[] = [
     cell: ({ row }) => <div>{row.original.accountParked.email}</div>,
     filterFn: emailFilterFn,
   },
-  {
-    accessorKey: "accountParked",
-    header: "Gate Pass No.",
-    cell: ({ row }) => <div>{row.original.accountParked.gatePassNumber}</div>,
-    filterFn: emailFilterFn,
-  },
+  // {
+  //   accessorKey: "accountParked",
+  //   header: "Gate Pass No.",
+  //   cell: ({ row }) => <div>{row.original.accountParked.gatePassNumber}</div>,
+  //   filterFn: emailFilterFn,
+  // },
   {
     accessorKey: "startTime",
-    header: "Start time",
+    header: "Start",
     cell: ({ row }) => <div>{`${parseDate(row.getValue("startTime"))}`}</div>,
   },
   {
     accessorKey: "shouldEndAt",
-    header: "Should End At",
+    header: "End",
     cell: ({ row }) => <div>{`${parseDate(row.getValue("shouldEndAt"))}`}</div>,
   },
   {
     accessorKey: "endTime",
-    header: "End time",
+    header: "Ended Date",
     cell: ({ row }) => <div>{`${parseDate(row.getValue("endTime"))}`}</div>,
   },
   {
@@ -120,7 +120,11 @@ export const columns: ColumnDef<SessionData>[] = [
     accessorKey: "endedProperly",
     header: "Ended properly",
     cell: ({ row }) => (
-      <div className="capitalize">{`${row.getValue("endedProperly")}`}</div>
+      <div
+        className={`${
+          row.getValue("endedProperly") ? "text-green-500" : "text-destructive"
+        }`}
+      >{`${row.getValue("endedProperly") ? "YES" : "NO"}`}</div>
     ),
   },
   //   {

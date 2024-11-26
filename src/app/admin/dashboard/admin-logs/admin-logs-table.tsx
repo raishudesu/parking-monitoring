@@ -78,6 +78,11 @@ export const columns: ColumnDef<AuditLogsData>[] = [
   //     ),
   //   },
   {
+    accessorKey: "createdAt",
+    header: "Date of Action",
+    cell: ({ row }) => <div>{`${parseDate(row.original.createdAt)}`}</div>,
+  },
+  {
     accessorKey: "action",
     header: "Action",
     cell: ({ row }) => <div className="capitalize">{row.original.action}</div>,
@@ -103,11 +108,6 @@ export const columns: ColumnDef<AuditLogsData>[] = [
     accessorKey: "admin",
     header: "Admin Email",
     cell: ({ row }) => <div>{`${row.original.admin.corpEmail}`}</div>,
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Date",
-    cell: ({ row }) => <div>{`${parseDate(row.original.createdAt)}`}</div>,
   },
 ];
 

@@ -4,6 +4,7 @@ import Logo from "@/components/logo";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import SignOutBtn from "@/components/signout-btn";
+import { Badge } from "@/components/ui/badge";
 
 const SideNav = async () => {
   const session = await getServerSession(authOptions);
@@ -35,18 +36,19 @@ const SideNav = async () => {
               <span className="font-semibold">
                 {user?.firstName} {user?.lastName}
               </span>
-              <small
-                className={`font-semibold ${
+              <Badge
+                className={`self-start ${
                   user?.role === "SUPERADMIN"
-                    ? "text-destructive"
-                    : "text-green-500"
+                    ? "bg-destructive"
+                    : "bg-green-500"
                 }`}
               >
                 {user?.role}
-              </small>
+              </Badge>
               <small className="text-muted-foreground">{user?.corpEmail}</small>
             </div>
           </div>
+
           <SignOutBtn />
         </div>
       </div>

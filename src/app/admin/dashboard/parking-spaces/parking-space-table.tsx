@@ -90,51 +90,36 @@ export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
   },
   {
     accessorKey: "currCapacity",
-    header: "Current Capacity",
+    header: "Occupied spots",
     cell: ({ row }) => <div>{`${row.getValue("currCapacity")}`}</div>,
   },
   {
     accessorKey: "maxCapacity",
-    header: "Max Capacity",
+    header: "Total spots",
     cell: ({ row }) => (
       <div className="capitalize">{`${row.getValue("maxCapacity")}`}</div>
     ),
   },
   {
     accessorKey: "currReservedCapacity",
-    header: "Current Reserved Capacity",
+    header: "Reserved Spots",
     cell: ({ row }) => <div>{`${row.getValue("currReservedCapacity")}`}</div>,
   },
   {
     accessorKey: "reservedCapacity",
-    header: "Reserved Capacity",
+    header: "Reserved Spot Limit",
     cell: ({ row }) => (
       <div className="capitalize">{`${row.getValue("reservedCapacity")}`}</div>
     ),
   },
-  {
-    accessorKey: "addedAt",
-    header: "Added at",
-    cell: ({ row }) => (
-      <div className="capitalize">{`${parseDate(
-        row.getValue("addedAt")
-      )}`}</div>
-    ),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Updated at",
-    cell: ({ row }) => (
-      <div className="capitalize">{`${parseDate(
-        row.getValue("updatedAt")
-      )}`}</div>
-    ),
-  },
+
   {
     accessorKey: "isActive",
-    header: "isActive",
+    header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{`${row.getValue("isActive")}`}</div>
+      <div className="capitalize">{`${
+        row.getValue("isActive") === true ? "ACTIVE" : "INACTIVE"
+      }`}</div>
     ),
   },
   {
