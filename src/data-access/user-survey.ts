@@ -19,6 +19,18 @@ export const submitSurvey = async (
   return false;
 };
 
+export const getAllSurveys = async () => {
+  const surveys = await prisma.userSurvey.findMany();
+
+  return surveys;
+};
+
+export const getSurveyCount = async () => {
+  const count = await prisma.userSurvey.count();
+
+  return count;
+};
+
 export const deleteSurveyById = async (surveyId: string) => {
   const deletedSurvey = await prisma.userSurvey.delete({
     where: {

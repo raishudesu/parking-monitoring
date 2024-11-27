@@ -39,7 +39,7 @@ import ParkingSpaceCreationDialog from "./parking-space-creation-dialog";
 import DeleteParkingSpaceDialog from "./delete-parking-space-dialog";
 import UpdateParkingSpaceDialog from "./parking-space-update-dialog";
 import ShowQrDialog from "./show-qr-dialog";
-import { parseDate } from "@/lib/utils";
+import { calculatePolygonArea, parseDate } from "@/lib/utils";
 import { ParkingSpaceWithImages } from "@/app/gpo/dashboard/map/dijkstra-map";
 
 const emailFilterFn: FilterFn<any> = (
@@ -110,6 +110,15 @@ export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
     header: "Reserved Spot Limit",
     cell: ({ row }) => (
       <div className="capitalize">{`${row.getValue("reservedCapacity")}`}</div>
+    ),
+  },
+  {
+    accessorKey: "polygon",
+    header: "Approx. Area",
+    cell: ({ row }) => (
+      <div className="capitalize">{`${calculatePolygonArea(
+        JSON.parse(row.getValue("polygon"))
+      )}m²`}</div>
     ),
   },
 

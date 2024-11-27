@@ -1,4 +1,3 @@
-import React from "react";
 import ParkingSystemSurvey from "./user-survey-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -11,7 +10,6 @@ const FeedbackPage = () => {
           Submit Feedback
         </h1>
       </div>
-      {/* <FeedbackForm /> */}
       <ScrollArea>
         <ParkingSystemSurvey />
       </ScrollArea>

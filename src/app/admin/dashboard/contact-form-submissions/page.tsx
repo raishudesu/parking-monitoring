@@ -10,7 +10,7 @@ const FeedbacksPage = async () => {
           Administrator Dashboard
         </div>
         <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Feedbacks
+          Contact Form Submissions
         </h1>
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

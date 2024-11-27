@@ -1,6 +1,11 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import emailjs from "@emailjs/browser";
+import {
+  CategoryCounters,
+  SurveyResponse,
+  TransformedSurveyData,
+} from "@/types/survey";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -124,4 +129,106 @@ export function urlB64ToUint8Array(base64String: string): Uint8Array {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
+}
+
+export function transformSurveyData(
+  surveyResponses: SurveyResponse[]
+): TransformedSurveyData {
+  // Initialize the result object
+  const transformedData: TransformedSurveyData = {
+    totalResponses: surveyResponses.length,
+    overallExperience: 0,
+    easeOfUse: {},
+    realtimeFeatures: {},
+    qrFunctionality: {},
+    notifications: {},
+    likelyToRecommend: {},
+    suggestions: [],
+  };
+
+  // Aggregate data from survey responses
+  const categoryCounters: CategoryCounters = {
+    easeOfUse: {},
+    realtimeFeatures: {},
+    qrFunctionality: {},
+    notifications: {},
+    likelyToRecommend: {},
+  };
+
+  surveyResponses.forEach((response) => {
+    // Calculate overall experience average
+    transformedData.overallExperience += response.overallExperience;
+
+    // Aggregate categorical responses
+    const categories: [keyof SurveyResponse, keyof typeof categoryCounters][] =
+      [
+        ["easeOfUse", "easeOfUse"],
+        ["realtimeFeatures", "realtimeFeatures"],
+        ["qrFunctionality", "qrFunctionality"],
+        ["notificationFeedback", "notifications"],
+        ["likelyToRecommend", "likelyToRecommend"],
+      ];
+
+    categories.forEach(([sourceKey, targetKey]) => {
+      const value = response[sourceKey];
+      categoryCounters[targetKey][value] =
+        (categoryCounters[targetKey][value] || 0) + 1;
+    });
+
+    // Collect non-empty suggestions
+    if (response.suggestions && response.suggestions.trim()) {
+      transformedData.suggestions.push(response.suggestions);
+    }
+  });
+
+  // Calculate percentages for each category
+  const categories = [
+    "easeOfUse",
+    "realtimeFeatures",
+    "qrFunctionality",
+    "notifications",
+    "likelyToRecommend",
+  ] as const;
+
+  categories.forEach((category) => {
+    const counter = categoryCounters[category];
+    const total = Object.values(counter).reduce((sum, count) => sum + count, 0);
+
+    transformedData[category] = Object.fromEntries(
+      Object.entries(counter).map(([key, count]) => [
+        key,
+        Math.round((count / total) * 100),
+      ])
+    );
+  });
+
+  // Calculate average overall experience
+  transformedData.overallExperience = Number(
+    (transformedData.overallExperience / surveyResponses.length).toFixed(1)
+  );
+
+  return transformedData;
+}
+
+export function calculatePolygonArea(
+  coordinates: { lat: number; lng: number }[]
+): number {
+  const n = coordinates.length;
+  let area = 0;
+
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    area +=
+      coordinates[i].lng * coordinates[j].lat -
+      coordinates[j].lng * coordinates[i].lat;
+  }
+
+  // Rough conversion to square meters using approximate meters per degree
+  const metersPerLatDegree = 111000;
+  const metersPerLngDegree =
+    Math.cos((coordinates[0].lat * Math.PI) / 180) * 111000;
+
+  return Math.round(
+    Math.abs((area * metersPerLatDegree * metersPerLngDegree) / 2)
+  );
 }

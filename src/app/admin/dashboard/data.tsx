@@ -2,6 +2,7 @@ import {
   BookUser,
   Building2,
   ChartColumnIncreasing,
+  ClipboardPlus,
   History,
   LayoutGrid,
   Logs,
@@ -75,9 +76,14 @@ export const othersTab = [
     link: "/admin/dashboard/colleges",
   },
   {
-    name: "Feedbacks",
+    name: "Contact Form Submissions",
     icon: <MessageCircle />,
-    link: "/admin/dashboard/feedbacks",
+    link: "/admin/dashboard/contact-form-submissions",
+  },
+  {
+    name: "Survey Results",
+    icon: <ClipboardPlus />,
+    link: "/admin/dashboard/surveys",
   },
 ];
 
