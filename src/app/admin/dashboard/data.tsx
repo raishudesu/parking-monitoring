@@ -3,6 +3,7 @@ import {
   Building2,
   ChartColumnIncreasing,
   ClipboardPlus,
+  Flag,
   History,
   LayoutGrid,
   Logs,
@@ -84,6 +85,11 @@ export const othersTab = [
     name: "Survey Results",
     icon: <ClipboardPlus />,
     link: "/admin/dashboard/surveys",
+  },
+  {
+    name: "Reports",
+    icon: <Flag />,
+    link: "/admin/dashboard/reports",
   },
 ];
 

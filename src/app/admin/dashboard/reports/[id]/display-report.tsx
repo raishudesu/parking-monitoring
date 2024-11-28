@@ -1,0 +1,255 @@
+"use client";
+
+import { format } from "date-fns";
+import {
+  AlertCircle,
+  CheckCircle2,
+  CircleX,
+  Clock,
+  Mail,
+  User,
+} from "lucide-react";
+import Image from "next/image";
+
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { ReportStatus } from "@prisma/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useServerAction } from "zsa-react";
+import { updateReportStatusAction } from "./actions";
+import { toast } from "@/components/ui/use-toast";
+
+type ReportType =
+  | "UNAUTHORIZED_PARKING"
+  | "BLOCKING_OTHER_VEHICLES"
+  | "PROLONGED_PARKING"
+  | "RECKLESS_DRIVING"
+  | "OTHER";
+
+interface Report {
+  reportedByAccount: {
+    id: string;
+    email: string | null;
+  };
+  images: {
+    id: string;
+    path: string;
+    url: string;
+    reportId: string;
+    uploadedAt: Date;
+  }[];
+  id: string;
+  reportedByAccountId: string;
+  parkingSpaceId: string | null;
+  reportType: ReportType;
+  otherDescription: string | null;
+  createdAt: Date;
+  resolvedAt: Date | null;
+  resolvedByAdminId: string | null;
+  status: ReportStatus;
+  parkingSpace: {
+    id: string;
+    name: string;
+  } | null;
+}
+
+const reportTypeLabels: Record<ReportType, string> = {
+  UNAUTHORIZED_PARKING: "Unauthorized Parking",
+  BLOCKING_OTHER_VEHICLES: "Blocking Other Vehicles",
+  PROLONGED_PARKING: "Prolonged Parking",
+  RECKLESS_DRIVING: "Reckless Driving",
+  OTHER: "Other",
+};
+
+const statusConfig: Record<
+  ReportStatus,
+  { label: string; color: string; icon: React.ReactNode }
+> = {
+  PENDING: {
+    label: "Pending",
+    color: "bg-yellow-500",
+    icon: <AlertCircle className="h-4 w-4" />,
+  },
+  RESOLVED: {
+    label: "Resolved",
+    color: "bg-green-500",
+    icon: <CheckCircle2 className="h-4 w-4" />,
+  },
+  DISMISSED: {
+    label: "Dismissed",
+    color: "bg-destructive",
+    icon: <CircleX className="h-4 w-4" />,
+  },
+};
+
+interface ReportCardProps {
+  report: Report;
+}
+
+export function DisplayReport({ report }: ReportCardProps) {
+  const [currentStatus, setCurrentStatus] = useState<ReportStatus>(
+    report.status
+  );
+  const status = statusConfig[currentStatus];
+
+  const { isPending, execute } = useServerAction(updateReportStatusAction);
+
+  const handleStatusChange = async (newStatus: ReportStatus) => {
+    setCurrentStatus(newStatus);
+
+    try {
+      const [data, err] = await execute({
+        reportId: report.id,
+        reportStatus: newStatus,
+      });
+
+      if (err) {
+        toast({
+          title: "Oops... Something went wrong",
+          description: "Try again later",
+          variant: "destructive",
+        });
+
+        console.error(err);
+        return;
+      }
+
+      toast({
+        title: "Report Status Updated",
+      });
+    } catch (error) {
+      toast({
+        title: "Oops... Something went wrong",
+        description: "Try again later",
+        variant: "destructive",
+      });
+
+      console.error(error);
+    }
+  };
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-xl font-bold">
+              {reportTypeLabels[report.reportType]}
+            </CardTitle>
+            <CardDescription>
+              Reported on {format(report.createdAt, "PPP 'at' p")}
+            </CardDescription>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <span className="sr-only">Open status menu</span>
+                <Badge
+                  variant="secondary"
+                  className={`${status.color} hover:bg-muted-foreground text-white flex gap-1 items-center`}
+                >
+                  {status.icon}
+                  {status.label}
+                </Badge>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[200px]">
+              {Object.entries(statusConfig).map(([key, value]) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => handleStatusChange(key as ReportStatus)}
+                  className="flex items-center gap-2"
+                >
+                  <div className={`${value.color} p-1 rounded`}>
+                    {value.icon}
+                  </div>
+                  {value.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <User className="h-4 w-4" />
+          <span>ID: {report.reportedByAccount.id}</span>
+          {report.reportedByAccount.email && (
+            <>
+              <Mail className="h-4 w-4 ml-2" />
+              <span>{report.reportedByAccount.email}</span>
+            </>
+          )}
+        </div>
+
+        {report.parkingSpaceId && (
+          <div className="text-sm">
+            <span className="font-bold text-primary">Parking Space:</span>{" "}
+            {report.parkingSpace?.name}
+          </div>
+        )}
+
+        {report.otherDescription && (
+          <div className="text-sm">
+            <span className="font-bold text-primary">Description:</span>{" "}
+            {report.otherDescription}
+          </div>
+        )}
+
+        {report.images.length > 0 && (
+          <Carousel className="w-full max-w-xs mx-auto">
+            <CarouselContent>
+              {report.images.map((image) => (
+                <CarouselItem key={image.id}>
+                  <div className="relative aspect-square">
+                    <Image
+                      src={image.url}
+                      alt={`Report image from ${format(
+                        image.uploadedAt,
+                        "PP"
+                      )}`}
+                      fill
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        )}
+
+        {report.resolvedAt && (
+          <div className="text-sm text-muted-foreground">
+            <span className="font-medium">Resolved:</span>{" "}
+            {format(report.resolvedAt, "PPP 'at' p")}
+            {report.resolvedByAdminId && (
+              <> by Admin ID: {report.resolvedByAdminId}</>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

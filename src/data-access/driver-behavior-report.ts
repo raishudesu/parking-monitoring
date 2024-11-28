@@ -25,14 +25,17 @@ export const submitBehaviorReport = async (
 
 export const getAllBehaviorReports = async () => {
   const reports = await prisma.driverBehaviorReport.findMany({
-    include: {
+    select: {
+      id: true,
+      status: true,
+      reportType: true,
+      createdAt: true,
       reportedByAccount: {
         select: {
           id: true,
           email: true,
         },
       },
-      images: true,
     },
   });
 
@@ -51,6 +54,12 @@ export const getBehaviorReportById = async (reportId: string) => {
         },
       },
       images: true,
+      parkingSpace: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 
