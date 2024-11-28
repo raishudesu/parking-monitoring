@@ -1,4 +1,5 @@
 import {
+  Flag,
   LayoutGrid,
   MapPin,
   MessageCircle,
@@ -18,14 +19,17 @@ export const gpoNavLinks = [
     icon: <MapPin />,
     link: "/gpo/dashboard/map",
   },
+];
+
+export const feedbackAndReports = [
   {
     name: "Submit Feedback",
     icon: <MessageCircle />,
     link: "/gpo/dashboard/feedback",
   },
   {
-    name: "Settings",
-    icon: <Settings />,
-    link: "/gpo/dashboard/settings",
+    name: "Submit Report",
+    icon: <Flag />,
+    link: "/gpo/dashboard/submit-report",
   },
 ];

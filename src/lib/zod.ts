@@ -229,3 +229,24 @@ export const parkingFeedbackSchema = z.object({
     "Very Unlikely",
   ]),
 });
+
+export const driverBehaviorReportSchema = z.object({
+  reportedByAccountId: z.string(),
+  parkingSpaceId: z.string(),
+  reportType: z.enum([
+    "UNAUTHORIZED_PARKING",
+    "BLOCKING_OTHER_VEHICLES",
+    "PROLONGED_PARKING",
+    "RECKLESS_DRIVING",
+    "OTHER",
+  ]),
+  otherDescription: z.string(),
+  images: z.array(
+    z.object({
+      id: z.string().optional(),
+      url: z.string(),
+      reportId: z.string().optional(),
+      path: z.string(),
+    })
+  ),
+});
