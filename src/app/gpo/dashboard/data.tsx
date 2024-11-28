@@ -1,4 +1,5 @@
 import {
+  ClipboardMinus,
   Flag,
   LayoutGrid,
   MapPin,
@@ -22,6 +23,11 @@ export const gpoNavLinks = [
 ];
 
 export const feedbackAndReports = [
+  {
+    name: "My Reports",
+    icon: <ClipboardMinus />,
+    link: "/gpo/dashboard/my-reports",
+  },
   {
     name: "Submit Feedback",
     icon: <MessageCircle />,

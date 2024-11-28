@@ -41,6 +41,29 @@ export const getAllBehaviorReports = async () => {
 
   return reports;
 };
+
+export const getUserBehaviorReports = async (userId: string) => {
+  const reports = await prisma.driverBehaviorReport.findMany({
+    where: {
+      reportedByAccountId: userId,
+    },
+    select: {
+      id: true,
+      status: true,
+      reportType: true,
+      createdAt: true,
+      reportedByAccount: {
+        select: {
+          id: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  return reports;
+};
+
 export const getBehaviorReportById = async (reportId: string) => {
   const report = await prisma.driverBehaviorReport.findFirst({
     where: {

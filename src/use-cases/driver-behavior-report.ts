@@ -1,6 +1,7 @@
 import {
   getAllBehaviorReports,
   getBehaviorReportById,
+  getUserBehaviorReports,
   submitBehaviorReport,
   updateReportStatusById,
 } from "@/data-access/driver-behavior-report";
@@ -18,6 +19,12 @@ export const submitBehaviorReportUseCase = async (
 
 export const getAllBehaviorReportsUseCase = async () => {
   const reports = await getAllBehaviorReports();
+
+  return reports;
+};
+
+export const getUserBehaviorReportsUseCase = async (userId: string) => {
+  const reports = await getUserBehaviorReports(userId);
 
   return reports;
 };
