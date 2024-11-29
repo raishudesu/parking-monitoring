@@ -23,6 +23,9 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -34,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ParkingSpace } from "@prisma/client";
+import { ParkingSpaceType, type ParkingSpace } from "@prisma/client";
 import ParkingSpaceCreationDialog from "./parking-space-creation-dialog";
 import DeleteParkingSpaceDialog from "./delete-parking-space-dialog";
 import UpdateParkingSpaceDialog from "./parking-space-update-dialog";
@@ -113,8 +116,18 @@ export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
     ),
   },
   {
+    id: "polygon",
     accessorKey: "polygon",
     header: "Approx. Area",
+    sortingFn: (rowA, rowB) => {
+      const areaA = calculatePolygonArea(
+        JSON.parse(rowA.original.polygon as string)
+      );
+      const areaB = calculatePolygonArea(
+        JSON.parse(rowB.original.polygon as string)
+      );
+      return areaA - areaB;
+    },
     cell: ({ row }) => (
       <div className="capitalize">{`${calculatePolygonArea(
         JSON.parse(row.getValue("polygon"))
@@ -185,7 +198,9 @@ export function ParkingSpaceTable({
 }: {
   data: ParkingSpaceWithImages[];
 }) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: "polygon", desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -212,17 +227,60 @@ export function ParkingSpaceTable({
     },
   });
 
+  const parkingTypes = Object.values(ParkingSpaceType);
+
   return (
     <div className="w-full">
       <div className="flex flex-col md:flex-row items-center gap-4 py-4">
-        <Input
+        {/* <Input
           placeholder="Filter by Name"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("spaceType")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("spaceType")?.setFilterValue(event.target.value)
           }
           className="md:max-w-sm"
-        />
+        /> */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="md:max-w-sm">
+              {table.getColumn("spaceType")?.getFilterValue()
+                ? `Type: ${table.getColumn("spaceType")?.getFilterValue()}`
+                : "Filter by Space Type"}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>Space Types</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {parkingTypes.map((spaceType) => (
+              <DropdownMenuRadioItem
+                key={spaceType}
+                value={spaceType}
+                onSelect={() =>
+                  table.getColumn("spaceType")?.setFilterValue(
+                    table.getColumn("spaceType")?.getFilterValue() === spaceType
+                      ? null // Toggle off if already selected
+                      : spaceType
+                  )
+                }
+                // Remove the 'checked' prop
+              >
+                {spaceType}
+              </DropdownMenuRadioItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioItem
+              value="clear"
+              onSelect={() =>
+                table.getColumn("spaceType")?.setFilterValue(null)
+              }
+            >
+              Clear Filter
+            </DropdownMenuRadioItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="self-stretch md:self-auto">
