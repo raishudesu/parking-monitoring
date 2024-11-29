@@ -16,6 +16,7 @@ import {
   Marker,
   useJsApiLoader,
   Polygon,
+  InfoWindow,
 } from "@react-google-maps/api";
 import { ParkingSpace, ParkingSpaceImage } from "@prisma/client";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import {
 } from "@/components/ui/drawer";
 import { ChevronUp, Crosshair } from "lucide-react";
 import PanellumViewerDialog from "./panellum-viewer-dialog";
+import { useSession } from "next-auth/react";
 
 interface LatLng {
   lat: number;
@@ -80,6 +82,8 @@ const DijkstraMap = ({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ["places"],
   });
+
+  const session = useSession();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -274,6 +278,21 @@ const DijkstraMap = ({
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <MapLoader />;
 
+  function calculatePolygonCenter(paths: google.maps.LatLngLiteral[]) {
+    let totalLat = 0;
+    let totalLng = 0;
+
+    paths.forEach((point) => {
+      totalLat += point.lat;
+      totalLng += point.lng;
+    });
+
+    return {
+      lat: totalLat / paths.length,
+      lng: totalLng / paths.length,
+    };
+  }
+
   return (
     <div className="relative w-full h-screen">
       <PanellumViewerDialog
@@ -302,6 +321,7 @@ const DijkstraMap = ({
             maxCapacity,
             polygon,
             images,
+            spaceType,
           }) => (
             <Fragment key={id}>
               <Marker
@@ -323,7 +343,7 @@ const DijkstraMap = ({
                   ),
                 }}
                 label={{
-                  text: name,
+                  text: `${spaceType}: ${name} `,
                   // fontSize: isSelected(latitude, longitude) ? "14px" : "12px",
                   fontWeight: isSelected(latitude, longitude)
                     ? "bold"
@@ -336,20 +356,34 @@ const DijkstraMap = ({
                 }}
               />
               {polygon && (
-                <Polygon
-                  paths={parsePolygonCoordinates(polygon)}
-                  options={{
-                    fillColor: isAvailable(currCapacity as number, maxCapacity)
-                      .value
-                      ? "#4ade80"
-                      : "#ef4444",
-                    fillOpacity: 0.3,
-                    strokeColor: isSelected(latitude, longitude)
-                      ? "#3b82f6"
-                      : "#6b7280",
-                    strokeWeight: isSelected(latitude, longitude) ? 2 : 1,
-                  }}
-                />
+                <>
+                  <Polygon
+                    paths={parsePolygonCoordinates(polygon)}
+                    options={{
+                      fillColor: isAvailable(
+                        currCapacity as number,
+                        maxCapacity
+                      ).value
+                        ? "#4ade80"
+                        : "#ef4444",
+                      fillOpacity: 0.3,
+                      strokeColor: isSelected(latitude, longitude)
+                        ? "#3b82f6"
+                        : "#6b7280",
+                      strokeWeight: isSelected(latitude, longitude) ? 2 : 1,
+                    }}
+                  />
+                  {/* <Marker
+                    position={calculatePolygonCenter(
+                      parsePolygonCoordinates(polygon)
+                    )}
+                    label={{
+                      text: name,
+                      color: "black",
+                      fontWeight: "bold",
+                    }}
+                  /> */}
+                </>
               )}
             </Fragment>
           )

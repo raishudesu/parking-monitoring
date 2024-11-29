@@ -232,16 +232,14 @@ export function ParkingSpaceTable({
   return (
     <div className="w-full">
       <div className="flex flex-col md:flex-row items-center gap-4 py-4">
-        {/* <Input
+        <Input
           placeholder="Filter by Name"
-          value={
-            (table.getColumn("spaceType")?.getFilterValue() as string) ?? ""
-          }
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("spaceType")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="md:max-w-sm"
-        /> */}
+        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="md:max-w-sm">
