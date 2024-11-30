@@ -67,8 +67,8 @@ export default function UserDetails({
   colleges: College[] | null;
 }) {
   return (
-    <div className="container mx-auto p-4">
-      <Card className="max-w-3xl mx-auto">
+    <div className="w-full mx-auto p-4">
+      <Card className="mx-auto">
         <CardHeader>
           <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Avatar className="w-32 h-32">
@@ -77,7 +77,8 @@ export default function UserDetails({
                 alt={user.email || "User"}
               />
               <AvatarFallback>
-                {user.email ? user.email[0].toUpperCase() : "U"}
+                {/* {user.email ? user.accountType : "U"} */}
+                GPO
               </AvatarFallback>
             </Avatar>
             <div className="text-center sm:text-left">
