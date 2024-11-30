@@ -73,6 +73,37 @@ export type PannellumProps = {
   images: ParkingSpaceImage[] | undefined;
 };
 
+export function calculatePolygonCenter(paths: google.maps.LatLngLiteral[]) {
+  let totalLat = 0;
+  let totalLng = 0;
+
+  paths.forEach((point) => {
+    totalLat += point.lat;
+    totalLng += point.lng;
+  });
+
+  return {
+    lat: totalLat / paths.length,
+    lng: totalLng / paths.length,
+  };
+}
+
+export const parsePolygonCoordinates = (polygonString?: string) => {
+  if (!polygonString) return [];
+
+  try {
+    // Assuming the polygonString is in the format: "[{lat: number, lng: number}, ...]"
+    const coordinates = JSON.parse(polygonString);
+    return coordinates.map((coord: { lat: number; lng: number }) => ({
+      lat: parseFloat(coord.lat.toString()),
+      lng: parseFloat(coord.lng.toString()),
+    }));
+  } catch (error) {
+    console.error("Error parsing polygon coordinates:", error);
+    return [];
+  }
+};
+
 const DijkstraMap = ({
   parkingSpaces,
 }: {
@@ -335,39 +366,8 @@ const DijkstraMap = ({
     []
   );
 
-  const parsePolygonCoordinates = (polygonString?: string) => {
-    if (!polygonString) return [];
-
-    try {
-      // Assuming the polygonString is in the format: "[{lat: number, lng: number}, ...]"
-      const coordinates = JSON.parse(polygonString);
-      return coordinates.map((coord: { lat: number; lng: number }) => ({
-        lat: parseFloat(coord.lat.toString()),
-        lng: parseFloat(coord.lng.toString()),
-      }));
-    } catch (error) {
-      console.error("Error parsing polygon coordinates:", error);
-      return [];
-    }
-  };
-
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <MapLoader />;
-
-  function calculatePolygonCenter(paths: google.maps.LatLngLiteral[]) {
-    let totalLat = 0;
-    let totalLng = 0;
-
-    paths.forEach((point) => {
-      totalLat += point.lat;
-      totalLng += point.lng;
-    });
-
-    return {
-      lat: totalLat / paths.length,
-      lng: totalLng / paths.length,
-    };
-  }
 
   return (
     <div className="relative w-full h-screen">

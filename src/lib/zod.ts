@@ -62,8 +62,8 @@ export const parkingSpaceSchema = z.object({
   auditAdminId: z.string().optional(),
   name: z.string(),
   description: z.string(),
-  longitude: z.string(),
-  latitude: z.string(),
+  longitude: z.string().or(z.null()),
+  latitude: z.string().or(z.null()),
   spaceType: z.enum([
     "MOTORCYCLE",
     "TRICYCLE",
@@ -87,8 +87,8 @@ export const parkingSpaceSchema = z.object({
 export const parkingSpaceFormSchema = z.object({
   name: z.string(),
   description: z.string(),
-  longitude: z.string(),
-  latitude: z.string(),
+  longitude: z.string().or(z.null()),
+  latitude: z.string().or(z.null()),
   polygon: z.string().or(z.null()),
   spaceType: z.enum([
     "MOTORCYCLE",
