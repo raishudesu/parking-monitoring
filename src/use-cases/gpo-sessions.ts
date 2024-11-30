@@ -8,6 +8,7 @@ import {
   getSessionsForAnalysis,
   createGpoSessionByPriority,
   endGpoSessionByPriority,
+  getGpoSessionsData,
 } from "@/data-access/gpo-sessions";
 import { getParkingSpaceById } from "@/data-access/parking-spaces";
 import { authOptions } from "@/lib/auth";
@@ -126,6 +127,11 @@ export const getGpoSessionsByIdUseCase = async (accountId: string) => {
   const gpoSessions = await getGpoSessionsByGpoId(accountId);
 
   return gpoSessions;
+};
+
+export const getGpoSessionsDataUseCase = async (accountId: string) => {
+  const sessions = await getGpoSessionsData(accountId);
+  return sessions;
 };
 
 // END CURRENT GPO SESSION USE CASE

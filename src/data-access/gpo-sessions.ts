@@ -143,6 +143,24 @@ export const getGpoSessionsByGpoId = async (accountId: string) => {
   return gpoSessions;
 };
 
+export const getGpoSessionsData = async (accountId: string) => {
+  const sessions = await prisma.gPOSession.findMany({
+    where: {
+      accountId,
+    },
+    select: {
+      parkingSpace: {
+        select: {
+          name: true,
+        },
+      },
+      startTime: true,
+    },
+  });
+
+  return sessions;
+};
+
 // ENDING A GPO SESSION
 export const endGpoSession = async (
   gpoSessionId: string,

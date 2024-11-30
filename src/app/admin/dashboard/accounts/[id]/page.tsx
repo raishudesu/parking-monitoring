@@ -2,13 +2,17 @@ import { getGpoByIdUseCase } from "@/use-cases/gpo-users";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import UserDetails from "./user-details";
 import { getAllCollegesUseCase } from "@/use-cases/colleges";
+import { getGpoSessionsDataUseCase } from "@/use-cases/gpo-sessions";
+import AnalyticsDashboard from "./analytics";
 
 const AccountPage = async ({ params }: { params: Params }) => {
   const { id } = params;
 
-  const user = await getGpoByIdUseCase(id);
-
-  const colleges = await getAllCollegesUseCase();
+  const [user, colleges, sessionsData] = await Promise.all([
+    getGpoByIdUseCase(id),
+    getAllCollegesUseCase(),
+    getGpoSessionsDataUseCase(id),
+  ]);
 
   const userAssertion = {
     ...user,
@@ -18,6 +22,7 @@ const AccountPage = async ({ params }: { params: Params }) => {
     creditScore: user.creditScore as number,
     password: "",
   };
+
   return (
     <div className="w-full flex flex-col p-6">
       <div className="pb-6 flex flex-col gap-3">
@@ -29,6 +34,7 @@ const AccountPage = async ({ params }: { params: Params }) => {
         </h1>
       </div>
       <UserDetails user={userAssertion} colleges={colleges} />
+      <AnalyticsDashboard parkingData={sessionsData} />
     </div>
   );
 };
