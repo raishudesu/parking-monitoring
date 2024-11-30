@@ -580,6 +580,7 @@ const DijkstraMap = ({
                     latitude,
                     longitude,
                     polygon,
+                    spaceType,
                   }) => (
                     <div
                       key={id}
@@ -603,7 +604,12 @@ const DijkstraMap = ({
                         )
                       }
                     >
-                      <h2>{name}</h2>
+                      <div className="flex">
+                        <h2>{name}</h2>
+                        <small className="ml-auto text-sm text-muted-foreground">
+                          {spaceType}
+                        </small>
+                      </div>
                       <div className="flex justify-between">
                         <small
                           className={`mt-3 text-sm ${

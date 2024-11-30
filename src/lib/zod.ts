@@ -29,7 +29,7 @@ export const gpoUpdateAccountSchema = z.object({
   auditAdminId: z.string().optional(),
   accountId: z.string(),
   data: gpoAccountSchema,
-  colleges: z.array(collegeSchema).optional(),
+  colleges: z.array(collegeSchema).or(z.null()),
 });
 
 const overrideSchema = z.object({

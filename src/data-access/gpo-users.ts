@@ -82,6 +82,12 @@ export const getGpoById = async (accountId: string) => {
     where: {
       id: accountId,
     },
+    include: {
+      collegeName: true,
+    },
+    omit: {
+      role: true,
+    },
   });
 
   return gpo;

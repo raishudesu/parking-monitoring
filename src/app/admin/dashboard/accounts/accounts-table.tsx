@@ -40,6 +40,7 @@ import AccountCreationDialog from "./account-creation-dialog";
 import ReactivateBtn from "./reactivate-btn";
 import DeactivateBtn from "./deactivate-btn";
 import AccountUpdateDialog from "./account-update-dialog";
+import { useRouter } from "next/navigation";
 
 export type GPOAccountData = GPOAccount & {
   collegeName: College;
@@ -138,50 +139,52 @@ export function AccountsTable({
         >{`${row.getValue("isActive") === true ? "ACTIVE" : "INACTIVE"}`}</div>
       ),
     },
-    {
-      id: "actions",
-      header: "Actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        const {
-          email,
-          gatePassNumber,
-          password,
-          accountType,
-          collegeId,
-          department,
-          isVIP,
-          isPWD,
-        } = row.original;
+    // {
+    //   id: "actions",
+    //   header: "Actions",
+    //   enableHiding: false,
+    //   cell: ({ row }) => {
+    //     const {
+    //       email,
+    //       gatePassNumber,
+    //       password,
+    //       accountType,
+    //       collegeId,
+    //       department,
+    //       isVIP,
+    //       isPWD,
+    //     } = row.original;
 
-        const updateFormData = {
-          email: email as string,
-          gatePassNumber,
-          password,
-          accountType,
-          collegeId,
-          department: department as string,
-          isVIP,
-          isPWD,
-        };
+    //     const updateFormData = {
+    //       email: email as string,
+    //       gatePassNumber,
+    //       password,
+    //       accountType,
+    //       collegeId,
+    //       department: department as string,
+    //       isVIP,
+    //       isPWD,
+    //     };
 
-        return (
-          <div className="flex gap-2">
-            <AccountUpdateDialog
-              accountId={row.original.id}
-              data={updateFormData}
-              colleges={colleges}
-            />
-            {row.original.isActive ? (
-              <DeactivateBtn accountId={row.original.id} />
-            ) : (
-              <ReactivateBtn accountId={row.original.id} />
-            )}
-          </div>
-        );
-      },
-    },
+    //     return (
+    //       <div className="flex gap-2">
+    //         <AccountUpdateDialog
+    //           accountId={row.original.id}
+    //           data={updateFormData}
+    //           colleges={colleges}
+    //         />
+    //         {row.original.isActive ? (
+    //           <DeactivateBtn accountId={row.original.id} />
+    //         ) : (
+    //           <ReactivateBtn accountId={row.original.id} />
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
+
+  const router = useRouter();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -280,6 +283,10 @@ export function AccountsTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() =>
+                    router.push(`/admin/dashboard/accounts/${row.original.id}`)
+                  }
+                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
