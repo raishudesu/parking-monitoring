@@ -29,7 +29,7 @@ export const gpoUpdateAccountSchema = z.object({
   auditAdminId: z.string().optional(),
   accountId: z.string(),
   data: gpoAccountSchema,
-  colleges: z.array(collegeSchema).optional(),
+  colleges: z.array(collegeSchema).or(z.null()),
 });
 
 const overrideSchema = z.object({
@@ -62,8 +62,8 @@ export const parkingSpaceSchema = z.object({
   auditAdminId: z.string().optional(),
   name: z.string(),
   description: z.string(),
-  longitude: z.string(),
-  latitude: z.string(),
+  longitude: z.string().or(z.null()),
+  latitude: z.string().or(z.null()),
   spaceType: z.enum([
     "MOTORCYCLE",
     "TRICYCLE",
@@ -87,8 +87,8 @@ export const parkingSpaceSchema = z.object({
 export const parkingSpaceFormSchema = z.object({
   name: z.string(),
   description: z.string(),
-  longitude: z.string(),
-  latitude: z.string(),
+  longitude: z.string().or(z.null()),
+  latitude: z.string().or(z.null()),
   polygon: z.string().or(z.null()),
   spaceType: z.enum([
     "MOTORCYCLE",
@@ -228,4 +228,25 @@ export const parkingFeedbackSchema = z.object({
     "Unlikely",
     "Very Unlikely",
   ]),
+});
+
+export const driverBehaviorReportSchema = z.object({
+  reportedByAccountId: z.string(),
+  parkingSpaceId: z.string(),
+  reportType: z.enum([
+    "UNAUTHORIZED_PARKING",
+    "BLOCKING_OTHER_VEHICLES",
+    "PROLONGED_PARKING",
+    "RECKLESS_DRIVING",
+    "OTHER",
+  ]),
+  otherDescription: z.string(),
+  images: z.array(
+    z.object({
+      id: z.string().optional(),
+      url: z.string(),
+      reportId: z.string().optional(),
+      path: z.string(),
+    })
+  ),
 });

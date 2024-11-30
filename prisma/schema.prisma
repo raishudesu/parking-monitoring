@@ -60,26 +60,27 @@ enum SessionStatus {
 }
 
 model GPOAccount {
-  id             String         @id @default(uuid())
-  gatePassNumber String         @unique
-  email          String?        @unique
+  id             String                 @id @default(uuid())
+  gatePassNumber String                 @unique
+  email          String?                @unique
   password       String
   accountType    AccountType
-  collegeName    College?       @relation(fields: [collegeId], references: [id])
+  collegeName    College?               @relation(fields: [collegeId], references: [id])
   collegeId      String?
   department     String?
-  isVIP          Boolean        @default(false)
-  isPWD          Boolean        @default(false)
+  isVIP          Boolean                @default(false)
+  isPWD          Boolean                @default(false)
   imageLink      String?
   gpoSessions    GPOSession[]
   violations     GPOViolation[]
-  role           UserRole       @default(GPO)
-  creditScore    Int?           @default(100)
+  role           UserRole               @default(GPO)
+  creditScore    Int?                   @default(100)
   feedbacks      UserFeedback[]
-  isActive       Boolean        @default(true)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  isActive       Boolean                @default(true)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
   surveys        UserSurvey[]
+  reports        DriverBehaviorReport[]
 }
 
 model GPOSession {
@@ -121,22 +122,23 @@ model VisitorSession {
 }
 
 model ParkingSpace {
-  id                   String              @id @default(uuid())
+  id                   String                 @id @default(uuid())
   name                 String
   description          String
-  longitude            String
-  latitude             String
-  spaceType            ParkingSpaceType    @default(MIXED)
-  currCapacity         Int?                @default(0)
+  longitude            String?
+  latitude             String?
+  spaceType            ParkingSpaceType       @default(MIXED)
+  currCapacity         Int?                   @default(0)
   maxCapacity          Int
-  currReservedCapacity Int?                @default(0)
-  reservedCapacity     Int                 @default(1)
+  currReservedCapacity Int?                   @default(0)
+  reservedCapacity     Int                    @default(1)
   gpoSessions          GPOSession[]
   images               ParkingSpaceImage[]
-  addedAt              DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
+  addedAt              DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
   polygon              String?
-  isActive             Boolean             @default(true)
+  isActive             Boolean                @default(true)
+  relatedReports       DriverBehaviorReport[]
 }
 
 model ParkingSpaceImage {
@@ -149,17 +151,18 @@ model ParkingSpaceImage {
 }
 
 model Admin {
-  id                   String                @id @default(uuid())
+  id                   String                 @id @default(uuid())
   firstName            String
   lastName             String
-  corpEmail            String                @unique
+  corpEmail            String                 @unique
   password             String
-  isActive             Boolean               @default(true)
-  role                 AdminRole             @default(ADMIN)
+  isActive             Boolean                @default(true)
+  role                 AdminRole              @default(ADMIN)
   logs                 AuditLog[]
   reportGenerationLogs ReportGenerationLog[]
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  resolvedReports      DriverBehaviorReport[]
 }
 
 model AuditLog {
@@ -206,4 +209,43 @@ model UserSurvey {
   likelyToRecommend    String
   user                 GPOAccount @relation(fields: [userId], references: [id])
   userId               String
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum ReportType {
+  UNAUTHORIZED_PARKING // Parking in spaces like PWD, VIP, or reserved areas without authorization
+  BLOCKING_OTHER_VEHICLES // Parking in a way that blocks other vehicles
+  PROLONGED_PARKING // Exceeding the allowed parking time
+  RECKLESS_DRIVING // Driving recklessly in the parking area
+  OTHER // Any other behavior not listed above
+}
+
+model DriverBehaviorReport {
+  id                  String                       @id @default(cuid())
+  reportedByAccount   GPOAccount                   @relation(fields: [reportedByAccountId], references: [id])
+  reportedByAccountId String // ID of the user who submitted the report
+  parkingSpace        ParkingSpace?                @relation(fields: [parkingSpaceId], references: [id])
+  parkingSpaceId      String? // Optional: Link to the parking space
+  reportType          ReportType // Type of behavior (e.g., unauthorized parking)
+  otherDescription    String? // Details of the behavior
+  createdAt           DateTime                     @default(now())
+  resolvedAt          DateTime? // Optional: Timestamp when resolved
+  resolvedByAdmin     Admin?                       @relation(fields: [resolvedByAdminId], references: [id])
+  resolvedByAdminId   String? // Optional: Admin resolving the report
+  status              ReportStatus                 @default(PENDING) // Pending, Resolved, Dismissed
+  images              DriverBehaviorReportImages[]
+}
+
+model DriverBehaviorReportImages {
+  id         String               @id @default(cuid())
+  url        String
+  path       String
+  report     DriverBehaviorReport @relation(fields: [reportId], references: [id])
+  reportId   String
+  uploadedAt DateTime             @default(now())
 }

@@ -24,6 +24,9 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -113,7 +116,13 @@ export const columns: ColumnDef<SessionData>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{`${row.getValue("status")}`}</div>
+      <div
+        className={`capitalize font-bold ${
+          row.getValue("status") === "ONGOING"
+            ? "text-destructive"
+            : "text-green-500"
+        }`}
+      >{`${row.getValue("status")}`}</div>
     ),
   },
   {
@@ -121,7 +130,7 @@ export const columns: ColumnDef<SessionData>[] = [
     header: "Ended properly",
     cell: ({ row }) => (
       <div
-        className={`${
+        className={`font-bold ${
           row.getValue("endedProperly") ? "text-green-500" : "text-destructive"
         }`}
       >{`${row.getValue("endedProperly") ? "YES" : "NO"}`}</div>
@@ -188,6 +197,45 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
           }
           className="max-w-sm"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="md:max-w-sm">
+              {table.getColumn("spaceType")?.getFilterValue()
+                ? `Status: ${table.getColumn("spaceType")?.getFilterValue()}`
+                : "Filter by Status"}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>Status</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {["ENDED", "ONGOING"].map((status) => (
+              <DropdownMenuRadioItem
+                key={status}
+                value={status}
+                onSelect={() =>
+                  table.getColumn("status")?.setFilterValue(
+                    table.getColumn("status")?.getFilterValue() === status
+                      ? null // Toggle off if already selected
+                      : status
+                  )
+                }
+                // Remove the 'checked' prop
+              >
+                {status}
+              </DropdownMenuRadioItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuRadioItem
+              value="clear"
+              onSelect={() =>
+                table.getColumn("spaceType")?.setFilterValue(null)
+              }
+            >
+              Clear Filter
+            </DropdownMenuRadioItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="self-stretch md:self-auto">

@@ -7,14 +7,13 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { parkingSpaceFormSchema, parkingSpaceSchema } from "@/lib/zod";
+import { driverBehaviorReportSchema } from "@/lib/zod";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -24,53 +23,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useServerAction } from "zsa-react";
-import { updateParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
-import { Dispatch, SetStateAction, useState } from "react";
 import { useSession } from "next-auth/react";
-import MapPicker from "./map-picker";
-import MapPolygonCreator from "./map-polygon-creator";
-import { useGoogleMaps } from "@/providers/google-maps-provider";
+import { useState } from "react";
 import { Loader2, X } from "lucide-react";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
-import {
-  deleteImage,
-  deleteParkingImage,
-  getPublicUrl,
-  uploadImage,
-} from "@/hooks/supabase";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { deleteImage, getPublicUrl, uploadImage } from "@/hooks/supabase";
+import { ReportType } from "@prisma/client";
+import { submitReportAction } from "./actions";
 
-const ParkingSpaceUpdateForm = ({
-  parkingSpaceId,
-  data,
-  setOpen,
+type DriverBehaviorReport = z.infer<typeof driverBehaviorReportSchema>;
+
+type ParkingSpaceOptions = {
+  id: string;
+  name: string;
+};
+
+const ReportForm = ({
+  parkingSpaceOptions,
 }: {
-  parkingSpaceId: string;
-  data: z.infer<typeof parkingSpaceFormSchema>;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  parkingSpaceOptions: ParkingSpaceOptions[];
 }) => {
-  const { isLoaded, loadError } = useGoogleMaps();
   const [uploadingFields, setUploadingFields] = useState<
     Record<string, boolean>
   >({});
-
   const session = useSession();
 
-  const { isPending, execute } = useServerAction(updateParkingSpaceAction);
+  const { isPending, execute } = useServerAction(submitReportAction);
 
-  const form = useForm<z.infer<typeof parkingSpaceFormSchema>>({
-    resolver: zodResolver(parkingSpaceFormSchema),
+  const form = useForm<DriverBehaviorReport>({
+    resolver: zodResolver(driverBehaviorReportSchema),
     defaultValues: {
-      name: data.name,
-      description: data.description,
-      longitude: data.longitude,
-      latitude: data.latitude,
-      spaceType: data.spaceType,
-      maxCapacity: data.maxCapacity,
-      reservedCapacity: data.reservedCapacity,
-      polygon: data.polygon,
-      images: data.images,
+      reportedByAccountId: session?.data?.user.id, // Replace with actual account ID
+      parkingSpaceId: undefined, // Replace with actual parking space ID
+      reportType: undefined,
+      otherDescription: "",
+      images: [],
     },
   });
 
@@ -79,21 +68,19 @@ const ParkingSpaceUpdateForm = ({
     name: "images",
   });
 
-  const handleLocationPicked = (lat: number, lng: number) => {
-    form.setValue("latitude", lat.toString());
-    form.setValue("longitude", lng.toString());
-  };
-
-  const onSubmit = async (values: z.infer<typeof parkingSpaceFormSchema>) => {
+  const onSubmit = async (
+    values: z.infer<typeof driverBehaviorReportSchema>
+  ) => {
+    // console.log(values);
     try {
-      const newValues: z.infer<typeof parkingSpaceSchema> = {
-        ...values,
-        maxCapacity: parseInt(values.maxCapacity, 10),
-        reservedCapacity: parseInt(values.reservedCapacity, 10),
-        auditAdminId: session.data?.user.id,
-      };
+      // const newValues: z.infer<typeof parkingSpaceSchema> = {
+      //   ...values,
+      //   maxCapacity: parseInt(values.maxCapacity, 10),
+      //   reservedCapacity: parseInt(values.reservedCapacity, 10),
+      //   auditAdminId: session.data?.user.id,
+      // };
 
-      const [data, err] = await execute({ parkingSpaceId, data: newValues });
+      const [data, err] = await execute(values);
 
       if (err) {
         let errorMessage = "An unknown error occurred";
@@ -115,16 +102,17 @@ const ParkingSpaceUpdateForm = ({
           variant: "destructive",
           description: err.message || "Try again later.",
         });
+
+        console.log(err);
       }
 
       if (data) {
         toast({
-          title: "Success!",
-          description: "Parking space updated successfully.",
+          title: "Report submitted!",
+          description: "Your report submission will be reviewed by our admins.",
         });
 
         form.reset();
-        setOpen(false);
       }
     } catch (error: any) {
       toast({
@@ -138,7 +126,7 @@ const ParkingSpaceUpdateForm = ({
 
   const handleFileUpload = async (
     file: File,
-    fieldName: Path<z.infer<typeof parkingSpaceFormSchema>>
+    fieldName: Path<z.infer<typeof driverBehaviorReportSchema>>
   ) => {
     setUploadingFields((prev) => ({ ...prev, [fieldName]: true }));
     try {
@@ -147,12 +135,15 @@ const ParkingSpaceUpdateForm = ({
       const result = await uploadImage(file, path);
 
       if (result) {
+        // console.log(result);
         const publicUrl = getPublicUrl(result.path);
 
         form.setValue(fieldName, {
           url: publicUrl.data.publicUrl,
           path: result.path,
         });
+
+        // console.log(form.getValues("images"));
 
         toast({
           title: "File uploaded successfully",
@@ -173,19 +164,18 @@ const ParkingSpaceUpdateForm = ({
 
   const handleRemoveImage = async (index: number) => {
     const formField = form.getValues("images");
+
     const images = formField[index];
 
     if (images && images.url) {
       const deleted = await deleteImage(images.path);
-      const deletedImageRow = await deleteParkingImage(images.id as string);
-      console.log(deletedImageRow);
-      console.log(deleted);
       if (deleted) {
-        form.setValue(`images.${index}.url`, "");
+        form.resetField(`images.${index}`);
         toast({
           title: "Image removed",
           description: "The image has been removed from storage.",
         });
+        remove(index);
       } else {
         toast({
           title: "Error",
@@ -201,107 +191,20 @@ const ParkingSpaceUpdateForm = ({
     remove(index);
   };
 
+  const reportTypeValues = Object.values(ReportType);
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="h-full space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="h-full space-y-6 p-2"
+      >
         <FormField
           control={form.control}
-          name="name"
+          name="reportType"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Parking Space Name</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="CS1"
-                  type="text"
-                  disabled={isPending}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  className="w-full"
-                  placeholder="Describe the Parking Space"
-                  disabled={isPending}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* <FormItem>
-          <FormLabel>Location</FormLabel>
-          <MapPicker
-            onLocationPicked={handleLocationPicked}
-            isLoaded={isLoaded}
-          />
-        </FormItem>
-        <FormField
-          control={form.control}
-          name="longitude"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Longitude</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter longitude"
-                  disabled={isPending}
-                  readOnly
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="latitude"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Latitude</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter Latitude"
-                  disabled={isPending}
-                  readOnly
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        <FormItem>
-          <FormLabel>Polygon & Location</FormLabel>
-          <MapPolygonCreator
-            onLocationPicked={handleLocationPicked}
-            onPolygonComplete={(polygonString) => {
-              form.setValue("polygon", polygonString);
-            }}
-            isLoaded={isLoaded}
-          />
-        </FormItem>
-        <FormField
-          control={form.control}
-          name="spaceType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Space Type</FormLabel>
+              <FormLabel>What happened?</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
@@ -309,16 +212,15 @@ const ParkingSpaceUpdateForm = ({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Parking Space Type" />
+                    <SelectValue placeholder="Select Reports" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="MOTORCYCLE">MOTORCYCLE</SelectItem>
-                  <SelectItem value="TRICYCLE">TRICYCLE</SelectItem>
-                  <SelectItem value="FOURWHEEL">FOURWHEEL</SelectItem>
-                  <SelectItem value="MIXED">MIXED</SelectItem>
-                  <SelectItem value="PWD">PWD</SelectItem>
-                  <SelectItem value="VIP">VIP</SelectItem>
+                  {reportTypeValues.map((value, index) => (
+                    <SelectItem key={index} value={value}>
+                      {String(value).replace(/_/g, " ")}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -327,16 +229,15 @@ const ParkingSpaceUpdateForm = ({
         />
         <FormField
           control={form.control}
-          name="maxCapacity"
+          name="otherDescription"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Max Capacity</FormLabel>
+              <FormLabel>If other, please describe below:</FormLabel>
               <FormControl>
-                <Input
+                <Textarea
                   {...field}
                   className="w-full"
-                  placeholder="Enter Max Capacity"
-                  type="number"
+                  placeholder="Describe the issue"
                   disabled={isPending}
                 />
               </FormControl>
@@ -346,23 +247,33 @@ const ParkingSpaceUpdateForm = ({
         />
         <FormField
           control={form.control}
-          name="reservedCapacity"
+          name="parkingSpaceId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Reserved Capacity</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter Reserved Capacity"
-                  type="number"
-                  disabled={isPending}
-                />
-              </FormControl>
+              <FormLabel>Where did this happen?</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isPending}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Reports" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {parkingSpaceOptions.map((value, index) => (
+                    <SelectItem key={index} value={value.id}>
+                      {value.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
         />
+
         {fields.map((field, index) => (
           <div key={field.id} className="mt-6 flex flex-col gap-6">
             <FormField
@@ -371,7 +282,7 @@ const ParkingSpaceUpdateForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-semibold">
-                    Parking Space Panorama
+                    Include Picture for Additional Evidence
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -394,11 +305,9 @@ const ParkingSpaceUpdateForm = ({
                     </div>
                   </FormControl>
 
-                  <FormDescription className="text-destructive">
-                    Once you remove this image while the form is open and you
-                    have unsaved image changes, you have to re-upload the image
-                    again.
-                  </FormDescription>
+                  {/* <FormDescription>
+                    Upload an image for tier {index + 1} reward.
+                  </FormDescription> */}
                   <FormMessage />
                   <div>
                     {field.value && (
@@ -449,16 +358,17 @@ const ParkingSpaceUpdateForm = ({
         >
           Add Image
         </Button>
+
         <Button
           type="submit"
           disabled={isPending || Object.values(uploadingFields).some(Boolean)}
           className="w-full"
         >
-          Update
+          Submit
         </Button>
       </form>
     </Form>
   );
 };
 
-export default ParkingSpaceUpdateForm;
+export default ReportForm;

@@ -32,6 +32,17 @@ export const getAllParkingSpaces = async () => {
   return parkingSpaces;
 };
 
+export const getParkingSpaceOptions = async () => {
+  const options = await prisma.parkingSpace.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  return options;
+};
+
 export const getParkingSpaceById = async (parkingSpaceId: string) => {
   const parkingSpace = await prisma.parkingSpace.findUnique({
     where: {

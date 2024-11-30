@@ -43,7 +43,9 @@ export const gpoLoginUseCase = async (
 export const getGpoByIdUseCase = async (accountId: string) => {
   const gpo = await getGpoById(accountId);
 
-  const { password: _password, ...filteredGpo } = gpo as GPOAccount;
+  const { password: _password, ...filteredGpo } = gpo as {
+    password: string;
+  } & typeof gpo;
 
   return filteredGpo;
 };

@@ -28,6 +28,10 @@ import { ParkingSpace } from "@prisma/client";
 import { LoaderCircle } from "lucide-react";
 import { TIMER_STORAGE_KEY } from "../../end-session-btn";
 import { useState } from "react";
+import {
+  calculatePolygonCenter,
+  parsePolygonCoordinates,
+} from "../../map/dijkstra-map";
 
 const durationFormSchema = z.object({
   duration: z.string(),
@@ -75,10 +79,9 @@ const DurationForm = ({
 
             // Calculate distance between user and parking space
             const userLocation = { lat: latitude, lng: longitude };
-            const parkingLocation = {
-              lat: parseFloat(parkingSpace!.latitude),
-              lng: parseFloat(parkingSpace!.longitude),
-            };
+            const parkingLocation = calculatePolygonCenter(
+              parsePolygonCoordinates(parkingSpace?.polygon as string)
+            );
 
             const distance = calculateDistance(userLocation, parkingLocation);
 
