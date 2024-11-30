@@ -159,14 +159,14 @@ const DijkstraMap = ({
 
       for (const point of parkingSpaces) {
         const distance = calculateDistance(userLocation, {
-          lat: parseFloat(point.latitude),
-          lng: parseFloat(point.longitude),
+          lat: parseFloat(point.latitude as string),
+          lng: parseFloat(point.longitude as string),
         });
         if (distance < minDistance) {
           minDistance = distance;
           closest = {
-            lat: parseFloat(point.latitude),
-            lng: parseFloat(point.longitude),
+            lat: parseFloat(point.latitude as string),
+            lng: parseFloat(point.longitude as string),
           };
         }
       }
@@ -182,6 +182,82 @@ const DijkstraMap = ({
     },
     [parkingSpaces]
   );
+
+  const findClosestPwdPoint = useCallback(
+    (userLocation: LatLng) => {
+      let minDistance = Infinity;
+      let closest = null;
+
+      for (const point of parkingSpaces) {
+        const distance = calculateDistance(userLocation, {
+          lat: parseFloat(point.latitude as string),
+          lng: parseFloat(point.longitude as string),
+        });
+        if (distance < minDistance && point.spaceType === "PWD") {
+          minDistance = distance;
+          closest = {
+            lat: parseFloat(point.latitude as string),
+            lng: parseFloat(point.longitude as string),
+          };
+        }
+      }
+
+      if (closest) {
+        setClosestPoint(closest);
+        setSelectedParkingSpace(closest);
+        calculateRoute(userLocation, closest);
+        if (mapRef.current) {
+          mapRef.current.panTo(closest);
+        }
+      }
+    },
+    [parkingSpaces]
+  );
+
+  const handleShowClosestPwdClick = () => {
+    if (userLocation) {
+      findClosestPwdPoint(userLocation);
+    }
+    setDrawerOpen(false);
+  };
+
+  const findClosestVipPoint = useCallback(
+    (userLocation: LatLng) => {
+      let minDistance = Infinity;
+      let closest = null;
+
+      for (const point of parkingSpaces) {
+        const distance = calculateDistance(userLocation, {
+          lat: parseFloat(point.latitude as string),
+          lng: parseFloat(point.longitude as string),
+        });
+        if (distance < minDistance && point.spaceType === "VIP") {
+          minDistance = distance;
+          closest = {
+            lat: parseFloat(point.latitude as string),
+            lng: parseFloat(point.longitude as string),
+          };
+        }
+      }
+
+      if (closest) {
+        setClosestPoint(closest);
+        setSelectedParkingSpace(closest);
+        calculateRoute(userLocation, closest);
+        if (mapRef.current) {
+          mapRef.current.panTo(closest);
+        }
+      }
+    },
+    [parkingSpaces]
+  );
+
+  const handleShowClosestVipClick = () => {
+    if (userLocation) {
+      findClosestVipPoint(userLocation);
+    }
+    setDrawerOpen(false);
+  };
 
   const calculateRoute = useCallback((origin: LatLng, destination: LatLng) => {
     if (!origin || !destination) return;
@@ -204,13 +280,13 @@ const DijkstraMap = ({
   }, []);
 
   const handleParkingSpaceClick = (parkingSpace: {
-    longitude: string;
-    latitude: string;
+    lng: number;
+    lat: number;
   }) => {
     if (mapRef.current) {
       const destination: LatLng = {
-        lat: parseFloat(parkingSpace.latitude),
-        lng: parseFloat(parkingSpace.longitude),
+        lat: parseFloat(parkingSpace.lat.toString()),
+        lng: parseFloat(parkingSpace.lng.toString()),
       };
       setSelectedParkingSpace(destination);
       mapRef.current.panTo(destination);
@@ -324,11 +400,10 @@ const DijkstraMap = ({
             spaceType,
           }) => (
             <Fragment key={id}>
-              <Marker
-                position={{
-                  lat: parseFloat(latitude),
-                  lng: parseFloat(longitude),
-                }}
+              {/* <Marker
+                position={calculatePolygonCenter(
+                  parsePolygonCoordinates(polygon as string)
+                )}
                 onClick={() =>
                   setSelectedParkingSpaceData({ parkingName: name, images })
                 }
@@ -338,7 +413,16 @@ const DijkstraMap = ({
                   //     ? new google.maps.Size(42, 42)
                   //     : new google.maps.Size(24, 24),
                   anchor: new google.maps.Point(
-                    isSelected(latitude, longitude) ? 18 : 12,
+                    isSelected(
+                      (latitude = calculatePolygonCenter(
+                        parsePolygonCoordinates(polygon as string)
+                      ).lat.toString()),
+                      (longitude = calculatePolygonCenter(
+                        parsePolygonCoordinates(polygon as string)
+                      ).lng.toString())
+                    )
+                      ? 18
+                      : 12,
                     isSelected(latitude, longitude) ? 36 : 24
                   ),
                 }}
@@ -354,7 +438,7 @@ const DijkstraMap = ({
                       : "bg-destructive"
                   }`,
                 }}
-              />
+              /> */}
               {polygon && (
                 <>
                   <Polygon
@@ -367,22 +451,77 @@ const DijkstraMap = ({
                         ? "#4ade80"
                         : "#ef4444",
                       fillOpacity: 0.3,
-                      strokeColor: isSelected(latitude, longitude)
+                      strokeColor: isSelected(
+                        (latitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string)
+                        ).lat.toString()),
+                        (longitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string)
+                        ).lng.toString())
+                      )
                         ? "#3b82f6"
                         : "#6b7280",
-                      strokeWeight: isSelected(latitude, longitude) ? 2 : 1,
+                      strokeWeight: isSelected(
+                        (latitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string)
+                        ).lat.toString()),
+                        (longitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string)
+                        ).lng.toString())
+                      )
+                        ? 2
+                        : 1,
                     }}
                   />
-                  {/* <Marker
+                  <Marker
                     position={calculatePolygonCenter(
-                      parsePolygonCoordinates(polygon)
+                      parsePolygonCoordinates(polygon as string)
                     )}
-                    label={{
-                      text: name,
-                      color: "black",
-                      fontWeight: "bold",
+                    onClick={() =>
+                      setSelectedParkingSpaceData({ parkingName: name, images })
+                    }
+                    icon={{
+                      url: isAvailable(currCapacity as number, maxCapacity)
+                        .icon,
+                      // scaledSize: isSelected(latitude, longitude)
+                      //     ? new google.maps.Size(42, 42)
+                      //     : new google.maps.Size(24, 24),
+                      anchor: new google.maps.Point(
+                        isSelected(
+                          (latitude = calculatePolygonCenter(
+                            parsePolygonCoordinates(polygon as string)
+                          ).lat.toString()),
+                          (longitude = calculatePolygonCenter(
+                            parsePolygonCoordinates(polygon as string)
+                          ).lng.toString())
+                        )
+                          ? 18
+                          : 12,
+                        isSelected(latitude, longitude) ? 36 : 24
+                      ),
                     }}
-                  /> */}
+                    label={{
+                      text: `${spaceType} | ${name} (${currCapacity}/${maxCapacity} slots)`,
+                      fontWeight: isSelected(
+                        (latitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string)
+                        ).lat.toString()),
+                        (longitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string)
+                        ).lng.toString())
+                      )
+                        ? "bold"
+                        : "normal",
+                      className: `marker-label mt-16 rounded-xl p-2 border ${
+                        isAvailable(currCapacity as number, maxCapacity).value
+                          ? "bg-green-700"
+                          : "bg-destructive"
+                      }`,
+                      // You can add more custom styling here if needed
+                      color: "white", // Optional: set text color
+                      fontSize: "12px", // Optional: adjust font size
+                    }}
+                  />
                 </>
               )}
             </Fragment>
@@ -440,19 +579,28 @@ const DijkstraMap = ({
                     reservedCapacity,
                     latitude,
                     longitude,
+                    polygon,
                   }) => (
                     <div
                       key={id}
                       className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${
-                        isSelected(latitude, longitude)
+                        isSelected(
+                          (latitude = calculatePolygonCenter(
+                            parsePolygonCoordinates(polygon as string)
+                          ).lat.toString()),
+                          (longitude = calculatePolygonCenter(
+                            parsePolygonCoordinates(polygon as string)
+                          ).lng.toString())
+                        )
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900 dark:border-blue-700"
                           : ""
                       }`}
                       onClick={() =>
-                        handleParkingSpaceClick({
-                          latitude,
-                          longitude,
-                        })
+                        handleParkingSpaceClick(
+                          calculatePolygonCenter(
+                            parsePolygonCoordinates(polygon as string)
+                          )
+                        )
                       }
                     >
                       <h2>{name}</h2>
@@ -484,6 +632,22 @@ const DijkstraMap = ({
                 <Button className="mt-6" onClick={handleShowClosestClick}>
                   Show closest parking space
                 </Button>
+                {session.data?.user.isPWD && (
+                  <Button
+                    variant={"secondary"}
+                    onClick={handleShowClosestPwdClick}
+                  >
+                    Show closest PWD parking space
+                  </Button>
+                )}
+                {session.data?.user.isVIP && (
+                  <Button
+                    variant={"secondary"}
+                    onClick={handleShowClosestVipClick}
+                  >
+                    Show closest VIP parking space
+                  </Button>
+                )}
                 <DrawerClose asChild>
                   <Button variant="outline">Close</Button>
                 </DrawerClose>

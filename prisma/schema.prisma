@@ -125,8 +125,8 @@ model ParkingSpace {
   id                   String                 @id @default(uuid())
   name                 String
   description          String
-  longitude            String
-  latitude             String
+  longitude            String?
+  latitude             String?
   spaceType            ParkingSpaceType       @default(MIXED)
   currCapacity         Int?                   @default(0)
   maxCapacity          Int

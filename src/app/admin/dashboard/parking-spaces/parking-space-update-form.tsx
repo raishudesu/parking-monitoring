@@ -241,7 +241,7 @@ const ParkingSpaceUpdateForm = ({
             </FormItem>
           )}
         />
-        <FormItem>
+        {/* <FormItem>
           <FormLabel>Location</FormLabel>
           <MapPicker
             onLocationPicked={handleLocationPicked}
@@ -285,9 +285,9 @@ const ParkingSpaceUpdateForm = ({
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormItem>
-          <FormLabel>Polygon </FormLabel>
+          <FormLabel>Polygon & Location</FormLabel>
           <MapPolygonCreator
             onLocationPicked={handleLocationPicked}
             onPolygonComplete={(polygonString) => {

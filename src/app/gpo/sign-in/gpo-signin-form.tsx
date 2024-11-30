@@ -116,10 +116,10 @@ const GpoSignInForm = () => {
                   placeholder="Enter your password"
                   type={showPwd ? "text" : "password"}
                   disabled={form.formState.isSubmitting}
-                  onPaste={(e) => {
-                    e.preventDefault();
-                    return false;
-                  }}
+                  // onPaste={(e) => {
+                  //   e.preventDefault();
+                  //   return false;
+                  // }}
                 />
               </FormControl>
               <FormMessage />
