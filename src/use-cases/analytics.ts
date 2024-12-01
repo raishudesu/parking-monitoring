@@ -26,16 +26,27 @@ export const getUserBehaviorDataUseCase = async () => {
 
   const processedData = data.map((account) => {
     const totalDuration = account.gpoSessions.reduce((acc, session) => {
+      if (!session.endTime) {
+        // Skip session if endTime is null or undefined
+        return acc;
+      }
+
       const start = new Date(session.startTime).getTime();
-      const end = new Date(session.endTime ?? 0).getTime();
-      return acc + (end - start); // Duration in milliseconds
+      const end = new Date(session.endTime).getTime();
+
+      return end > start ? acc + (end - start) : acc; // Add only valid durations
     }, 0);
 
-    const averageDuration = totalDuration / account._count.gpoSessions; // Calculate average duration in milliseconds
+    const sessionCount = account.gpoSessions.filter(
+      (session) => session.endTime
+    ).length;
+
+    // Avoid division by zero
+    const averageDuration = sessionCount > 0 ? totalDuration / sessionCount : 0;
 
     return {
       accountType: account.accountType,
-      sessionCount: account._count.gpoSessions,
+      sessionCount,
       averageDuration: averageDuration / (1000 * 60), // Convert to minutes
     };
   });
@@ -92,14 +103,24 @@ export const getSpaceUtilDataUseCase = async (): Promise<UtilizationData> => {
 
   const utilizationData: UtilizationData = {};
 
-  data.forEach((space: ParkingSpace) => {
+  data.forEach((space) => {
     const totalDuration = space.gpoSessions.reduce((acc, session) => {
+      if (!session.endTime) {
+        // Skip session if endTime is null or undefined
+        return acc;
+      }
+
       const start = new Date(session.startTime).getTime();
-      const end = new Date(session.endTime ?? 0).getTime();
-      return acc + (end - start);
+      const end = new Date(session.endTime).getTime();
+
+      return end > start ? acc + (end - start) : acc; // Add only valid durations
     }, 0);
 
-    const sessionCount = space.gpoSessions.length;
+    const validSessions = space.gpoSessions.filter(
+      (session) => session.endTime
+    ); // Filter valid sessions
+    const sessionCount = validSessions.length;
+
     const averageDuration = sessionCount > 0 ? totalDuration / sessionCount : 0;
 
     // Initialize the space type if not already present
@@ -115,7 +136,6 @@ export const getSpaceUtilDataUseCase = async (): Promise<UtilizationData> => {
     utilizationData[space.spaceType].totalSessions += sessionCount;
     utilizationData[space.spaceType].totalDuration += totalDuration;
     utilizationData[space.spaceType].sessionCount += sessionCount;
-    // utilizationData[space.spaceType].averageDuration += averageDuration;
   });
 
   // Calculate average durations

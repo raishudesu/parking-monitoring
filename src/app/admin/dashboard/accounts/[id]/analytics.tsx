@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -28,6 +29,7 @@ import {
 } from "recharts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import { CSVLink } from "react-csv";
 export interface ParkingData {
   startTime: Date;
   parkingSpace: {
@@ -39,8 +41,10 @@ export interface ParkingData {
 
 export default function AnalyticsDashboard({
   parkingData,
+  userEmail,
 }: {
   parkingData: ParkingData[];
+  userEmail: string;
 }) {
   const [timeRange, setTimeRange] = useState("daily");
 
@@ -66,6 +70,30 @@ export default function AnalyticsDashboard({
     hour: i,
     count: hourlyUsage[i] || 0,
   }));
+
+  const parkingSpaceExportData = [
+    ["Category", "Name", "Count", "Hour"], // Header row
+    ...parkingSpaceData.map(({ name, count }) => [
+      "Parking Space Usage",
+      name,
+      count.toString(),
+      "",
+    ]),
+  ];
+
+  // Transform hourly data into arrays of strings
+  const hourlyExportData = [
+    ["Category", "Name", "Count", "Hour"], // Header row
+    ...hourlyData.map(({ hour, count }) => [
+      "Hourly Usage",
+      "",
+      count.toString(),
+      hour.toString(),
+    ]),
+  ];
+
+  // Combine both datasets for export
+  const exportData = [...parkingSpaceExportData, ...hourlyExportData];
 
   if (parkingData.length === 0)
     return (
@@ -183,6 +211,15 @@ export default function AnalyticsDashboard({
             </TabsContent>
           </Tabs>
         </CardContent>
+        <CardFooter className="flex-col items-start gap-2 text-sm">
+          <CSVLink
+            data={exportData}
+            className="bg-primary text-primary-foreground py-2 px-4 rounded-xl"
+            filename={`${userEmail}-analytics.csv`}
+          >
+            Download CSV
+          </CSVLink>
+        </CardFooter>
       </Card>
     </div>
   );

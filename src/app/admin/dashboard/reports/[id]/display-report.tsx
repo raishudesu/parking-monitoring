@@ -38,6 +38,7 @@ import { useState } from "react";
 import { useServerAction } from "zsa-react";
 import { updateReportStatusAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
 
 type ReportType =
   | "UNAUTHORIZED_PARKING"
@@ -70,6 +71,9 @@ interface Report {
   parkingSpace: {
     id: string;
     name: string;
+  } | null;
+  resolvedByAdmin: {
+    firstName: string;
   } | null;
 }
 
@@ -113,6 +117,7 @@ export function DisplayReport({ report }: ReportCardProps) {
   const status = statusConfig[currentStatus];
 
   const { isPending, execute } = useServerAction(updateReportStatusAction);
+  const session = useSession();
 
   const handleStatusChange = async (newStatus: ReportStatus) => {
     setCurrentStatus(newStatus);
@@ -121,6 +126,7 @@ export function DisplayReport({ report }: ReportCardProps) {
       const [data, err] = await execute({
         reportId: report.id,
         reportStatus: newStatus,
+        adminId: session.data?.user.id as string,
       });
 
       if (err) {
@@ -191,14 +197,16 @@ export function DisplayReport({ report }: ReportCardProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <User className="h-4 w-4" />
-          <span>ID: {report.reportedByAccount.id}</span>
+        <div className="break-all flex flex-col md:flex-row gap-2 text-sm text-muted-foreground">
+          <div className="flex gap-2 items-center">
+            <User className="h-4 w-4" />
+            <span>ID: {report.reportedByAccount.id}</span>
+          </div>
           {report.reportedByAccount.email && (
-            <>
-              <Mail className="h-4 w-4 ml-2" />
+            <div className="flex gap-2 items-center">
+              <Mail className="h-4 w-4" />
               <span>{report.reportedByAccount.email}</span>
-            </>
+            </div>
           )}
         </div>
 
@@ -244,8 +252,14 @@ export function DisplayReport({ report }: ReportCardProps) {
           <div className="text-sm text-muted-foreground">
             <span className="font-medium">Resolved:</span>{" "}
             {format(report.resolvedAt, "PPP 'at' p")}
-            {report.resolvedByAdminId && (
-              <> by Admin ID: {report.resolvedByAdminId}</>
+            {report.resolvedByAdmin && (
+              <>
+                {" "}
+                by Admin:{" "}
+                <span className="text-primary font-bold">
+                  {report.resolvedByAdmin.firstName}
+                </span>
+              </>
             )}
           </div>
         )}

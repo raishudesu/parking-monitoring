@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getGpoByIdUseCase } from "@/use-cases/gpo-users";
 import { redirect } from "next/navigation";
+import BackBtn from "@/components/back-btn";
 
 const GpoDashboardLayout = async ({ children }: { children: ReactNode }) => {
   const session = await getServerSession(authOptions);
@@ -18,6 +19,9 @@ const GpoDashboardLayout = async ({ children }: { children: ReactNode }) => {
       <div className="w-full h-full overflow-y-scroll">
         <SideSheet />
         <div className="min-h-screen bg-slate-50 dark:bg-zinc-800">
+          <div className="px-2 pt-2">
+            <BackBtn />
+          </div>
           {children}
         </div>
       </div>

@@ -76,6 +76,11 @@ export const getBehaviorReportById = async (reportId: string) => {
           email: true,
         },
       },
+      resolvedByAdmin: {
+        select: {
+          firstName: true,
+        },
+      },
       images: true,
       parkingSpace: {
         select: {
@@ -91,7 +96,8 @@ export const getBehaviorReportById = async (reportId: string) => {
 
 export const updateReportStatusById = async (
   reportId: string,
-  status: ReportStatus
+  status: ReportStatus,
+  adminId?: string
 ) => {
   const report = await prisma.driverBehaviorReport.update({
     where: {
@@ -99,6 +105,8 @@ export const updateReportStatusById = async (
     },
     data: {
       status,
+      resolvedByAdminId: status === "RESOLVED" ? adminId : null,
+      resolvedAt: status === "RESOLVED" ? new Date() : null,
     },
   });
 

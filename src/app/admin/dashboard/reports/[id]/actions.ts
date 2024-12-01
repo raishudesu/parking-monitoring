@@ -10,12 +10,14 @@ export const updateReportStatusAction = createServerAction()
     z.object({
       reportId: z.string(),
       reportStatus: z.enum(["PENDING", "RESOLVED", "DISMISSED"]),
+      adminId: z.string(),
     })
   )
   .handler(async ({ input }) => {
     const report = await updateReportStatusByIdUseCase(
       input.reportId,
-      input.reportStatus
+      input.reportStatus,
+      input.adminId
     );
 
     revalidatePath("/admin/dashboard/reports/:path*");

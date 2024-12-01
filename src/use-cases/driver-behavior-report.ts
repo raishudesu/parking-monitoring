@@ -37,9 +37,10 @@ export const getBehaviorReportByIdUseCase = async (reportId: string) => {
 
 export const updateReportStatusByIdUseCase = async (
   reportId: string,
-  status: ReportStatus
+  status: ReportStatus,
+  adminId?: string
 ) => {
-  const report = await updateReportStatusById(reportId, status);
+  const report = await updateReportStatusById(reportId, status, adminId);
 
   return report;
 };

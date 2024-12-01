@@ -74,7 +74,7 @@ const DeleteUserFeedbackDialog = ({ feedbackId }: { feedbackId: string }) => {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant={"destructive"} className="ml-auto flex gap-2">
+        <Button variant={"destructive"} className="flex gap-2">
           <Trash2 size={18} />
         </Button>
       </AlertDialogTrigger>

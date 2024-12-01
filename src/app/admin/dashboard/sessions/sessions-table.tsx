@@ -200,8 +200,8 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="md:max-w-sm">
-              {table.getColumn("spaceType")?.getFilterValue()
-                ? `Status: ${table.getColumn("spaceType")?.getFilterValue()}`
+              {table.getColumn("status")?.getFilterValue()
+                ? `Status: ${table.getColumn("status")?.getFilterValue()}`
                 : "Filter by Status"}
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
@@ -228,9 +228,7 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
             <DropdownMenuSeparator />
             <DropdownMenuRadioItem
               value="clear"
-              onSelect={() =>
-                table.getColumn("spaceType")?.setFilterValue(null)
-              }
+              onSelect={() => table.getColumn("status")?.setFilterValue(null)}
             >
               Clear Filter
             </DropdownMenuRadioItem>

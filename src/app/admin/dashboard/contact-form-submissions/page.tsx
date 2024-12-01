@@ -13,7 +13,7 @@ const FeedbacksPage = async () => {
           Contact Form Submissions
         </h1>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {feedbacks.map(({ id, name, email, message }, index) => (
           <FeedbackCard
             id={id}

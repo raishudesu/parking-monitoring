@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import SideNav from "./side-nav";
 import SideSheet from "./side-sheet";
+import BackBtn from "../../../components/back-btn";
 
 const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
   return (
@@ -14,6 +15,9 @@ const AdminDashboardLayout = async ({ children }: { children: ReactNode }) => {
           </h1>
         </header>
         <div className="min-h-screen bg-slate-50 dark:bg-zinc-800">
+          <div className="px-2 pt-2">
+            <BackBtn />
+          </div>
           {children}
         </div>
       </div>

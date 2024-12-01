@@ -98,14 +98,14 @@ export const columns: ColumnDef<AuditLogsData>[] = [
   //     cell: ({row}) => <div>{`${row.getValue("adminId")}`}</div>,
   // },
   {
-    accessorKey: "admin",
+    accessorKey: "adminName",
     header: "Admin Name",
     cell: ({ row }) => (
       <div>{`${row.original.admin.firstName} ${row.original.admin.lastName}`}</div>
     ),
   },
   {
-    accessorKey: "admin",
+    accessorKey: "adminEmail",
     header: "Admin Email",
     cell: ({ row }) => <div>{`${row.original.admin.corpEmail}`}</div>,
   },

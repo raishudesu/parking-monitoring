@@ -34,7 +34,10 @@ const AccountPage = async ({ params }: { params: Params }) => {
         </h1>
       </div>
       <UserDetails user={userAssertion} colleges={colleges} />
-      <AnalyticsDashboard parkingData={sessionsData} />
+      <AnalyticsDashboard
+        parkingData={sessionsData}
+        userEmail={user.email as string}
+      />
     </div>
   );
 };
