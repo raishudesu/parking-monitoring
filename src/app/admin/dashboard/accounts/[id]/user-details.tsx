@@ -17,6 +17,7 @@ import { AccountType, College } from "@prisma/client";
 import AccountUpdateDialog from "../account-update-dialog";
 import DeactivateBtn from "../deactivate-btn";
 import ReactivateBtn from "../reactivate-btn";
+import CreditScore from "@/app/gpo/dashboard/credit-score";
 
 // This would typically come from an API or database
 export interface User {
@@ -145,6 +146,10 @@ export default function UserDetails({
               </div>
             </TabsContent>
           </Tabs>
+          <div className="mt-6">
+            <CreditScore creditScore={user.creditScore as number} />
+          </div>
+
           <div className="mt-6 flex md:justify-end">
             {/* <Button onClick={() => setIsEditing(!isEditing)}>
               {isEditing ? "Save Changes" : "Edit Profile"}

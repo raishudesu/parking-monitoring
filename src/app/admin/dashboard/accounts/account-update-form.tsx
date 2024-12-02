@@ -61,6 +61,8 @@ const AccountUpdateForm = ({
   const session = useSession();
   const { isPending, execute } = useServerAction(updateGpoAccountAction);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const form = useForm<z.infer<typeof accountCreationSchema>>({
     resolver: zodResolver(accountCreationSchema),
     defaultValues: {
@@ -142,7 +144,7 @@ const AccountUpdateForm = ({
                   className="w-full"
                   placeholder="e.g 2020-6-6969@psu.palawan.edu.ph"
                   type="text"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -161,7 +163,7 @@ const AccountUpdateForm = ({
                   className="w-full"
                   placeholder="e.g GP-2024-6969"
                   type="text"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -181,7 +183,7 @@ const AccountUpdateForm = ({
                   className="w-full"
                   placeholder="Enter your password"
                   type="hidden"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -197,7 +199,7 @@ const AccountUpdateForm = ({
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                disabled={isPending}
+                disabled={isAdmin || isPending}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -223,7 +225,7 @@ const AccountUpdateForm = ({
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value as string | undefined}
-                disabled={isPending}
+                disabled={isAdmin || isPending}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -254,7 +256,7 @@ const AccountUpdateForm = ({
                   {...field}
                   className="w-full"
                   placeholder="e.g. College of Sciences"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -276,7 +278,7 @@ const AccountUpdateForm = ({
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
             </FormItem>
@@ -297,16 +299,25 @@ const AccountUpdateForm = ({
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button
+          type="submit"
+          disabled={isAdmin || isPending}
+          className="w-full"
+        >
           Update
         </Button>
       </form>
+      {isAdmin && (
+        <span className="text-destructive text-center font-bold">
+          ACCESS DENIED
+        </span>
+      )}
     </Form>
   );
 };

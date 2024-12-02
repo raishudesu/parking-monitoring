@@ -32,9 +32,9 @@ const CreditScore = ({ creditScore }: { creditScore: number }) => {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Your Credit Score</CardTitle>
+        <CardTitle>Credit Score</CardTitle>
         <CardDescription>
-          This indicates your behavior in parking inside the campus.
+          This indicates behavior in parking inside the campus.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

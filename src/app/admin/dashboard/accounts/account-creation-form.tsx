@@ -54,6 +54,8 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
   const session = useSession();
   const { isPending, execute } = useServerAction(createGpoAccountAction);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const form = useForm<z.infer<typeof accountCreationSchema>>({
     resolver: zodResolver(accountCreationSchema),
     defaultValues: {
@@ -130,7 +132,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
                   className="w-full"
                   placeholder="e.g 2020-6-6969@psu.palawan.edu.ph"
                   type="text"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -149,7 +151,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
                   className="w-full"
                   placeholder="e.g GP-2024-6969"
                   type="text"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -169,7 +171,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
                   className="w-full"
                   placeholder="Enter your password"
                   type="hidden"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -185,7 +187,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                disabled={isPending}
+                disabled={isAdmin || isPending}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -211,7 +213,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value as string | undefined}
-                disabled={isPending}
+                disabled={isAdmin || isPending}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -242,7 +244,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
                   {...field}
                   className="w-full"
                   placeholder="e.g. College of Sciences"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -264,7 +266,7 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
             </FormItem>
@@ -285,16 +287,25 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button
+          type="submit"
+          disabled={isAdmin || isPending}
+          className="w-full"
+        >
           Create
         </Button>
       </form>
+      {isAdmin && (
+        <span className="text-destructive text-center font-bold">
+          ACCESS DENIED
+        </span>
+      )}
     </Form>
   );
 };

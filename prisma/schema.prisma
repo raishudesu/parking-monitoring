@@ -20,15 +20,6 @@ enum UserRole {
   VISITOR
 }
 
-// enum AduitAction {
-//   CREATE
-//   INSERT
-//   UPDATE
-//   DELETE
-//   REACTIVATE
-//   DEACTIVATE
-// }
-
 enum AdminAction {
   CREATE
   INSERT
@@ -37,18 +28,6 @@ enum AdminAction {
   REACTIVATE
   DEACTIVATE
 }
-
-// enum AuditTable {
-//   ADMIN
-//   ACCOUNT
-//   VISITORPASSCARD
-//   PARKINGSPACE
-//   COLLEGE
-//   USERFEEDBACK
-//   REPORTGENERATIONLOG
-//   USERSURVEY
-//   DRIVERBEHAVIORREPORT
-// }
 
 enum Tables {
   ADMIN
@@ -187,15 +166,6 @@ model Admin {
   updatedAt            DateTime               @updatedAt
   resolvedReports      DriverBehaviorReport[]
 }
-
-// model AuditLog {
-//   id        String      @id @default(uuid())
-//   action    AdminAction
-//   table     AuditTable
-//   admin     Admin       @relation(fields: [adminId], references: [id])
-//   adminId   String
-//   createdAt DateTime    @default(now())
-// }
 
 model AdminLog {
   id        String      @id @default(uuid())

@@ -9,6 +9,8 @@ const DeactivateBtn = ({ accountId }: { accountId: string }) => {
   const session = useSession();
   const { isPending, execute } = useServerAction(deactivateGpoAccountAction);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const handleDeactivate = async () => {
     try {
       const [data, err] = await execute({
@@ -47,7 +49,7 @@ const DeactivateBtn = ({ accountId }: { accountId: string }) => {
       variant="destructive"
       className="flex gap-2"
       onClick={handleDeactivate}
-      disabled={isPending}
+      disabled={isAdmin || isPending}
     >
       Deactivate
       {isPending ? (

@@ -93,41 +93,41 @@ export function AccountsTable({
         <div className="capitalize">{row.getValue("accountType")}</div>
       ),
     },
-    {
-      accessorKey: "collegeName",
-      header: "College",
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {row.original.collegeName ? (
-            row.original.collegeName.collegeName
-          ) : (
-            <span className="text-destructive font-semibold">N/A</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "department",
-      header: "Department",
-      cell: ({ row }) => (
-        <div className="capitalize">
-          {row.original.department ? (
-            row.original.department
-          ) : (
-            <span className="text-destructive font-semibold">N/A</span>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   accessorKey: "collegeName",
+    //   header: "College",
+    //   cell: ({ row }) => (
+    //     <div className="capitalize">
+    //       {row.original.collegeName ? (
+    //         row.original.collegeName.collegeName
+    //       ) : (
+    //         <span className="text-destructive font-semibold">N/A</span>
+    //       )}
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   accessorKey: "department",
+    //   header: "Department",
+    //   cell: ({ row }) => (
+    //     <div className="capitalize">
+    //       {row.original.department ? (
+    //         row.original.department
+    //       ) : (
+    //         <span className="text-destructive font-semibold">N/A</span>
+    //       )}
+    //     </div>
+    //   ),
+    // },
 
-    {
-      accessorKey: "creditScore",
-      header: "Credit Score",
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("creditScore")}</div>
-      ),
-      enableSorting: true,
-    },
+    // {
+    //   accessorKey: "creditScore",
+    //   header: "Credit Score",
+    //   cell: ({ row }) => (
+    //     <div className="capitalize">{row.getValue("creditScore")}</div>
+    //   ),
+    //   enableSorting: true,
+    // },
     {
       accessorKey: "isActive",
       header: "Status",

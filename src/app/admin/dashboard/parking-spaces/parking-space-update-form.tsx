@@ -59,6 +59,8 @@ const ParkingSpaceUpdateForm = ({
 
   const { isPending, execute } = useServerAction(updateParkingSpaceAction);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const form = useForm<z.infer<typeof parkingSpaceFormSchema>>({
     resolver: zodResolver(parkingSpaceFormSchema),
     defaultValues: {
@@ -216,7 +218,7 @@ const ParkingSpaceUpdateForm = ({
                   className="w-full"
                   placeholder="CS1"
                   type="text"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -234,7 +236,7 @@ const ParkingSpaceUpdateForm = ({
                   {...field}
                   className="w-full"
                   placeholder="Describe the Parking Space"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -305,7 +307,7 @@ const ParkingSpaceUpdateForm = ({
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                disabled={isPending}
+                disabled={isAdmin || isPending}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -337,7 +339,7 @@ const ParkingSpaceUpdateForm = ({
                   className="w-full"
                   placeholder="Enter Max Capacity"
                   type="number"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -356,7 +358,7 @@ const ParkingSpaceUpdateForm = ({
                   className="w-full"
                   placeholder="Enter Reserved Capacity"
                   type="number"
-                  disabled={isPending}
+                  disabled={isAdmin || isPending}
                 />
               </FormControl>
               <FormMessage />
@@ -384,7 +386,11 @@ const ParkingSpaceUpdateForm = ({
                             handleFileUpload(file, `images.${index}` as const);
                           }
                         }}
-                        disabled={uploadingFields[`images.${index}`]}
+                        disabled={
+                          isAdmin ||
+                          isPending ||
+                          uploadingFields[`images.${index}`]
+                        }
                       />
                       {uploadingFields[`images.${index}`] && (
                         <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
@@ -451,12 +457,19 @@ const ParkingSpaceUpdateForm = ({
         </Button>
         <Button
           type="submit"
-          disabled={isPending || Object.values(uploadingFields).some(Boolean)}
+          disabled={
+            isAdmin || isPending || Object.values(uploadingFields).some(Boolean)
+          }
           className="w-full"
         >
           Update
         </Button>
       </form>
+      {isAdmin && (
+        <span className="text-destructive text-center font-bold">
+          ACCESS DENIED
+        </span>
+      )}
     </Form>
   );
 };

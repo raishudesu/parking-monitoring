@@ -28,6 +28,8 @@ const DeleteParkingSpaceDialog = ({
   const { isPending, execute } = useServerAction(deleteParkingSpaceAction);
   const [open, setOpen] = useState(false);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const onDelete = async () => {
     try {
       const [data, err] = await execute({
@@ -94,11 +96,16 @@ const DeleteParkingSpaceDialog = ({
           <AlertDialogAction
             className="bg-destructive"
             onClick={onDelete}
-            disabled={isPending}
+            disabled={isPending || isAdmin}
           >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>
+        {isAdmin && (
+          <span className="text-destructive text-center font-bold">
+            ACCESS DENIED
+          </span>
+        )}
       </AlertDialogContent>
     </AlertDialog>
   );

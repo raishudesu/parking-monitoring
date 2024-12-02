@@ -10,6 +10,8 @@ const ReactivateBtn = ({ accountId }: { accountId: string }) => {
 
   const { isPending, execute } = useServerAction(reactivateGpoAccountAction);
 
+  const isAdmin = session.data?.user.role === "ADMIN";
+
   const handleReactivate = async () => {
     try {
       const [data, err] = await execute({
@@ -47,7 +49,7 @@ const ReactivateBtn = ({ accountId }: { accountId: string }) => {
     <Button
       className="bg-green-500 flex gap-2 hover:bg-green-600"
       onClick={handleReactivate}
-      disabled={isPending}
+      disabled={isAdmin || isPending}
     >
       Reactivate
       {isPending ? (
