@@ -20,7 +20,16 @@ enum UserRole {
   VISITOR
 }
 
-enum AduitAction {
+// enum AduitAction {
+//   CREATE
+//   INSERT
+//   UPDATE
+//   DELETE
+//   REACTIVATE
+//   DEACTIVATE
+// }
+
+enum AdminAction {
   CREATE
   INSERT
   UPDATE
@@ -29,7 +38,19 @@ enum AduitAction {
   DEACTIVATE
 }
 
-enum AuditTable {
+// enum AuditTable {
+//   ADMIN
+//   ACCOUNT
+//   VISITORPASSCARD
+//   PARKINGSPACE
+//   COLLEGE
+//   USERFEEDBACK
+//   REPORTGENERATIONLOG
+//   USERSURVEY
+//   DRIVERBEHAVIORREPORT
+// }
+
+enum Tables {
   ADMIN
   ACCOUNT
   VISITORPASSCARD
@@ -37,6 +58,8 @@ enum AuditTable {
   COLLEGE
   USERFEEDBACK
   REPORTGENERATIONLOG
+  USERSURVEY
+  DRIVERBEHAVIORREPORT
 }
 
 enum ParkingSpaceType {
@@ -158,17 +181,26 @@ model Admin {
   password             String
   isActive             Boolean                @default(true)
   role                 AdminRole              @default(ADMIN)
-  logs                 AuditLog[]
+  logs                 AdminLog[]
   reportGenerationLogs ReportGenerationLog[]
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
   resolvedReports      DriverBehaviorReport[]
 }
 
-model AuditLog {
+// model AuditLog {
+//   id        String      @id @default(uuid())
+//   action    AdminAction
+//   table     AuditTable
+//   admin     Admin       @relation(fields: [adminId], references: [id])
+//   adminId   String
+//   createdAt DateTime    @default(now())
+// }
+
+model AdminLog {
   id        String      @id @default(uuid())
-  action    AduitAction
-  table     AuditTable
+  action    AdminAction
+  table     Tables
   admin     Admin       @relation(fields: [adminId], references: [id])
   adminId   String
   createdAt DateTime    @default(now())

@@ -35,7 +35,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Admin, AuditLog, VisitorSession } from "@prisma/client";
+import type { VisitorSession } from "@prisma/client";
 import { parseDate } from "@/lib/utils";
 
 export type VisitorSessionData = VisitorSession & {

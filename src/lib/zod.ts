@@ -160,6 +160,8 @@ export const auditLogSchema = z.object({
     "COLLEGE",
     "USERFEEDBACK",
     "REPORTGENERATIONLOG",
+    "USERSURVEY",
+    "DRIVERBEHAVIORREPORT",
   ]),
   adminId: z.string(),
 });

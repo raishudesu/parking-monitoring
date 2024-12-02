@@ -11,7 +11,7 @@ import { AdminLoginError } from "./errors";
 import { compare, hash } from "bcrypt";
 import { z } from "zod";
 import { adminAccountSchema, adminUpdateSchema } from "@/lib/zod";
-import { createAuditLog } from "@/data-access/audit-log";
+import { createAuditLog } from "@/data-access/admin-log";
 
 export const createAdminUseCase = async (
   data: z.infer<typeof adminAccountSchema>

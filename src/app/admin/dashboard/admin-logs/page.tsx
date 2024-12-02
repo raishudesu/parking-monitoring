@@ -1,17 +1,16 @@
-import { getAuditLogsUseCase } from "@/use-cases/audit-log";
-import { AdminLogsTable, AuditLogsData } from "./admin-logs-table";
-import { Admin, AuditLog } from "@prisma/client";
+import { getAuditLogsUseCase } from "@/use-cases/admin-log";
+import { AdminLogsTable, AdminLogsData } from "./admin-logs-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 
 const AuditLogsPage = async () => {
-  let logs: AuditLogsData[] | null = null;
+  let logs: AdminLogsData[] | null = null;
   let error: string | null = null;
 
   try {
     const fetchedAuditLogs = await getAuditLogsUseCase();
 
-    logs = fetchedAuditLogs as AuditLogsData[];
+    logs = fetchedAuditLogs as AdminLogsData[];
   } catch (err) {
     console.error("Error fetching data:", err);
     error =
