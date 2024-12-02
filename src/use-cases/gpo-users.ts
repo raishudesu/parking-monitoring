@@ -17,7 +17,7 @@ import {
 import { LoginError } from "./errors";
 import { z } from "zod";
 import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
-import { createAuditLog } from "@/data-access/audit-log";
+import { createAuditLog } from "@/data-access/admin-log";
 import { GPOAccount } from "@prisma/client";
 
 // USE CASE FOR GPO LOG IN

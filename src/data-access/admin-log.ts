@@ -3,7 +3,7 @@ import { auditLogSchema } from "@/lib/zod";
 import { z } from "zod";
 
 export const createAuditLog = async (data: z.infer<typeof auditLogSchema>) => {
-  const log = await prisma.auditLog.create({
+  const log = await prisma.adminLog.create({
     data,
   });
 
@@ -11,7 +11,7 @@ export const createAuditLog = async (data: z.infer<typeof auditLogSchema>) => {
 };
 
 export const getAuditLogs = async () => {
-  const logs = await prisma.auditLog.findMany({
+  const logs = await prisma.adminLog.findMany({
     include: {
       admin: {
         select: {

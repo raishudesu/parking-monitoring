@@ -1,4 +1,4 @@
-import { createAuditLog } from "@/data-access/audit-log";
+import { createAuditLog } from "@/data-access/admin-log";
 import { getOngoingGpoSession } from "@/data-access/gpo-sessions";
 import {
   createVisitorCard,

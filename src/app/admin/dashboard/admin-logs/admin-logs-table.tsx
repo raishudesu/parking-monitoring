@@ -35,10 +35,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Admin, AuditLog } from "@prisma/client";
+import type { Admin, AdminLog } from "@prisma/client";
 import { parseDate } from "@/lib/utils";
 
-export type AuditLogsData = AuditLog & {
+export type AdminLogsData = AdminLog & {
   admin: Omit<
     Admin,
     "password" | "isActive" | "role" | "updatedAt" | "id" | "createdAt"
@@ -56,7 +56,7 @@ const emailFilterFn: FilterFn<any> = (
   return email.toLowerCase().includes(filterValue.toLowerCase());
 };
 
-export const columns: ColumnDef<AuditLogsData>[] = [
+export const columns: ColumnDef<AdminLogsData>[] = [
   //   {
   //     id: "select",
   //     header: ({ table }) => (
@@ -111,7 +111,7 @@ export const columns: ColumnDef<AuditLogsData>[] = [
   },
 ];
 
-export function AdminLogsTable({ data }: { data: AuditLogsData[] }) {
+export function AdminLogsTable({ data }: { data: AdminLogsData[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
