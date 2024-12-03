@@ -41,3 +41,33 @@ export const getAllGpoViolations = async () => {
 
   return violations;
 };
+
+export const restoreCreditScoresByDowntime = async (
+  logId: string,
+  accountIds: string[]
+) => {
+  accountIds.map(async (id) => {
+    await prisma.gPOAccount.update({
+      where: {
+        id,
+      },
+      data: {
+        creditScore: {
+          increment: 10,
+        },
+      },
+    });
+  });
+
+  // RESOLVE DOWNTIME LOG
+  await prisma.downtimeLog.update({
+    where: {
+      id: logId,
+    },
+    data: {
+      areViolationsWaived: true,
+    },
+  });
+
+  return true;
+};

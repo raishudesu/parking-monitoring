@@ -252,3 +252,18 @@ export const driverBehaviorReportSchema = z.object({
     })
   ),
 });
+
+export const downtimeLogSchema = z
+  .object({
+    startedAt: z.string().refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    }),
+    endedAt: z.string().refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    }),
+    adminId: z.string().min(1, "Admin ID is required"),
+  })
+  .refine((data) => new Date(data.startedAt) < new Date(data.endedAt), {
+    message: "End time must be after start time",
+    path: ["endedAt"],
+  });
