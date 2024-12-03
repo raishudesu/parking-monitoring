@@ -4,19 +4,16 @@ import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
-  createColumnHelper,
-  FilterFn,
+  SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  Row,
-  SortingState,
   useReactTable,
-  VisibilityState,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, UserRoundPen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,6 +21,7 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -38,125 +36,107 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { GPOAccount, GPOSession, ParkingSpace } from "@prisma/client";
+import type { College, DowntimeLog, GPOAccount } from "@prisma/client";
+
+import { useRouter } from "next/navigation";
+import DowntimeLogCreationDialog from "./downtime-log-creation-dialog";
 import { parseDate } from "@/lib/utils";
 
-export type SessionData = GPOSession & {
-  parkingSpace: ParkingSpace;
-  accountParked: Omit<GPOAccount, "password">;
+export type GPOAccountData = GPOAccount & {
+  collegeName: College;
 };
 
-const columnHelper = createColumnHelper();
+export function DowntimeLogsTable({ data }: { data: DowntimeLog[] }) {
+  const columns: ColumnDef<DowntimeLog>[] = [
+    // {
+    //   id: "select",
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={
+    //         table.getIsAllPageRowsSelected() ||
+    //         (table.getIsSomePageRowsSelected() && "indeterminate")
+    //       }
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    // },
+    {
+      accessorKey: "startedAt",
+      header: "Down Time Date",
+      cell: ({ row }) => (
+        <div className="capitalize">{parseDate(row.getValue("startedAt"))}</div>
+      ),
+    },
+    {
+      accessorKey: "endedAt",
+      header: "Restoration Date",
+      cell: ({ row }) => <div>{parseDate(row.getValue("endedAt"))}</div>,
+    },
+    {
+      accessorKey: "areViolationsWaived",
+      header: "Compensated Affected Accounts",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {row.getValue("areViolationsWaived") ? "YES" : "NO"}
+        </div>
+      ),
+    },
 
-const emailFilterFn: FilterFn<any> = (
-  row: Row<any>,
-  columnId: string,
-  filterValue: string
-) => {
-  const email = (row.getValue(columnId) as { email?: string })?.email ?? "";
-  return email.toLowerCase().includes(filterValue.toLowerCase());
-};
+    // {
+    //   id: "actions",
+    //   header: "Actions",
+    //   enableHiding: false,
+    //   cell: ({ row }) => {
+    //     const {
+    //       email,
+    //       gatePassNumber,
+    //       password,
+    //       accountType,
+    //       collegeId,
+    //       department,
+    //       isVIP,
+    //       isPWD,
+    //     } = row.original;
 
-export const columns: ColumnDef<SessionData>[] = [
-  // {
-  //     id: "select",
-  //     header: ({table}) => (
-  //         <Checkbox
-  //             checked={
-  //                 table.getIsAllPageRowsSelected() ||
-  //                 (table.getIsSomePageRowsSelected() && "indeterminate")
-  //             }
-  //             onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //             aria-label="Select all"
-  //         />
-  //     ),
-  //     cell: ({row}) => (
-  //         <Checkbox
-  //             checked={row.getIsSelected()}
-  //             onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //             aria-label="Select row"
-  //         />
-  //     ),
-  // },
-  {
-    accessorKey: "parkingSpace",
-    header: "Parking Space",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.original.parkingSpace.name}</div>
-    ),
-  },
-  {
-    accessorKey: "accountParked",
-    header: "Account Parked",
-    cell: ({ row }) => <div>{row.original.accountParked.email}</div>,
-    filterFn: emailFilterFn,
-  },
-  // {
-  //   accessorKey: "accountParked",
-  //   header: "Gate Pass No.",
-  //   cell: ({ row }) => <div>{row.original.accountParked.gatePassNumber}</div>,
-  //   filterFn: emailFilterFn,
-  // },
-  {
-    accessorKey: "startTime",
-    header: "Start",
-    cell: ({ row }) => <div>{`${parseDate(row.getValue("startTime"))}`}</div>,
-  },
-  {
-    accessorKey: "shouldEndAt",
-    header: "End",
-    cell: ({ row }) => <div>{`${parseDate(row.getValue("shouldEndAt"))}`}</div>,
-  },
-  {
-    accessorKey: "endTime",
-    header: "Ended Date",
-    cell: ({ row }) => <div>{`${parseDate(row.getValue("endTime"))}`}</div>,
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <div
-        className={`capitalize font-bold ${
-          row.getValue("status") === "ONGOING"
-            ? "text-destructive"
-            : "text-green-500"
-        }`}
-      >{`${row.getValue("status")}`}</div>
-    ),
-  },
-  {
-    accessorKey: "endedProperly",
-    header: "Ended properly",
-    cell: ({ row }) => (
-      <div
-        className={`font-bold ${
-          row.getValue("endedProperly") ? "text-green-500" : "text-destructive"
-        }`}
-      >{`${row.getValue("endedProperly") ? "YES" : "NO"}`}</div>
-    ),
-  },
-  //   {
-  //     id: "actions",
-  //     header: "Actions",
-  //     enableHiding: false,
-  //     cell: ({ row }) => {
-  //       return (
-  //         <div className="flex gap-2">
-  //           <Button className="flex gap-2">
-  //             Edit
-  //             <UserRoundPen size={15} />
-  //           </Button>
-  //           <Button variant={"destructive"} className="flex gap-2">
-  //             Delete <Trash2 size={18} />
-  //           </Button>
-  //         </div>
-  //       );
-  //     },
-  //   },
-];
+    //     const updateFormData = {
+    //       email: email as string,
+    //       gatePassNumber,
+    //       password,
+    //       accountType,
+    //       collegeId,
+    //       department: department as string,
+    //       isVIP,
+    //       isPWD,
+    //     };
 
-export function SessionsTable({ data }: { data: SessionData[] }) {
+    //     return (
+    //       <div className="flex gap-2">
+    //         <AccountUpdateDialog
+    //           accountId={row.original.id}
+    //           data={updateFormData}
+    //           colleges={colleges}
+    //         />
+    //         {row.original.isActive ? (
+    //           <DeactivateBtn accountId={row.original.id} />
+    //         ) : (
+    //           <ReactivateBtn accountId={row.original.id} />
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    // },
+  ];
+
+  const router = useRouter();
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -187,16 +167,6 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
   return (
     <div className="w-full">
       <div className="flex flex-col md:flex-row items-center gap-4 py-4">
-        <Input
-          placeholder="Filter by Corporate Email"
-          value={
-            (table.getColumn("accountParked")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("accountParked")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="md:max-w-sm">
@@ -209,13 +179,14 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>Status</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {["ENDED", "ONGOING"].map((status) => (
+            {["YES", "NO"].map((status) => (
               <DropdownMenuRadioItem
                 key={status}
                 value={status}
                 onSelect={() =>
-                  table.getColumn("status")?.setFilterValue(
-                    table.getColumn("status")?.getFilterValue() === status
+                  table.getColumn("areViolationsWaived")?.setFilterValue(
+                    table.getColumn("areViolationsWaived")?.getFilterValue() ===
+                      status
                       ? null // Toggle off if already selected
                       : status
                   )
@@ -228,7 +199,9 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
             <DropdownMenuSeparator />
             <DropdownMenuRadioItem
               value="clear"
-              onSelect={() => table.getColumn("status")?.setFilterValue(null)}
+              onSelect={() =>
+                table.getColumn("areViolationsWaived")?.setFilterValue(null)
+              }
             >
               Clear Filter
             </DropdownMenuRadioItem>
@@ -240,7 +213,7 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="center">
+          <DropdownMenuContent align="end">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
@@ -260,6 +233,7 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        <DowntimeLogCreationDialog />
       </div>
       <div className="rounded-md border overflow-clip bg-background">
         <Table>
@@ -287,6 +261,12 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() =>
+                    router.push(
+                      `/admin/dashboard/downtime-logs/${row.original.id}`
+                    )
+                  }
+                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
