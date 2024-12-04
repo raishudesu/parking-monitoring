@@ -9,6 +9,7 @@ export const deleteReportByIdAction = createServerAction()
   .input(
     z.object({
       reportId: z.string(),
+      adminId: z.string().optional(),
     })
   )
   .handler(async ({ input }) => {

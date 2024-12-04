@@ -19,8 +19,13 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { deleteReportByIdAction } from "./actions";
 
-const DeleteReportDialog = ({ reportId }: { reportId: string }) => {
-  const session = useSession();
+const DeleteReportDialog = ({
+  reportId,
+  adminId,
+}: {
+  reportId: string;
+  adminId: string;
+}) => {
   const { isPending, execute } = useServerAction(deleteReportByIdAction);
   const [open, setOpen] = useState(false);
 
@@ -28,6 +33,7 @@ const DeleteReportDialog = ({ reportId }: { reportId: string }) => {
     try {
       const [data, err] = await execute({
         reportId,
+        adminId,
       });
 
       if (err) {

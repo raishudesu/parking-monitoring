@@ -1,4 +1,4 @@
-import { createAuditLog } from "@/data-access/admin-log";
+import { createAdminLog } from "@/data-access/admin-log";
 import {
   createCollege,
   deleteCollegeById,
@@ -12,7 +12,7 @@ export const createCollegeUseCase = async (
 ) => {
   const college = await createCollege(collegeName);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "CREATE",
     table: "COLLEGE",
     adminId: auditAdminId,
@@ -35,7 +35,7 @@ export const updateCollegeByIdUseCase = async (
   const college = await updateCollegeById(collegeId, collegeName);
 
   if (college) {
-    await createAuditLog({
+    await createAdminLog({
       action: "UPDATE",
       table: "COLLEGE",
       adminId: auditAdminId,
@@ -54,7 +54,7 @@ export const deleteCollegeByIdUseCase = async (
   const college = await deleteCollegeById(collegeId);
 
   if (college) {
-    await createAuditLog({
+    await createAdminLog({
       action: "DELETE",
       table: "COLLEGE",
       adminId: auditAdminId,

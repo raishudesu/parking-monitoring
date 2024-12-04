@@ -16,6 +16,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -39,6 +40,7 @@ import { useServerAction } from "zsa-react";
 import { updateReportStatusAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
+import DeleteReportDialog from "@/app/gpo/dashboard/my-reports/delete-report-dialog";
 
 type ReportType =
   | "UNAUTHORIZED_PARKING"
@@ -264,6 +266,12 @@ export function DisplayReport({ report }: ReportCardProps) {
           </div>
         )}
       </CardContent>
+      <CardFooter>
+        <DeleteReportDialog
+          reportId={report.id}
+          adminId={session.data?.user.id as string}
+        />
+      </CardFooter>
     </Card>
   );
 }

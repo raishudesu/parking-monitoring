@@ -242,7 +242,9 @@ export const driverBehaviorReportSchema = z.object({
     "RECKLESS_DRIVING",
     "OTHER",
   ]),
-  otherDescription: z.string(),
+  otherDescription: z
+    .string()
+    .min(6, "Description must be at least 6 characters"),
   images: z.array(
     z.object({
       id: z.string().optional(),

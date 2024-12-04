@@ -1,4 +1,4 @@
-import { createAuditLog } from "@/data-access/admin-log";
+import { createAdminLog } from "@/data-access/admin-log";
 import {
   createParkingSpace,
   deleteParkingSpaceById,
@@ -27,7 +27,7 @@ export const createParkingSpaceUseCase = async (
 
   const parkingSpace = await createParkingSpace(parkingSpaceData);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "CREATE",
     table: "PARKINGSPACE",
     adminId: data.auditAdminId as string,
@@ -94,7 +94,7 @@ export const updateParkingSpaceByIdUseCase = async (
   );
 
   if (parkingSpace) {
-    await createAuditLog({
+    await createAdminLog({
       action: "UPDATE",
       table: "PARKINGSPACE",
       adminId: data.auditAdminId as string,
@@ -110,7 +110,7 @@ export const deleteParkingSpaceByIdUseCase = async (
 ) => {
   const parkingSpace = await deleteParkingSpaceById(parkingSpaceId);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "DELETE",
     table: "PARKINGSPACE",
     adminId: auditAdminId,

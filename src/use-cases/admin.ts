@@ -11,7 +11,7 @@ import { AdminLoginError } from "./errors";
 import { compare, hash } from "bcrypt";
 import { z } from "zod";
 import { adminAccountSchema, adminUpdateSchema } from "@/lib/zod";
-import { createAuditLog } from "@/data-access/admin-log";
+import { createAdminLog } from "@/data-access/admin-log";
 
 export const createAdminUseCase = async (
   data: z.infer<typeof adminAccountSchema>
@@ -32,7 +32,7 @@ export const createAdminUseCase = async (
 
   const admin = await createAdmin(newAdminData);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "CREATE",
     table: "ADMIN",
     adminId: data.id as string,
@@ -93,7 +93,7 @@ export const updateAdminPasswordUseCase = async (
 
   const { password: currPassword, ...filteredAdmin } = admin;
 
-  await createAuditLog({
+  await createAdminLog({
     action: "UPDATE",
     table: "ADMIN",
     adminId,
@@ -119,7 +119,7 @@ export const updateAdminByIdUseCase = async (
 
   const { password: currPassword, ...filteredAdmin } = admin;
 
-  await createAuditLog({
+  await createAdminLog({
     action: "UPDATE",
     table: "ADMIN",
     adminId: data.auditAdminId as string,
@@ -140,7 +140,7 @@ export const deleteAdminByIdUseCase = async (
 
   await deleteAdminById(adminId);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "DELETE",
     table: "ADMIN",
     adminId: auditAdminId,
