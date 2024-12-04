@@ -12,6 +12,7 @@ import {
   getGpoCount,
   reactivateGpoAccount,
   updateGpoAccount,
+  updateGpoCreditScore,
   updateGpoPassword,
 } from "../data-access/gpo-users";
 import { LoginError } from "./errors";
@@ -206,6 +207,22 @@ export const addCreditScoreToGpoUseCase = async (accountId: string) => {
   const { password: omittedPwd, ...filteredGpo } = updatedGpo;
 
   return filteredGpo;
+};
+
+export const updateGpoCreditScoreUseCase = async (
+  userId: string,
+  creditScore: number,
+  adminId: string
+) => {
+  const res = await updateGpoCreditScore(userId, creditScore);
+
+  await createAdminLog({
+    action: "UPDATE",
+    table: "ACCOUNT",
+    adminId,
+  });
+
+  return res;
 };
 
 export const getGpoCountUseCase = async () => {

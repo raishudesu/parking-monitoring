@@ -5,12 +5,14 @@ import {
   accountCreationSchema,
   gpoAccountSchema,
   gpoUpdateAccountSchema,
+  updateCreditScoreSchema,
 } from "@/lib/zod";
 import {
   createGpoAccountUseCase,
   deactivateGpoAccountUseCase,
   reactivateGpoAccountUseCase,
   updateGpoAccountUseCase,
+  updateGpoCreditScoreUseCase,
 } from "@/use-cases/gpo-users";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -76,6 +78,20 @@ export const reactivateGpoAccountAction = createServerAction()
     );
 
     if (res) revalidatePath("/admin/dashboard/accounts");
+
+    return res;
+  });
+
+export const updateCreditScoreAction = createServerAction()
+  .input(updateCreditScoreSchema)
+  .handler(async ({ input }) => {
+    const res = await updateGpoCreditScoreUseCase(
+      input.userId,
+      parseInt(input.creditScore),
+      input.adminId
+    );
+
+    revalidatePath("/admin/dashboard/accounts");
 
     return res;
   });

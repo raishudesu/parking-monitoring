@@ -269,3 +269,9 @@ export const downtimeLogSchema = z
     message: "End time must be after start time",
     path: ["endedAt"],
   });
+
+export const updateCreditScoreSchema = z.object({
+  userId: z.string(),
+  creditScore: z.string(),
+  adminId: z.string(),
+});

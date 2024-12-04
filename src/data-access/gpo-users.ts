@@ -170,6 +170,22 @@ export const addCreditScoreToGpo = async (
   return gpo;
 };
 
+export const updateGpoCreditScore = async (
+  userId: string,
+  creditScore: number
+) => {
+  await prisma.gPOAccount.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      creditScore,
+    },
+  });
+
+  return true;
+};
+
 export const getGpoCount = async () => {
   const count = await prisma.gPOAccount.count();
 

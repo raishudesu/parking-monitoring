@@ -80,6 +80,7 @@ const DeleteReportDialog = ({
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant={"destructive"} className="flex gap-2">
+          Delete
           <Trash2 size={18} />
         </Button>
       </AlertDialogTrigger>
