@@ -1,7 +1,7 @@
-import { getAuditLogs } from "@/data-access/admin-log";
+import { getAdminLogs } from "@/data-access/admin-log";
 
-export const getAuditLogsUseCase = async () => {
-  const logs = await getAuditLogs();
+export const getAdminLogsUseCase = async () => {
+  const logs = await getAdminLogs();
 
   return logs;
 };

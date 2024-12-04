@@ -2,6 +2,7 @@ import {
   BookUser,
   Building2,
   ChartColumnIncreasing,
+  CircleX,
   ClipboardPlus,
   Flag,
   History,
@@ -48,6 +49,11 @@ export const logsTab = [
     name: "Sessions",
     icon: <History />,
     link: "/admin/dashboard/sessions",
+  },
+  {
+    name: "Downtime Logs",
+    icon: <CircleX />,
+    link: "/admin/dashboard/downtime-logs",
   },
 ];
 

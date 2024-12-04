@@ -1,4 +1,4 @@
-import { createAuditLog } from "@/data-access/admin-log";
+import { createAdminLog } from "@/data-access/admin-log";
 import {
   createUserFeedback,
   deleteUserFeedback,
@@ -27,7 +27,7 @@ export const deleteUserFeedbackUseCase = async (
 ) => {
   const feedback = await deleteUserFeedback(feedbackId);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "DELETE",
     adminId: auditAdminId,
     table: "USERFEEDBACK",

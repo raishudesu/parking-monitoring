@@ -25,7 +25,7 @@ const ReportPage = async ({ params }: { params: Params }) => {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Not Available</AlertTitle>
           <AlertDescription>
-            This report is either not existing or not available.
+            This report is either deleted, non-existent or not available.
           </AlertDescription>
         </Alert>
       )}

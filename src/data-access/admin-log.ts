@@ -2,7 +2,7 @@ import prisma from "@/lib/db";
 import { auditLogSchema } from "@/lib/zod";
 import { z } from "zod";
 
-export const createAuditLog = async (data: z.infer<typeof auditLogSchema>) => {
+export const createAdminLog = async (data: z.infer<typeof auditLogSchema>) => {
   const log = await prisma.adminLog.create({
     data,
   });
@@ -10,7 +10,7 @@ export const createAuditLog = async (data: z.infer<typeof auditLogSchema>) => {
   return log;
 };
 
-export const getAuditLogs = async () => {
+export const getAdminLogs = async () => {
   const logs = await prisma.adminLog.findMany({
     include: {
       admin: {

@@ -1,4 +1,6 @@
+import { createAdminLog } from "@/data-access/admin-log";
 import {
+  deleteReportById,
   getAllBehaviorReports,
   getBehaviorReportById,
   getUserBehaviorReports,
@@ -41,6 +43,23 @@ export const updateReportStatusByIdUseCase = async (
   adminId?: string
 ) => {
   const report = await updateReportStatusById(reportId, status, adminId);
+
+  return report;
+};
+
+export const deleteReportByIdUseCase = async (
+  reportId: string,
+  adminId?: string
+) => {
+  const report = await deleteReportById(reportId);
+
+  if (adminId) {
+    await createAdminLog({
+      action: "DELETE",
+      table: "DRIVERBEHAVIORREPORT",
+      adminId: adminId as string,
+    });
+  }
 
   return report;
 };

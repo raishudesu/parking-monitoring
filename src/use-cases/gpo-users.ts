@@ -12,12 +12,13 @@ import {
   getGpoCount,
   reactivateGpoAccount,
   updateGpoAccount,
+  updateGpoCreditScore,
   updateGpoPassword,
 } from "../data-access/gpo-users";
 import { LoginError } from "./errors";
 import { z } from "zod";
 import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
-import { createAuditLog } from "@/data-access/admin-log";
+import { createAdminLog } from "@/data-access/admin-log";
 import { GPOAccount } from "@prisma/client";
 
 // USE CASE FOR GPO LOG IN
@@ -81,7 +82,7 @@ export const createGpoAccountUseCase = async (
   // FILTER OUT THE PASSWORD PROPERTY FROM THE RETURNED OBJECT
   const { password: newGpoPassword, ...filteredGpoAccount } = gpo;
 
-  await createAuditLog({
+  await createAdminLog({
     action: "CREATE",
     table: "ACCOUNT",
     adminId: auditAdminId,
@@ -104,7 +105,7 @@ export const updateGpoAccountUseCase = async (
   if (!gpo)
     throw Error(`Updating GPO Account with Account ID: ${accountId} failed.`);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "UPDATE",
     table: "ACCOUNT",
     adminId: auditAdminId,
@@ -126,7 +127,7 @@ export const deactivateGpoAccountUseCase = async (
 
   if (deactivatedGpo) {
     if (auditAdminId) {
-      await createAuditLog({
+      await createAdminLog({
         action: "DEACTIVATE",
         table: "ACCOUNT",
         adminId: auditAdminId,
@@ -149,7 +150,7 @@ export const reactivateGpoAccountUseCase = async (
   const reactivatedGpo = await reactivateGpoAccount(accountId);
 
   if (reactivatedGpo) {
-    await createAuditLog({
+    await createAdminLog({
       action: "REACTIVATE",
       table: "ACCOUNT",
       adminId: auditAdminId,
@@ -206,6 +207,22 @@ export const addCreditScoreToGpoUseCase = async (accountId: string) => {
   const { password: omittedPwd, ...filteredGpo } = updatedGpo;
 
   return filteredGpo;
+};
+
+export const updateGpoCreditScoreUseCase = async (
+  userId: string,
+  creditScore: number,
+  adminId: string
+) => {
+  const res = await updateGpoCreditScore(userId, creditScore);
+
+  await createAdminLog({
+    action: "UPDATE",
+    table: "ACCOUNT",
+    adminId,
+  });
+
+  return res;
 };
 
 export const getGpoCountUseCase = async () => {

@@ -242,7 +242,9 @@ export const driverBehaviorReportSchema = z.object({
     "RECKLESS_DRIVING",
     "OTHER",
   ]),
-  otherDescription: z.string(),
+  otherDescription: z
+    .string()
+    .min(6, "Description must be at least 6 characters"),
   images: z.array(
     z.object({
       id: z.string().optional(),
@@ -251,4 +253,25 @@ export const driverBehaviorReportSchema = z.object({
       path: z.string(),
     })
   ),
+});
+
+export const downtimeLogSchema = z
+  .object({
+    startedAt: z.string().refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    }),
+    endedAt: z.string().refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    }),
+    adminId: z.string().min(1, "Admin ID is required"),
+  })
+  .refine((data) => new Date(data.startedAt) < new Date(data.endedAt), {
+    message: "End time must be after start time",
+    path: ["endedAt"],
+  });
+
+export const updateCreditScoreSchema = z.object({
+  userId: z.string(),
+  creditScore: z.string(),
+  adminId: z.string(),
 });

@@ -1,4 +1,4 @@
-import { createAuditLog } from "@/data-access/admin-log";
+import { createAdminLog } from "@/data-access/admin-log";
 import { getOngoingGpoSession } from "@/data-access/gpo-sessions";
 import {
   createVisitorCard,
@@ -17,7 +17,7 @@ export const createVisitorCardUseCase = async (
 ) => {
   const card = await createVisitorCard(Number(cardNumber));
 
-  await createAuditLog({
+  await createAdminLog({
     action: "CREATE",
     table: "VISITORPASSCARD",
     adminId: auditAdminId,
@@ -39,7 +39,7 @@ export const updateVisitorCardUseCase = async (
 ) => {
   const card = await updateVisitorCard(cardId, Number(cardNumber));
 
-  await createAuditLog({
+  await createAdminLog({
     action: "UPDATE",
     table: "VISITORPASSCARD",
     adminId: auditAdminId,
@@ -54,7 +54,7 @@ export const deleteVisitorCardUseCase = async (
 ) => {
   const res = await deleteVisitorCard(cardId);
 
-  await createAuditLog({
+  await createAdminLog({
     action: "DELETE",
     table: "VISITORPASSCARD",
     adminId: auditAdminId,

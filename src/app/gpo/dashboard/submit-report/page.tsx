@@ -13,6 +13,12 @@ const SubmitReportPage = async () => {
         <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
           Submit Report
         </h1>
+        <small className="text-sm text-muted-foreground max-w-2xl">
+          To effectively address the issue, please include specific details such
+          as the time and location of the incident. If available, attach images
+          that provide evidence, such as driver details (e.g., Gate Pass Number
+          or vehicle information).
+        </small>
       </div>
       <ScrollArea>
         <ReportForm parkingSpaceOptions={parkingSpaceOptions} />

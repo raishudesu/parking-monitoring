@@ -165,6 +165,7 @@ model Admin {
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
   resolvedReports      DriverBehaviorReport[]
+  downtimeLogs         DowntimeLog[]
 }
 
 model AdminLog {
@@ -247,7 +248,16 @@ model DriverBehaviorReportImages {
   id         String               @id @default(cuid())
   url        String
   path       String
-  report     DriverBehaviorReport @relation(fields: [reportId], references: [id])
+  report     DriverBehaviorReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
   reportId   String
   uploadedAt DateTime             @default(now())
+}
+
+model DowntimeLog {
+  id                  String   @id @default(cuid())
+  startedAt           DateTime
+  endedAt             DateTime
+  areViolationsWaived Boolean  @default(false)
+  addedBy             Admin    @relation(fields: [adminId], references: [id])
+  adminId             String
 }

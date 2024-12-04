@@ -1,4 +1,5 @@
 import prisma from "@/lib/db";
+import { getDowntimeLogById } from "./downtime-log";
 
 // LIMITED TO ONE PARKING SESSION
 // GPO SESSION CREATION
@@ -261,4 +262,38 @@ export const getEndingSessions = async (minutesBeforeEnd = 30) => {
   });
 
   return endingSessions;
+};
+
+export const getAffectedSessionsByDowntime = async (downtimeLogId: string) => {
+  const downtimeLog = await getDowntimeLogById(downtimeLogId);
+
+  if (!downtimeLog) {
+    throw new Error("Downtime log not found");
+  }
+
+  // Find sessions that should have ended during the downtime but were ended after the downtime
+  const affectedSessions = await prisma.gPOSession.findMany({
+    where: {
+      shouldEndAt: {
+        gte: downtimeLog.startedAt,
+        lte: downtimeLog.endedAt,
+      },
+      endTime: {
+        gt: downtimeLog.endedAt, // Session was ended after the downtime
+      },
+    },
+    include: {
+      parkingSpace: true,
+      accountParked: {
+        omit: {
+          password: true,
+        },
+      },
+    },
+    orderBy: {
+      startTime: "desc",
+    },
+  });
+
+  return affectedSessions;
 };

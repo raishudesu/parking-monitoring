@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -232,7 +233,7 @@ const ReportForm = ({
           name="otherDescription"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>If other, please describe below:</FormLabel>
+              <FormLabel>Kindly describe the issue:</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
@@ -258,7 +259,7 @@ const ReportForm = ({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Reports" />
+                    <SelectValue placeholder="Select Parking Space" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -305,9 +306,6 @@ const ReportForm = ({
                     </div>
                   </FormControl>
 
-                  {/* <FormDescription>
-                    Upload an image for tier {index + 1} reward.
-                  </FormDescription> */}
                   <FormMessage />
                   <div>
                     {field.value && (

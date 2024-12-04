@@ -1,6 +1,6 @@
-import { getAuditLogsUseCase } from "@/use-cases/admin-log";
 import { AdminLogsTable, AdminLogsData } from "./admin-logs-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { getAdminLogsUseCase } from "@/use-cases/admin-log";
 import { AlertTriangle } from "lucide-react";
 
 const AuditLogsPage = async () => {
@@ -8,7 +8,7 @@ const AuditLogsPage = async () => {
   let error: string | null = null;
 
   try {
-    const fetchedAuditLogs = await getAuditLogsUseCase();
+    const fetchedAuditLogs = await getAdminLogsUseCase();
 
     logs = fetchedAuditLogs as AdminLogsData[];
   } catch (err) {
