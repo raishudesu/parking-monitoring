@@ -1,4 +1,5 @@
 import {
+  deleteReportById,
   getAllBehaviorReports,
   getBehaviorReportById,
   getUserBehaviorReports,
@@ -41,6 +42,12 @@ export const updateReportStatusByIdUseCase = async (
   adminId?: string
 ) => {
   const report = await updateReportStatusById(reportId, status, adminId);
+
+  return report;
+};
+
+export const deleteReportByIdUseCase = async (reportId: string) => {
+  const report = await deleteReportById(reportId);
 
   return report;
 };

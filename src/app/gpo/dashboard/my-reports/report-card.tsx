@@ -1,19 +1,37 @@
 "use client";
 
 import { format } from "date-fns";
-import { AlertCircle, CheckCircle2, CircleX, Mail, User } from "lucide-react";
+import {
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle2,
+  CircleX,
+  Mail,
+  User,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { ReportStatus } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import DeleteReportDialog from "./delete-report-dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Image from "next/image";
 
 type ReportType =
   | "UNAUTHORIZED_PARKING"
@@ -57,6 +75,13 @@ interface ReportCard {
   status: ReportStatus;
   reportType: ReportType;
   createdAt: Date;
+  images: {
+    id: string;
+    url: string;
+    path: string;
+    reportId: string;
+    uploadedAt: Date;
+  }[];
 }
 
 const reportTypeLabels: Record<ReportType, string> = {
@@ -96,7 +121,7 @@ export function ReportCard({ report }: ReportCardProps) {
   const status = statusConfig[report.status];
 
   return (
-    <Card className="w-full cursor-pointer hover:border-primary">
+    <Card className="w-full hover:border-primary">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
@@ -129,7 +154,33 @@ export function ReportCard({ report }: ReportCardProps) {
             </div>
           )}
         </div>
+        {report.images.length > 0 && (
+          <Carousel className="w-full max-w-xs mx-auto">
+            <CarouselContent>
+              {report.images.map((image) => (
+                <CarouselItem key={image.id}>
+                  <div className="relative aspect-square">
+                    <Image
+                      src={image.url}
+                      alt={`Report image from ${format(
+                        image.uploadedAt,
+                        "PP"
+                      )}`}
+                      fill
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        )}
       </CardContent>
+      <CardFooter>
+        <DeleteReportDialog reportId={report.id} />
+      </CardFooter>
     </Card>
   );
 }
@@ -146,10 +197,20 @@ export function ReportList({ reports }: { reports: ReportCard[] }) {
       >
         Submit a Report
       </Button>
-      <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {reports.map((report) => (
-          <ReportCard key={report.id} report={report} />
-        ))}
+      <div className="mt-6 grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {reports.length === 0 ? (
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>No reports available</AlertTitle>
+            <AlertDescription>
+              You do not have any reports submitted currently.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          reports.map((report) => (
+            <ReportCard key={report.id} report={report} />
+          ))
+        )}
       </div>
     </>
   );

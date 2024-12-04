@@ -58,6 +58,7 @@ export const getUserBehaviorReports = async (userId: string) => {
           email: true,
         },
       },
+      images: true,
     },
   });
 
@@ -107,6 +108,16 @@ export const updateReportStatusById = async (
       status,
       resolvedByAdminId: status === "RESOLVED" ? adminId : null,
       resolvedAt: status === "RESOLVED" ? new Date() : null,
+    },
+  });
+
+  return report;
+};
+
+export const deleteReportById = async (reportId: string) => {
+  const report = await prisma.driverBehaviorReport.delete({
+    where: {
+      id: reportId,
     },
   });
 

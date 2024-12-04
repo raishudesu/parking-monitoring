@@ -15,7 +15,7 @@ const ReportsPage = async () => {
           Report Submissions
         </h1>
       </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {reports.length === 0 && (
           <Alert>
             <AlertCircle className="h-4 w-4" />

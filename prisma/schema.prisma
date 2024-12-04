@@ -248,7 +248,7 @@ model DriverBehaviorReportImages {
   id         String               @id @default(cuid())
   url        String
   path       String
-  report     DriverBehaviorReport @relation(fields: [reportId], references: [id])
+  report     DriverBehaviorReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
   reportId   String
   uploadedAt DateTime             @default(now())
 }
