@@ -20,9 +20,7 @@ const ReportsPage = async () => {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Not Available</AlertTitle>
-            <AlertDescription>
-              This report is either not existing or not available.
-            </AlertDescription>
+            <AlertDescription>There are no reports currently.</AlertDescription>
           </Alert>
         )}
         <ReportList reports={reports} />

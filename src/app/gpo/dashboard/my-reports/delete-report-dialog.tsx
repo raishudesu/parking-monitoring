@@ -24,7 +24,7 @@ const DeleteReportDialog = ({
   adminId,
 }: {
   reportId: string;
-  adminId: string;
+  adminId?: string;
 }) => {
   const { isPending, execute } = useServerAction(deleteReportByIdAction);
   const [open, setOpen] = useState(false);

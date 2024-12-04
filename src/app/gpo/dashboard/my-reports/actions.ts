@@ -13,7 +13,7 @@ export const deleteReportByIdAction = createServerAction()
     })
   )
   .handler(async ({ input }) => {
-    const report = await deleteReportByIdUseCase(input.reportId);
+    const report = await deleteReportByIdUseCase(input.reportId, input.adminId);
 
     revalidatePath("/gpo/dashboard/my-reports");
 
