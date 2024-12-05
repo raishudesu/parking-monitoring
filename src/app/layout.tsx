@@ -35,6 +35,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <meta property="og:image" content="/og-image.png"></meta>
       <body className={poppins.className}>
         <ThemeProvider
           attribute="class"
