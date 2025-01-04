@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
-import L from "leaflet";
+import L, { LatLngExpression } from "leaflet";
 import "leaflet-routing-machine";
 
 const RoutingComponent = ({
@@ -15,6 +15,9 @@ const RoutingComponent = ({
   useEffect(() => {
     if (!map) return;
 
+    const waypoints: LatLngExpression[] = [start, end];
+    const waypointsWithLatLng = waypoints.map((point) => L.latLng(point));
+
     const routingControl = L.Routing.control({
       waypoints: [L.latLng(start[0], start[1]), L.latLng(end[0], end[1])],
       lineOptions: {
@@ -22,10 +25,20 @@ const RoutingComponent = ({
         extendToWaypoints: false,
         missingRouteTolerance: 0,
       },
-      routeWhileDragging: true,
 
-      //   geocoder: L.Control.Geocoder.nominatim(),
-    }).addTo(map);
+      routeWhileDragging: true,
+      // createMarker: function () {
+      //   return null;
+      // },
+      addWaypoints: false,
+      fitSelectedRoutes: true,
+      showAlternatives: true,
+      // show: false,
+      plan: L.routing.plan(waypointsWithLatLng, {
+        createMarker: () => false,
+      }),
+      // geocoder: L.Control.Geocoder.nominatim(),
+    } as any).addTo(map);
 
     return () => {
       map.removeControl(routingControl);

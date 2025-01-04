@@ -371,14 +371,14 @@ const DijkstraMap = ({
 
   return (
     <div className="relative w-full h-screen">
-      <PanellumViewerDialog
+      {/* <PanellumViewerDialog
         parkingName={selectedParkingSpaceData?.parkingName || ""}
         images={selectedParkingSpaceData?.images}
         open={selectedParkingSpaceData !== null}
         setOpen={(value) =>
           setSelectedParkingSpaceData(value ? selectedParkingSpaceData : null)
         }
-      />
+      /> */}
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}

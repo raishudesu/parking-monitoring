@@ -28,6 +28,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import Image from "next/image";
+import ReactPannellum from "react-pannellum";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface LatLng {
   lat: number;
@@ -165,6 +168,24 @@ const LeafletMap = ({
                     >
                       Reserved: {parkingSpace.currReservedCapacity}/
                       {parkingSpace.reservedCapacity}
+                    </div>
+                    {/* <AspectRatio ratio={16 / 9} className="bg-muted">
+                      <ReactPannellum
+                        // key={currentImageIndex}
+                        id="1"
+                        sceneId="firstScene"
+                        imageSource={parkingSpace.images[0].url}
+                        config={{ autoRotate: -2 }}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    </AspectRatio> */}
+                    <div className="w-full mt-6">
+                      <PanellumViewerDialog
+                        parkingName={parkingSpace.name}
+                        images={parkingSpace.images}
+                        // open={drawerOpen}
+                        // setOpen={setDrawerOpen}
+                      />
                     </div>
                   </div>
                 </div>
