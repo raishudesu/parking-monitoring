@@ -1,12 +1,15 @@
 import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
 import { ParkingSpaceTable } from "./parking-space-table";
-import { ParkingSpace } from "@prisma/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import DijkstraMap, {
   ParkingSpaceWithImages,
 } from "@/app/gpo/dashboard/map/dijkstra-map";
-import PanoramaView from "./360-viewer";
+import dynamic from "next/dynamic";
+
+const LeafletMap = dynamic(() => import("../leaflet/leaflet-map"), {
+  ssr: false,
+});
 
 const ParkingSpacesPage = async () => {
   let parkingSpaces: ParkingSpaceWithImages[] | null = null;
@@ -31,7 +34,6 @@ const ParkingSpacesPage = async () => {
           Parking Spaces
         </h1>
       </div>
-      {/* <PanoramaView /> */}
       {error ? (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
@@ -44,7 +46,8 @@ const ParkingSpacesPage = async () => {
           <h2 className="py-6 text-muted-foreground scroll-m-20 text-2xl tracking-tight lg:text-3xl">
             Parking Space Visualization
           </h2>
-          <DijkstraMap parkingSpaces={parkingSpaces} />
+          {/* <DijkstraMap parkingSpaces={parkingSpaces} /> */}
+          <LeafletMap parkingSpaces={parkingSpaces} />
         </>
       ) : (
         <Alert>

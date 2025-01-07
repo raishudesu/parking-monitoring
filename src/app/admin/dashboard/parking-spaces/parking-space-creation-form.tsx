@@ -35,9 +35,15 @@ import { GitPullRequestClosed, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { deleteImage, getPublicUrl, uploadImage } from "@/hooks/supabase";
+// import PolygonCreator from "./polygon-creator";
+import dynamic from "next/dynamic";
+
+const PolygonCreator = dynamic(() => import("./polygon-creator"), {
+  ssr: false,
+});
 
 const ParkingSpaceCreationForm = () => {
-  const { isLoaded, loadError } = useGoogleMaps();
+  // const { isLoaded, loadError } = useGoogleMaps();
   const [uploadingFields, setUploadingFields] = useState<
     Record<string, boolean>
   >({});
@@ -286,12 +292,12 @@ const ParkingSpaceCreationForm = () => {
         /> */}
         <FormItem>
           <FormLabel>Polygon & Location</FormLabel>
-          <MapPolygonCreator
+          <PolygonCreator
             onLocationPicked={handleLocationPicked}
             onPolygonComplete={(polygonString) => {
               form.setValue("polygon", polygonString);
             }}
-            isLoaded={isLoaded}
+            // isLoaded={isLoaded}
           />
         </FormItem>
         <FormField

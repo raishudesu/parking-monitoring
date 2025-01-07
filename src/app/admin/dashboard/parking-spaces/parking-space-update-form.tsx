@@ -40,6 +40,11 @@ import {
   getPublicUrl,
   uploadImage,
 } from "@/hooks/supabase";
+import dynamic from "next/dynamic";
+
+const PolygonCreator = dynamic(() => import("./polygon-creator"), {
+  ssr: false,
+});
 
 const ParkingSpaceUpdateForm = ({
   parkingSpaceId,
@@ -290,12 +295,11 @@ const ParkingSpaceUpdateForm = ({
         /> */}
         <FormItem>
           <FormLabel>Polygon & Location</FormLabel>
-          <MapPolygonCreator
+          <PolygonCreator
             onLocationPicked={handleLocationPicked}
             onPolygonComplete={(polygonString) => {
               form.setValue("polygon", polygonString);
             }}
-            isLoaded={isLoaded}
           />
         </FormItem>
         <FormField
