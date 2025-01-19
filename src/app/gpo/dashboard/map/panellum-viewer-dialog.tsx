@@ -24,24 +24,24 @@ const PanellumViewerDialog = ({
   parkingName,
   images,
 }: // open,
-// setOpen,
-{
-  parkingName: string;
-  images: ParkingSpaceImage[] | undefined;
-  // open: boolean;
-  // setOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
+  // setOpen,
+  {
+    parkingName: string;
+    images: ParkingSpaceImage[] | undefined;
+    // open: boolean;
+    // setOpen: Dispatch<SetStateAction<boolean>>;
+  }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleNextImage = () => {
     setCurrentImageIndex((prevIndex: number) =>
-      prevIndex === (images?.length ?? 0) - 1 ? 0 : prevIndex + 1
+      prevIndex === (images?.length ?? 0) - 1 ? 0 : prevIndex + 1,
     );
   };
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prevIndex: number) =>
-      prevIndex === 0 ? (images?.length ?? 0) - 1 : prevIndex - 1
+      prevIndex === 0 ? (images?.length ?? 0) - 1 : prevIndex - 1,
     );
   };
 
@@ -49,7 +49,9 @@ const PanellumViewerDialog = ({
     <Dialog>
       <DialogTrigger asChild>
         {/* <Button className="hidden">View Image</Button> */}
-        <Button className="w-full">View</Button>
+        <Button variant={"secondary"} className="w-full">
+          View
+        </Button>
       </DialogTrigger>
       <DialogContent className="py-6 md:min-w-[64rem]">
         <DialogHeader>

@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { createClient } from "@/utils/supabase/client";
-import { ParkingSpace } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PannellumProps, ParkingSpaceWithImages } from "./map/dijkstra-map";
@@ -13,11 +12,9 @@ const supabase = createClient();
 
 const AvailableParkingSpaces = ({
   parkingSpaces,
-}: // unavailableParkingSpaces,
-  {
-    parkingSpaces: ParkingSpaceWithImages[];
-    // unavailableParkingSpaces: ParkingSpace[];
-  }) => {
+}: {
+  parkingSpaces: ParkingSpaceWithImages[];
+}) => {
   const [selectedParkingSpaceData, setSelectedParkingSpaceData] =
     useState<PannellumProps | null>(null);
   const router = useRouter();
@@ -41,10 +38,6 @@ const AvailableParkingSpaces = ({
 
   return (
     <>
-      <PanellumViewerDialog
-        parkingName={selectedParkingSpaceData?.parkingName || ""}
-        images={selectedParkingSpaceData?.images}
-      />
       <div className="w-full h-full gap-4">
         <small className="text-primary font-bold">Parking Spaces</small>
         <Tabs defaultValue="overview" className="w-full space-y-4">
@@ -113,6 +106,12 @@ const AvailableParkingSpaces = ({
                         <p className="mt-6 text-xs text-muted-foreground">
                           {description}
                         </p>
+                        <div className="mt-4">
+                          <PanellumViewerDialog
+                            parkingName={name}
+                            images={images}
+                          />
+                        </div>
                       </CardContent>
                     </Card>
                   ),

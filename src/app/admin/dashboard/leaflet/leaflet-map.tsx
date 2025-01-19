@@ -7,16 +7,14 @@ import {
   Popup,
   Tooltip,
   Polygon,
-  useMapEvent,
-  useMap,
 } from "react-leaflet";
-import { ChevronUp, Crosshair, MapPin } from "lucide-react";
+import { ChevronUp, MapPin } from "lucide-react";
 import { parkingGreen, userPin } from "./icons";
-import { PannellumProps, ParkingSpaceWithImages } from "@/types/map";
+import { ParkingSpaceWithImages } from "@/types/map";
 import { calculatePolygonCenter, parsePolygonCoordinates } from "./utils";
 import "leaflet/dist/leaflet.css";
 import PanellumViewerDialog from "@/app/gpo/dashboard/map/panellum-viewer-dialog";
-import { useState, useEffect, useCallback, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import RoutingComponent from "./routing-component";
 
@@ -30,10 +28,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import Image from "next/image";
-import ReactPannellum from "react-pannellum";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import PanToLocationButton from "./PanToUserLocation";
+import PanToLocationButton from "./pan-to-user-location";
 
 export interface LatLng {
   lat: number;
@@ -98,7 +93,7 @@ const LeafletMap = ({
         center={[PSU_GATE[0], PSU_GATE[1]]}
         zoom={18}
         scrollWheelZoom={true}
-        className="relative w-full h-[80vh] z-10 rounded-xl"
+        className="relative w-full min-h-screen z-10 rounded-xl"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

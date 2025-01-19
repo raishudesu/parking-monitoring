@@ -1,6 +1,7 @@
 import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
 import DijkstraMap from "./dijkstra-map";
 import SideSheetMap from "./side-sheet-map";
+import LeafletMap from "@/app/admin/dashboard/leaflet/leaflet-map";
 
 const MapPage = async () => {
   const parkingSpaces = await getAllParkingSpacesUseCase();
@@ -16,7 +17,7 @@ const MapPage = async () => {
         </div>
       </div>
 
-      <DijkstraMap parkingSpaces={parkingSpaces} />
+      <LeafletMap parkingSpaces={parkingSpaces} />
     </div>
   );
 };
