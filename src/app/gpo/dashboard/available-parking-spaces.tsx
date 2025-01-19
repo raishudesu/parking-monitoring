@@ -14,10 +14,10 @@ const supabase = createClient();
 const AvailableParkingSpaces = ({
   parkingSpaces,
 }: // unavailableParkingSpaces,
-{
-  parkingSpaces: ParkingSpaceWithImages[];
-  // unavailableParkingSpaces: ParkingSpace[];
-}) => {
+  {
+    parkingSpaces: ParkingSpaceWithImages[];
+    // unavailableParkingSpaces: ParkingSpace[];
+  }) => {
   const [selectedParkingSpaceData, setSelectedParkingSpaceData] =
     useState<PannellumProps | null>(null);
   const router = useRouter();
@@ -30,7 +30,7 @@ const AvailableParkingSpaces = ({
         { event: "*", schema: "public", table: "ParkingSpace" },
         () => {
           router.refresh();
-        }
+        },
       )
       .subscribe();
 
@@ -44,10 +44,6 @@ const AvailableParkingSpaces = ({
       <PanellumViewerDialog
         parkingName={selectedParkingSpaceData?.parkingName || ""}
         images={selectedParkingSpaceData?.images}
-        open={selectedParkingSpaceData !== null}
-        setOpen={(value) =>
-          setSelectedParkingSpaceData(value ? selectedParkingSpaceData : null)
-        }
       />
       <div className="w-full h-full gap-4">
         <small className="text-primary font-bold">Parking Spaces</small>
@@ -100,18 +96,16 @@ const AvailableParkingSpaces = ({
                       </CardHeader>
                       <CardContent>
                         <div
-                          className={`mt-3 text-sm font-bold ${
-                            currCapacity === maxCapacity
+                          className={`mt-3 text-sm font-bold ${currCapacity === maxCapacity
                               ? "text-destructive"
                               : "text-green-500"
-                          }`}
+                            }`}
                         >
                           Slots: {currCapacity}/{maxCapacity}
                         </div>
                         <div
-                          className={`mt-3 text-sm text-green-500 font-bold ${
-                            currReservedCapacity === reservedCapacity
-                          }  ? "text-destructive"
+                          className={`mt-3 text-sm text-green-500 font-bold ${currReservedCapacity === reservedCapacity
+                            }  ? "text-destructive"
                               : "text-green-500"`}
                         >
                           Reserved: {currReservedCapacity}/{reservedCapacity}
@@ -121,7 +115,7 @@ const AvailableParkingSpaces = ({
                         </p>
                       </CardContent>
                     </Card>
-                  )
+                  ),
                 )
               )}
             </div>

@@ -7,6 +7,8 @@ import {
   Popup,
   Tooltip,
   Polygon,
+  useMapEvent,
+  useMap,
 } from "react-leaflet";
 import { ChevronUp, Crosshair, MapPin } from "lucide-react";
 import { parkingGreen, userPin } from "./icons";
@@ -31,8 +33,9 @@ import {
 import Image from "next/image";
 import ReactPannellum from "react-pannellum";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import PanToLocationButton from "./PanToUserLocation";
 
-interface LatLng {
+export interface LatLng {
   lat: number;
   lng: number;
 }
@@ -66,7 +69,7 @@ const LeafletMap = ({
           enableHighAccuracy: true,
           timeout: 5000,
           maximumAge: 0,
-        }
+        },
       );
 
       return () => navigator.geolocation.clearWatch(watchId);
@@ -102,13 +105,11 @@ const LeafletMap = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           className="z-10"
         />
-        {/* {userLocation && <Marker position={userLocation} icon={userPin} />} */}
-        {userLocation && (
-          <Marker position={[PSU_GATE[0], PSU_GATE[1]]} icon={userPin} />
-        )}
+        {userLocation && <Marker position={userLocation} icon={userPin} />}
         {selectedParkingSpace && (
           <RoutingComponent
-            start={[PSU_GATE[0], PSU_GATE[1]]}
+            //start={[PSU_GATE[0], PSU_GATE[1]]}
+            start={[userLocation?.lat as number, userLocation?.lng as number]}
             end={[
               selectedParkingSpace?.lat || 0,
               selectedParkingSpace?.lng || 0,
@@ -122,10 +123,10 @@ const LeafletMap = ({
               key={parkingSpace.id}
               position={[
                 calculatePolygonCenter(
-                  parsePolygonCoordinates(parkingSpace.polygon as string)
+                  parsePolygonCoordinates(parkingSpace.polygon as string),
                 ).lat,
                 calculatePolygonCenter(
-                  parsePolygonCoordinates(parkingSpace.polygon as string)
+                  parsePolygonCoordinates(parkingSpace.polygon as string),
                 ).lng,
               ]}
               icon={parkingGreen}
@@ -149,22 +150,20 @@ const LeafletMap = ({
                   </div>
                   <div className="flex flex-col font-bold">
                     <div
-                      className={`flex flex-row gap-2 ${
-                        parkingSpace.currCapacity === parkingSpace.maxCapacity
+                      className={`flex flex-row gap-2 ${parkingSpace.currCapacity === parkingSpace.maxCapacity
                           ? "text-red-500"
                           : "text-green-500"
-                      }`}
+                        }`}
                     >
                       Slots: {parkingSpace.currCapacity}/
                       {parkingSpace.maxCapacity}
                     </div>
                     <div
-                      className={`flex flex-row gap-2 ${
-                        parkingSpace.currReservedCapacity ===
-                        parkingSpace.reservedCapacity
+                      className={`flex flex-row gap-2 ${parkingSpace.currReservedCapacity ===
+                          parkingSpace.reservedCapacity
                           ? "text-red-500"
                           : "text-green-500"
-                      }`}
+                        }`}
                     >
                       Reserved: {parkingSpace.currReservedCapacity}/
                       {parkingSpace.reservedCapacity}
@@ -183,8 +182,8 @@ const LeafletMap = ({
                       <PanellumViewerDialog
                         parkingName={parkingSpace.name}
                         images={parkingSpace.images}
-                        // open={drawerOpen}
-                        // setOpen={setDrawerOpen}
+                      // open={drawerOpen}
+                      // setOpen={setDrawerOpen}
                       />
                     </div>
                   </div>
@@ -193,7 +192,7 @@ const LeafletMap = ({
             </Marker>
             <Polygon
               positions={parsePolygonCoordinates(
-                parkingSpace.polygon as string
+                parkingSpace.polygon as string,
               )}
               color={
                 parkingSpace.currCapacity === parkingSpace.maxCapacity
@@ -203,20 +202,15 @@ const LeafletMap = ({
             />
           </Fragment>
         ))}
+        <PanToLocationButton userLocation={userLocation} />
       </MapContainer>
-      <Button
-        size="icon"
-        className="z-20 absolute bottom-20 right-6 rounded-full"
-        // onClick={handleCenterOnUser}
-      >
-        <Crosshair />
-      </Button>
+
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
         <DrawerTrigger asChild>
           <Button
             size="lg"
             className="z-20 absolute bottom-20 left-1/2 transform -translate-x-1/2 rounded-full"
-            // className="rounded-full"
+          // className="rounded-full"
           >
             <ChevronUp />
           </Button>
@@ -246,23 +240,22 @@ const LeafletMap = ({
                   }) => (
                     <div
                       key={id}
-                      className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${
-                        isSelected(
-                          (latitude = calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
-                          ).lat.toString()),
-                          (longitude = calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
-                          ).lng.toString())
-                        )
+                      className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${isSelected(
+                        (latitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string),
+                        ).lat.toString()),
+                        (longitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string),
+                        ).lng.toString()),
+                      )
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900 dark:border-blue-700"
                           : ""
-                      }`}
+                        }`}
                       onClick={() =>
                         handleParkingSpaceClick(
                           calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
-                          )
+                            parsePolygonCoordinates(polygon as string),
+                          ),
                         )
                       }
                     >
@@ -274,25 +267,23 @@ const LeafletMap = ({
                       </div>
                       <div className="flex justify-between">
                         <small
-                          className={`mt-3 text-sm ${
-                            currCapacity === maxCapacity
+                          className={`mt-3 text-sm ${currCapacity === maxCapacity
                               ? "text-destructive"
                               : "text-green-500"
-                          }`}
+                            }`}
                         >
                           Slots: {currCapacity}/{maxCapacity}
                         </small>
                         <small
-                          className={`mt-3 text-sm text-green-500 ${
-                            currReservedCapacity === reservedCapacity
-                          }  ? "text-destructive"
+                          className={`mt-3 text-sm text-green-500 ${currReservedCapacity === reservedCapacity
+                            }  ? "text-destructive"
                               : "text-green-500"`}
                         >
                           Reserved: {currReservedCapacity}/{reservedCapacity}
                         </small>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
 
