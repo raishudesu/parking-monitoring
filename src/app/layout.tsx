@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/providers/session-provider";
 import { NotificationProvider } from "@/providers/notification-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { GoogleMapsProvider } from "@/providers/google-maps-provider";
 import Pwa from "@/components/pwa";
 
 // const inter = Inter({ subsets: ["latin"] });

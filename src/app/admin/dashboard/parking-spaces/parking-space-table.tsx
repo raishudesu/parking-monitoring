@@ -42,8 +42,8 @@ import ParkingSpaceCreationDialog from "./parking-space-creation-dialog";
 import DeleteParkingSpaceDialog from "./delete-parking-space-dialog";
 import UpdateParkingSpaceDialog from "./parking-space-update-dialog";
 import ShowQrDialog from "./show-qr-dialog";
-import { calculatePolygonArea, parseDate } from "@/lib/utils";
-import { ParkingSpaceWithImages } from "@/app/gpo/dashboard/map/dijkstra-map";
+import { calculatePolygonArea } from "@/lib/utils";
+import { ParkingSpaceWithImages } from "@/types/map";
 
 const emailFilterFn: FilterFn<any> = (
   row: Row<any>,
@@ -139,9 +139,8 @@ export const columns: ColumnDef<ParkingSpaceWithImages>[] = [
     accessorKey: "isActive",
     header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{`${
-        row.getValue("isActive") === true ? "ACTIVE" : "INACTIVE"
-      }`}</div>
+      <div className="capitalize">{`${row.getValue("isActive") === true ? "ACTIVE" : "INACTIVE"
+        }`}</div>
     ),
   },
   {
@@ -263,7 +262,7 @@ export function ParkingSpaceTable({
                       : spaceType
                   )
                 }
-                // Remove the 'checked' prop
+              // Remove the 'checked' prop
               >
                 {spaceType}
               </DropdownMenuRadioItem>
@@ -318,9 +317,9 @@ export function ParkingSpaceTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}

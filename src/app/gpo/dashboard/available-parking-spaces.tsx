@@ -5,8 +5,8 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PannellumProps, ParkingSpaceWithImages } from "./map/dijkstra-map";
 import PanellumViewerDialog from "./map/panellum-viewer-dialog";
+import { PannellumProps, ParkingSpaceWithImages } from "@/types/map";
 
 const supabase = createClient();
 
@@ -90,8 +90,8 @@ const AvailableParkingSpaces = ({
                       <CardContent>
                         <div
                           className={`mt-3 text-sm font-bold ${currCapacity === maxCapacity
-                              ? "text-destructive"
-                              : "text-green-500"
+                            ? "text-destructive"
+                            : "text-green-500"
                             }`}
                         >
                           Slots: {currCapacity}/{maxCapacity}

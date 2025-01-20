@@ -28,9 +28,6 @@ import { updateParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useSession } from "next-auth/react";
-import MapPicker from "./map-picker";
-import MapPolygonCreator from "./map-polygon-creator";
-import { useGoogleMaps } from "@/providers/google-maps-provider";
 import { Loader2, X } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
@@ -55,7 +52,6 @@ const ParkingSpaceUpdateForm = ({
   data: z.infer<typeof parkingSpaceFormSchema>;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { isLoaded, loadError } = useGoogleMaps();
   const [uploadingFields, setUploadingFields] = useState<
     Record<string, boolean>
   >({});

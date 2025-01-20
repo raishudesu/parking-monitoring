@@ -28,10 +28,7 @@ import { ParkingSpace } from "@prisma/client";
 import { LoaderCircle } from "lucide-react";
 import { TIMER_STORAGE_KEY } from "../../end-session-btn";
 import { useState } from "react";
-import {
-  calculatePolygonCenter,
-  parsePolygonCoordinates,
-} from "../../map/dijkstra-map";
+import { calculatePolygonCenter, parsePolygonCoordinates } from "@/utils/leaflet-map-utils";
 
 const durationFormSchema = z.object({
   duration: z.string(),
@@ -79,8 +76,7 @@ const DurationForm = ({
 
             // Calculate distance between user and parking space
             const userLocation = { lat: latitude, lng: longitude };
-            const parkingLocation = calculatePolygonCenter(
-              parsePolygonCoordinates(parkingSpace?.polygon as string)
+            const parkingLocation = calculatePolygonCenter(parsePolygonCoordinates(parkingSpace?.polygon as string)
             );
 
             const distance = calculateDistance(userLocation, parkingLocation);
@@ -182,9 +178,9 @@ const DurationForm = ({
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((point1.lat * Math.PI) / 180) *
-        Math.cos((point2.lat * Math.PI) / 180) *
-        Math.sin(dLng / 2) *
-        Math.sin(dLng / 2);
+      Math.cos((point2.lat * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in kilometers
   };

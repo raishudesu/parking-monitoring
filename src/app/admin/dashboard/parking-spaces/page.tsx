@@ -2,8 +2,8 @@ import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
 import { ParkingSpaceTable } from "./parking-space-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import { ParkingSpaceWithImages } from "@/app/gpo/dashboard/map/dijkstra-map";
 import dynamic from "next/dynamic";
+import { ParkingSpaceWithImages } from "@/types/map";
 
 const LeafletMap = dynamic(() => import("@/components/leaflet-map"), {
   ssr: false,

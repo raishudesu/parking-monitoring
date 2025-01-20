@@ -26,16 +26,11 @@ import { useServerAction } from "zsa-react";
 import { createParkingSpaceAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
-import MapPicker from "./map-picker";
-import MapPolygonCreator from "./map-polygon-creator";
-import { useJsApiLoader } from "@react-google-maps/api";
-import { useGoogleMaps } from "@/providers/google-maps-provider";
 import { useState } from "react";
-import { GitPullRequestClosed, Loader2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { deleteImage, getPublicUrl, uploadImage } from "@/hooks/supabase";
-// import PolygonCreator from "./polygon-creator";
 import dynamic from "next/dynamic";
 
 const PolygonCreator = dynamic(() => import("./polygon-creator"), {
@@ -43,7 +38,6 @@ const PolygonCreator = dynamic(() => import("./polygon-creator"), {
 });
 
 const ParkingSpaceCreationForm = () => {
-  // const { isLoaded, loadError } = useGoogleMaps();
   const [uploadingFields, setUploadingFields] = useState<
     Record<string, boolean>
   >({});
@@ -297,7 +291,7 @@ const ParkingSpaceCreationForm = () => {
             onPolygonComplete={(polygonString) => {
               form.setValue("polygon", polygonString);
             }}
-            // isLoaded={isLoaded}
+          // isLoaded={isLoaded}
           />
         </FormItem>
         <FormField
