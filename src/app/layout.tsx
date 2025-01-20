@@ -45,10 +45,8 @@ export default async function RootLayout({
         >
           <AuthProvider>
             <NotificationProvider>
-              <GoogleMapsProvider>
-                <main>{children}</main>
-                <Toaster />
-              </GoogleMapsProvider>
+              <main>{children}</main>
+              <Toaster />
             </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>

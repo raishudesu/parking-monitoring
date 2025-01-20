@@ -64,15 +64,6 @@ const userLocationSvg = `data:image/svg+xml;base64,${btoa(`
   </svg>
 `)}`;
 
-export type ParkingSpaceWithImages = ParkingSpace & {
-  images: ParkingSpaceImage[];
-};
-
-export type PannellumProps = {
-  parkingName: string;
-  images: ParkingSpaceImage[] | undefined;
-};
-
 export function calculatePolygonCenter(paths: google.maps.LatLngLiteral[]) {
   let totalLat = 0;
   let totalLng = 0;
@@ -154,7 +145,7 @@ const DijkstraMap = ({
           enableHighAccuracy: true,
           timeout: 5000,
           maximumAge: 0,
-        }
+        },
       );
 
       if (selectedParkingSpace) {
@@ -211,7 +202,7 @@ const DijkstraMap = ({
         }
       }
     },
-    [parkingSpaces]
+    [parkingSpaces],
   );
 
   const findClosestPwdPoint = useCallback(
@@ -242,7 +233,7 @@ const DijkstraMap = ({
         }
       }
     },
-    [parkingSpaces]
+    [parkingSpaces],
   );
 
   const handleShowClosestPwdClick = () => {
@@ -280,7 +271,7 @@ const DijkstraMap = ({
         }
       }
     },
-    [parkingSpaces]
+    [parkingSpaces],
   );
 
   const handleShowClosestVipClick = () => {
@@ -306,7 +297,7 @@ const DijkstraMap = ({
         } else {
           console.error(`Error fetching directions: ${status}`);
         }
-      }
+      },
     );
   }, []);
 
@@ -363,7 +354,7 @@ const DijkstraMap = ({
       scrollwheel: true,
       gestureHandling: "greedy",
     }),
-    []
+    [],
   );
 
   if (loadError) return <div>Error loading maps</div>;
@@ -446,28 +437,28 @@ const DijkstraMap = ({
                     options={{
                       fillColor: isAvailable(
                         currCapacity as number,
-                        maxCapacity
+                        maxCapacity,
                       ).value
                         ? "#4ade80"
                         : "#ef4444",
                       fillOpacity: 0.3,
                       strokeColor: isSelected(
                         (latitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string)
+                          parsePolygonCoordinates(polygon as string),
                         ).lat.toString()),
                         (longitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string)
-                        ).lng.toString())
+                          parsePolygonCoordinates(polygon as string),
+                        ).lng.toString()),
                       )
                         ? "#3b82f6"
                         : "#6b7280",
                       strokeWeight: isSelected(
                         (latitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string)
+                          parsePolygonCoordinates(polygon as string),
                         ).lat.toString()),
                         (longitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string)
-                        ).lng.toString())
+                          parsePolygonCoordinates(polygon as string),
+                        ).lng.toString()),
                       )
                         ? 2
                         : 1,
@@ -475,7 +466,7 @@ const DijkstraMap = ({
                   />
                   <Marker
                     position={calculatePolygonCenter(
-                      parsePolygonCoordinates(polygon as string)
+                      parsePolygonCoordinates(polygon as string),
                     )}
                     onClick={() =>
                       setSelectedParkingSpaceData({ parkingName: name, images })
@@ -489,34 +480,33 @@ const DijkstraMap = ({
                       anchor: new google.maps.Point(
                         isSelected(
                           (latitude = calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
+                            parsePolygonCoordinates(polygon as string),
                           ).lat.toString()),
                           (longitude = calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
-                          ).lng.toString())
+                            parsePolygonCoordinates(polygon as string),
+                          ).lng.toString()),
                         )
                           ? 18
                           : 12,
-                        isSelected(latitude, longitude) ? 36 : 24
+                        isSelected(latitude, longitude) ? 36 : 24,
                       ),
                     }}
                     label={{
                       text: `${spaceType} | ${name} (${currCapacity}/${maxCapacity} slots)`,
                       fontWeight: isSelected(
                         (latitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string)
+                          parsePolygonCoordinates(polygon as string),
                         ).lat.toString()),
                         (longitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string)
-                        ).lng.toString())
+                          parsePolygonCoordinates(polygon as string),
+                        ).lng.toString()),
                       )
                         ? "bold"
                         : "normal",
-                      className: `marker-label mt-16 rounded-xl p-2 border ${
-                        isAvailable(currCapacity as number, maxCapacity).value
+                      className: `marker-label mt-16 rounded-xl p-2 border ${isAvailable(currCapacity as number, maxCapacity).value
                           ? "bg-green-700"
                           : "bg-destructive"
-                      }`,
+                        }`,
                       // You can add more custom styling here if needed
                       color: "white", // Optional: set text color
                       fontSize: "12px", // Optional: adjust font size
@@ -525,7 +515,7 @@ const DijkstraMap = ({
                 </>
               )}
             </Fragment>
-          )
+          ),
         )}
 
         {userLocation && (
@@ -584,23 +574,22 @@ const DijkstraMap = ({
                   }) => (
                     <div
                       key={id}
-                      className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${
-                        isSelected(
-                          (latitude = calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
-                          ).lat.toString()),
-                          (longitude = calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
-                          ).lng.toString())
-                        )
+                      className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${isSelected(
+                        (latitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string),
+                        ).lat.toString()),
+                        (longitude = calculatePolygonCenter(
+                          parsePolygonCoordinates(polygon as string),
+                        ).lng.toString()),
+                      )
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900 dark:border-blue-700"
                           : ""
-                      }`}
+                        }`}
                       onClick={() =>
                         handleParkingSpaceClick(
                           calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string)
-                          )
+                            parsePolygonCoordinates(polygon as string),
+                          ),
                         )
                       }
                     >
@@ -612,25 +601,23 @@ const DijkstraMap = ({
                       </div>
                       <div className="flex justify-between">
                         <small
-                          className={`mt-3 text-sm ${
-                            currCapacity === maxCapacity
+                          className={`mt-3 text-sm ${currCapacity === maxCapacity
                               ? "text-destructive"
                               : "text-green-500"
-                          }`}
+                            }`}
                         >
                           Slots: {currCapacity}/{maxCapacity}
                         </small>
                         <small
-                          className={`mt-3 text-sm text-green-500 ${
-                            currReservedCapacity === reservedCapacity
-                          }  ? "text-destructive"
+                          className={`mt-3 text-sm text-green-500 ${currReservedCapacity === reservedCapacity
+                            }  ? "text-destructive"
                               : "text-green-500"`}
                         >
                           Reserved: {currReservedCapacity}/{reservedCapacity}
                         </small>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
 

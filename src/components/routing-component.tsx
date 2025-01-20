@@ -27,9 +27,7 @@ const RoutingComponent = ({
       },
 
       routeWhileDragging: true,
-      // createMarker: function () {
-      //   return null;
-      // },
+      show: false,
       addWaypoints: false,
       fitSelectedRoutes: true,
       showAlternatives: true,

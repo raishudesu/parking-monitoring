@@ -12,12 +12,13 @@ import { ChevronUp, MapPin } from "lucide-react";
 import { parkingGreen, parkingRed, userPin } from "./icons";
 import { ParkingSpaceWithImages } from "@/types/map";
 import {
+  calculateDistance,
   calculatePolygonCenter,
   parsePolygonCoordinates,
 } from "@/utils/leaflet-map-utils";
 import "leaflet/dist/leaflet.css";
 import PanellumViewerDialog from "@/app/gpo/dashboard/map/panellum-viewer-dialog";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import RoutingComponent from "./routing-component";
 
@@ -32,6 +33,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import PanToLocationButton from "./pan-to-user-location";
+import { useSession } from "next-auth/react";
 
 export interface LatLng {
   lat: number;
@@ -51,6 +53,8 @@ const LeafletMap = ({
 
   const [selectedParkingSpace, setSelectedParkingSpace] =
     useState<LatLng | null>(null);
+
+  const session = useSession();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -90,6 +94,49 @@ const LeafletMap = ({
     setDrawerOpen(false);
   };
 
+  const findClosestPoint = useCallback(
+    (priorityType: "PWD" | "VIP" | "NONE") => {
+      let minDistance = Infinity;
+      let closest = null;
+
+      for (const point of parkingSpaces) {
+        const center = calculatePolygonCenter(
+          parsePolygonCoordinates(point.polygon as string),
+        );
+
+        const distance = calculateDistance(userLocation as LatLng, {
+          lat: center.lat,
+          lng: center.lng,
+        });
+
+        if (priorityType !== "NONE") {
+          if (distance < minDistance && point.spaceType === priorityType) {
+            minDistance = distance;
+            closest = {
+              lat: parseFloat(point.latitude as string),
+              lng: parseFloat(point.longitude as string),
+            };
+          }
+        } else {
+          if (distance < minDistance) {
+            minDistance = distance;
+            closest = {
+              lat: parseFloat(point.latitude as string),
+              lng: parseFloat(point.longitude as string),
+            };
+          }
+        }
+      }
+
+      if (closest) {
+        setSelectedParkingSpace(closest);
+      }
+
+      setDrawerOpen(false);
+    },
+    [parkingSpaces, userLocation],
+  );
+
   return (
     <div className="relative px-4 w-full ">
       <MapContainer
@@ -114,7 +161,6 @@ const LeafletMap = ({
             ]}
           />
         )}
-
         {parkingSpaces.map((parkingSpace) => (
           <Fragment key={parkingSpace.id}>
             <Marker
@@ -200,7 +246,6 @@ const LeafletMap = ({
           <Button
             size="lg"
             className="z-20 absolute bottom-20 left-1/2 transform -translate-x-1/2 rounded-full"
-          // className="rounded-full"
           >
             <ChevronUp />
           </Button>
@@ -278,25 +323,31 @@ const LeafletMap = ({
               </div>
 
               <DrawerFooter>
-                {/* <Button className="mt-6" onClick={handleShowClosestClick}>
-                  Show closest parking space
-                </Button>
-                {session.data?.user.isPWD && (
+                {userLocation && (
+                  <Button
+                    className="mt-6"
+                    onClick={() => findClosestPoint("NONE")}
+                  >
+                    Show closest parking space
+                  </Button>
+                )}
+
+                {session.data?.user.isPWD && userLocation && (
                   <Button
                     variant={"secondary"}
-                    onClick={handleShowClosestPwdClick}
+                    onClick={() => findClosestPoint("PWD")}
                   >
                     Show closest PWD parking space
                   </Button>
                 )}
-                {session.data?.user.isVIP && (
+                {session.data?.user.isVIP && userLocation && (
                   <Button
                     variant={"secondary"}
-                    onClick={handleShowClosestVipClick}
+                    onClick={() => findClosestPoint("VIP")}
                   >
                     Show closest VIP parking space
                   </Button>
-                )} */}
+                )}
                 <DrawerClose asChild>
                   <Button variant="outline">Close</Button>
                 </DrawerClose>

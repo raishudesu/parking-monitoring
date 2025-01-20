@@ -1,3 +1,4 @@
+import { LatLng } from "@/components/leaflet-map";
 import { LatLngLiteral } from "leaflet";
 
 // GET THE CENTER OF A POLYGON FOR MARKER PLACEMENT
@@ -31,4 +32,22 @@ export const parsePolygonCoordinates = (polygonString?: string) => {
     console.error("Error parsing polygon coordinates:", error);
     return [];
   }
+};
+
+export const calculateDistance = (point1: LatLng, point2: LatLng): number => {
+  const lat1 = (point1.lat * Math.PI) / 180;
+  const lat2 = (point2.lat * Math.PI) / 180;
+  const lng1 = (point1.lng * Math.PI) / 180;
+  const lng2 = (point2.lng * Math.PI) / 180;
+
+  const dlat = lat2 - lat1;
+  const dlng = lng2 - lng1;
+
+  const a =
+    Math.sin(dlat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const R = 6371;
+  return R * c;
 };
