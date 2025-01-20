@@ -71,7 +71,7 @@ const LeafletMap = ({
           enableHighAccuracy: true,
           timeout: 5000,
           maximumAge: 0,
-        },
+        }
       );
 
       return () => navigator.geolocation.clearWatch(watchId);
@@ -101,7 +101,7 @@ const LeafletMap = ({
 
       for (const point of parkingSpaces) {
         const center = calculatePolygonCenter(
-          parsePolygonCoordinates(point.polygon as string),
+          parsePolygonCoordinates(point.polygon as string)
         );
 
         const distance = calculateDistance(userLocation as LatLng, {
@@ -134,7 +134,7 @@ const LeafletMap = ({
 
       setDrawerOpen(false);
     },
-    [parkingSpaces, userLocation],
+    [parkingSpaces, userLocation]
   );
 
   return (
@@ -159,6 +159,7 @@ const LeafletMap = ({
               selectedParkingSpace?.lat || 0,
               selectedParkingSpace?.lng || 0,
             ]}
+            fitBounds={false}
           />
         )}
         {parkingSpaces.map((parkingSpace) => (
@@ -167,10 +168,10 @@ const LeafletMap = ({
               key={parkingSpace.id}
               position={[
                 calculatePolygonCenter(
-                  parsePolygonCoordinates(parkingSpace.polygon as string),
+                  parsePolygonCoordinates(parkingSpace.polygon as string)
                 ).lat,
                 calculatePolygonCenter(
-                  parsePolygonCoordinates(parkingSpace.polygon as string),
+                  parsePolygonCoordinates(parkingSpace.polygon as string)
                 ).lng,
               ]}
               icon={
@@ -198,20 +199,22 @@ const LeafletMap = ({
                   </div>
                   <div className="flex flex-col font-bold">
                     <div
-                      className={`flex flex-row gap-2 ${parkingSpace.currCapacity === parkingSpace.maxCapacity
+                      className={`flex flex-row gap-2 ${
+                        parkingSpace.currCapacity === parkingSpace.maxCapacity
                           ? "text-red-500"
                           : "text-green-500"
-                        }`}
+                      }`}
                     >
                       Slots: {parkingSpace.currCapacity}/
                       {parkingSpace.maxCapacity}
                     </div>
                     <div
-                      className={`flex flex-row gap-2 ${parkingSpace.currReservedCapacity ===
-                          parkingSpace.reservedCapacity
+                      className={`flex flex-row gap-2 ${
+                        parkingSpace.currReservedCapacity ===
+                        parkingSpace.reservedCapacity
                           ? "text-red-500"
                           : "text-green-500"
-                        }`}
+                      }`}
                     >
                       Reserved: {parkingSpace.currReservedCapacity}/
                       {parkingSpace.reservedCapacity}
@@ -228,7 +231,7 @@ const LeafletMap = ({
             </Marker>
             <Polygon
               positions={parsePolygonCoordinates(
-                parkingSpace.polygon as string,
+                parkingSpace.polygon as string
               )}
               color={
                 parkingSpace.currCapacity === parkingSpace.maxCapacity
@@ -275,22 +278,23 @@ const LeafletMap = ({
                   }) => (
                     <div
                       key={id}
-                      className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${isSelected(
-                        (latitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string),
-                        ).lat.toString()),
-                        (longitude = calculatePolygonCenter(
-                          parsePolygonCoordinates(polygon as string),
-                        ).lng.toString()),
-                      )
+                      className={`p-3 rounded-xl border cursor-pointer hover:shadow transition-colors ease-in-out ${
+                        isSelected(
+                          (latitude = calculatePolygonCenter(
+                            parsePolygonCoordinates(polygon as string)
+                          ).lat.toString()),
+                          (longitude = calculatePolygonCenter(
+                            parsePolygonCoordinates(polygon as string)
+                          ).lng.toString())
+                        )
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900 dark:border-blue-700"
                           : ""
-                        }`}
+                      }`}
                       onClick={() =>
                         handleParkingSpaceClick(
                           calculatePolygonCenter(
-                            parsePolygonCoordinates(polygon as string),
-                          ),
+                            parsePolygonCoordinates(polygon as string)
+                          )
                         )
                       }
                     >
@@ -302,23 +306,25 @@ const LeafletMap = ({
                       </div>
                       <div className="flex justify-between">
                         <small
-                          className={`mt-3 text-sm ${currCapacity === maxCapacity
+                          className={`mt-3 text-sm ${
+                            currCapacity === maxCapacity
                               ? "text-destructive"
                               : "text-green-500"
-                            }`}
+                          }`}
                         >
                           Slots: {currCapacity}/{maxCapacity}
                         </small>
                         <small
-                          className={`mt-3 text-sm text-green-500 ${currReservedCapacity === reservedCapacity
-                            }  ? "text-destructive"
+                          className={`mt-3 text-sm text-green-500 ${
+                            currReservedCapacity === reservedCapacity
+                          }  ? "text-destructive"
                               : "text-green-500"`}
                         >
                           Reserved: {currReservedCapacity}/{reservedCapacity}
                         </small>
                       </div>
                     </div>
-                  ),
+                  )
                 )}
               </div>
 

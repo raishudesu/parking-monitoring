@@ -1,23 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
-import L, { LatLngExpression } from "leaflet";
+import L, { LatLngExpression, Routing } from "leaflet";
 import "leaflet-routing-machine";
 
-const RoutingComponent = ({
-  start,
-  end,
-}: {
+interface RoutingComponentProps {
   start: [number, number];
   end: [number, number];
+  fitBounds?: boolean; // Optional prop to control auto-fitting behavior
+}
+
+const RoutingComponent: React.FC<RoutingComponentProps> = ({
+  start,
+  end,
+  fitBounds = false, // Default to false to prevent automatic panning
 }) => {
   const map = useMap();
+  const routingControlRef = useRef<L.Routing.Control | null>(null);
 
   useEffect(() => {
     if (!map) return;
 
-    const waypoints: LatLngExpression[] = [start, end];
-    const waypointsWithLatLng = waypoints.map((point) => L.latLng(point));
+    // If we already have a routing control, just update the waypoints
+    if (routingControlRef.current) {
+      const waypoints = [
+        L.latLng(start[0], start[1]),
+        L.latLng(end[0], end[1]),
+      ];
 
+      routingControlRef.current.setWaypoints(waypoints);
+      return;
+    }
+
+    // Initial creation of routing control
     const routingControl = L.Routing.control({
       waypoints: [L.latLng(start[0], start[1]), L.latLng(end[0], end[1])],
       lineOptions: {
@@ -28,17 +42,34 @@ const RoutingComponent = ({
       routeWhileDragging: true,
       show: false,
       addWaypoints: false,
-      fitSelectedRoutes: true,
+      fitSelectedRoutes: fitBounds, // Use the prop to control fitting behavior
       showAlternatives: true,
-      plan: L.routing.plan(waypointsWithLatLng, {
+      plan: L.Routing.plan([], {
+        // Empty initial waypoints
         createMarker: () => false,
       }),
-    } as any).addTo(map);
+    }).addTo(map);
 
+    // Store the control in the ref
+    routingControlRef.current = routingControl;
+
+    // Cleanup function
     return () => {
-      map.removeControl(routingControl);
+      if (routingControlRef.current) {
+        map.removeControl(routingControlRef.current);
+        routingControlRef.current = null;
+      }
     };
-  }, [map, start, end]);
+  }, [map]); // Only recreate when map changes
+
+  // Separate effect for updating waypoints
+  useEffect(() => {
+    if (!routingControlRef.current) return;
+
+    const waypoints = [L.latLng(start[0], start[1]), L.latLng(end[0], end[1])];
+
+    routingControlRef.current.setWaypoints(waypoints);
+  }, [start, end]);
 
   return null;
 };
