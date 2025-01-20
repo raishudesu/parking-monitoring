@@ -4,7 +4,7 @@ import SideSheetMap from "@/app/gpo/dashboard/map/side-sheet-map";
 import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
 
 const Page = async () => {
-  const LeafletMap = dynamic(() => import("./leaflet-map"), {
+  const LeafletMap = dynamic(() => import("@/components/leaflet-map"), {
     ssr: false,
     loading: () => <Skeleton className=" h-full w-full" />,
   });

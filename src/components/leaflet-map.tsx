@@ -9,9 +9,12 @@ import {
   Polygon,
 } from "react-leaflet";
 import { ChevronUp, MapPin } from "lucide-react";
-import { parkingGreen, userPin } from "./icons";
+import { parkingGreen, parkingRed, userPin } from "./icons";
 import { ParkingSpaceWithImages } from "@/types/map";
-import { calculatePolygonCenter, parsePolygonCoordinates } from "./utils";
+import {
+  calculatePolygonCenter,
+  parsePolygonCoordinates,
+} from "@/utils/leaflet-map-utils";
 import "leaflet/dist/leaflet.css";
 import PanellumViewerDialog from "@/app/gpo/dashboard/map/panellum-viewer-dialog";
 import { useState, useEffect, Fragment } from "react";
@@ -88,12 +91,12 @@ const LeafletMap = ({
   };
 
   return (
-    <div className="relative w-full h-[80vh]">
+    <div className="relative px-4 w-full ">
       <MapContainer
         center={[PSU_GATE[0], PSU_GATE[1]]}
         zoom={18}
         scrollWheelZoom={true}
-        className="relative w-full min-h-screen z-10 rounded-xl"
+        className="relative w-full min-h-[80vh] z-10 rounded-xl"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -124,7 +127,11 @@ const LeafletMap = ({
                   parsePolygonCoordinates(parkingSpace.polygon as string),
                 ).lng,
               ]}
-              icon={parkingGreen}
+              icon={
+                parkingSpace.currCapacity === parkingSpace.maxCapacity
+                  ? parkingRed
+                  : parkingGreen
+              }
             >
               <Tooltip direction="top" offset={[0, -20]} opacity={1} permanent>
                 <span>{parkingSpace.name}</span>
@@ -163,22 +170,10 @@ const LeafletMap = ({
                       Reserved: {parkingSpace.currReservedCapacity}/
                       {parkingSpace.reservedCapacity}
                     </div>
-                    {/* <AspectRatio ratio={16 / 9} className="bg-muted">
-                      <ReactPannellum
-                        // key={currentImageIndex}
-                        id="1"
-                        sceneId="firstScene"
-                        imageSource={parkingSpace.images[0].url}
-                        config={{ autoRotate: -2 }}
-                        style={{ width: "100%", height: "100%" }}
-                      />
-                    </AspectRatio> */}
                     <div className="w-full mt-6">
                       <PanellumViewerDialog
                         parkingName={parkingSpace.name}
                         images={parkingSpace.images}
-                      // open={drawerOpen}
-                      // setOpen={setDrawerOpen}
                       />
                     </div>
                   </div>

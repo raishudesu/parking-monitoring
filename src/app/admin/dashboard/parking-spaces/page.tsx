@@ -7,7 +7,7 @@ import DijkstraMap, {
 } from "@/app/gpo/dashboard/map/dijkstra-map";
 import dynamic from "next/dynamic";
 
-const LeafletMap = dynamic(() => import("../leaflet/leaflet-map"), {
+const LeafletMap = dynamic(() => import("@/components/leaflet-map"), {
   ssr: false,
 });
 
