@@ -25,17 +25,14 @@ const RoutingComponent = ({
         extendToWaypoints: false,
         missingRouteTolerance: 0,
       },
-
       routeWhileDragging: true,
       show: false,
       addWaypoints: false,
       fitSelectedRoutes: true,
       showAlternatives: true,
-      // show: false,
       plan: L.routing.plan(waypointsWithLatLng, {
         createMarker: () => false,
       }),
-      // geocoder: L.Control.Geocoder.nominatim(),
     } as any).addTo(map);
 
     return () => {

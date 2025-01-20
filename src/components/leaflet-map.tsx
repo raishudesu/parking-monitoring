@@ -143,7 +143,7 @@ const LeafletMap = ({
         center={[PSU_GATE[0], PSU_GATE[1]]}
         zoom={18}
         scrollWheelZoom={true}
-        className="relative w-full min-h-[80vh] z-10 rounded-xl"
+        className="relative w-full min-h-[80vh] md:min-h-screen z-10 rounded-xl"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
