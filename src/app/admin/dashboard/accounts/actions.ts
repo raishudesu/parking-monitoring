@@ -32,11 +32,12 @@ export const createGpoAccountAction = createServerAction()
       to: input.data.email,
       subject: "ParkSU Account Details",
       html: `
-     <!DOCTYPE html>
+    <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Welcome to ParkSU!</title>
   </head>
   <body
@@ -203,6 +204,7 @@ export const updateGpoAccountAction = createServerAction()
       input.accountId,
       input.data
     );
+
     const emailData: TEmailData = {
       to: input.data.email,
       subject: "Updated ParkSU Account Details",
@@ -218,7 +220,7 @@ export const updateGpoAccountAction = createServerAction()
     style="
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: Poppins, sans-serif;
       background-color: #f4f4f4;
       color: #333333;
     "
@@ -266,32 +268,9 @@ export const updateGpoAccountAction = createServerAction()
           </h1>
 
           <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px">
-            Greetings! Your account has been updated. Kindly re-login to check your account. Here's your account
-            details:
+            Greetings! Your account has been updated. Kindly re-login to check
+            your account.
           </p>
-
-          <div
-            style="
-              margin-top: 32px;
-              padding: 16px;
-              background-color: #f9fafb;
-              border-radius: 4px;
-              border-left: 4px solid #fe7d55;
-            "
-          >
-            <p
-              style="
-                margin: 0;
-                font-size: 14px;
-                line-height: 22px;
-                color: #4b5563;
-              "
-            >
-              <strong>Email:</strong> ${input.data.email}
-              <br />
-              <strong>Password:</strong> ${input.data.password}
-            </p>
-          </div>
 
           <table
             role="presentation"
@@ -329,8 +308,8 @@ export const updateGpoAccountAction = createServerAction()
               color: #4b5563;
             "
           >
-            <strong>Security Tip:</strong> Upon logging in, we highly suggest to
-            change your password immediately.
+            <strong>Security Tip:</strong> If you notice unusual activities
+            within ParkSU, kindly report the issue immediately.
           </p>
         </td>
       </tr>
@@ -360,6 +339,7 @@ export const updateGpoAccountAction = createServerAction()
     </table>
   </body>
 </html>
+
       `,
     };
 

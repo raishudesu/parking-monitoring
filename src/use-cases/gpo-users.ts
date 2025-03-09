@@ -72,7 +72,7 @@ export const createGpoAccountUseCase = async (
   const validatedData = gpoAccountSchema.parse(data);
 
   // HASH THE PASSWORD
-  const hashedPwd = await hash(validatedData.password, 10);
+  const hashedPwd = await hash(validatedData.password as string, 10);
 
   validatedData.password = hashedPwd;
 
@@ -102,9 +102,6 @@ export const updateGpoAccountUseCase = async (
   accountId: string,
   data: z.infer<typeof gpoAccountSchema>
 ) => {
-  const hashedPwd = await hash(data.password, 10);
-
-  data.password = hashedPwd;
   const gpo = await updateGpoAccount(accountId, data);
 
   if (!gpo)

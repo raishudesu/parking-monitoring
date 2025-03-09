@@ -28,7 +28,6 @@ import { updateGpoAccountAction } from "./actions";
 import { useServerAction } from "zsa-react";
 import { generateSecurePassword } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import { Dispatch, SetStateAction } from "react";
 
 const AccountUpdateForm = ({
   accountId,
@@ -48,7 +47,6 @@ const AccountUpdateForm = ({
     defaultValues: {
       email: data.email,
       gatePassNumber: data.gatePassNumber,
-      password: data.password,
       accountType: data.accountType,
       collegeId: data.collegeId as string | undefined,
       isVIP: data.isVIP,
@@ -58,8 +56,6 @@ const AccountUpdateForm = ({
   });
 
   const onSubmit = async (values: z.infer<typeof accountCreationSchema>) => {
-    values.password = generateSecurePassword(values.gatePassNumber);
-
     const [data, err] = await execute({
       auditAdminId: session.data?.user.id,
       accountId,
@@ -88,6 +84,8 @@ const AccountUpdateForm = ({
           }`
         );
       }
+
+      console.error(err);
     }
 
     if (data) {
@@ -145,25 +143,6 @@ const AccountUpdateForm = ({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              {/* <FormLabel>Password</FormLabel> */}
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter your password"
-                  type="hidden"
-                  disabled={isAdmin || isPending}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="accountType"
