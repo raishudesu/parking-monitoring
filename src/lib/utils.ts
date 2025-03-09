@@ -6,10 +6,15 @@ import {
   SurveyResponse,
   TransformedSurveyData,
 } from "@/types/survey";
+import crypto from "crypto";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const generateToken = () => {
+  return crypto.randomBytes(32).toString("hex");
+};
 
 export const generateSecurePassword = (gatePassNumber: string) => {
   // Define the length of the random suffix and prefix

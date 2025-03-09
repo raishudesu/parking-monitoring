@@ -17,3 +17,10 @@ export class AdminLoginError extends PublicError {
     this.name = "AdminLoginError";
   }
 }
+
+export class InvalidEmailError extends PublicError {
+  constructor() {
+    super("Invalid email. User does not exist.");
+    this.name = "InvalidEmailError";
+  }
+}

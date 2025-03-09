@@ -15,11 +15,16 @@ import {
   updateGpoCreditScore,
   updateGpoPassword,
 } from "../data-access/gpo-users";
-import { LoginError } from "./errors";
+import { InvalidEmailError, LoginError } from "./errors";
 import { z } from "zod";
 import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
 import { createAdminLog } from "@/data-access/admin-log";
 import { GPOAccount } from "@prisma/client";
+import { TPasswordResetData } from "@/types/password-reset-token";
+import {
+  findPasswordResetToken,
+  invalidatePasswordResetToken,
+} from "@/data-access/password-reset-token";
 
 // USE CASE FOR GPO LOG IN
 export const gpoLoginUseCase = async (
@@ -183,9 +188,9 @@ export const updateGpoPasswordUseCase = async (
 
   const hashedPwd = await hash(newPassword, 10);
 
-  const gpo = await updateGpoPassword(gpoAccountId, hashedPwd);
+  const data = await updateGpoPassword(gpoAccountId, hashedPwd);
 
-  const { password: filteredPassword, ...filteredGpoAccount } = gpo;
+  const { password: filteredPassword, ...filteredGpoAccount } = data.gpo;
 
   return filteredGpoAccount;
 };
@@ -241,4 +246,22 @@ export const getCreditsScoreUseCase = async (accountId: string) => {
   const gpoCreditScore = await getCreditScore(accountId);
 
   return gpoCreditScore;
+};
+
+export const resetUserPassword = async (data: TPasswordResetData) => {
+  const tokenExists = await findPasswordResetToken(data.token);
+
+  if (!tokenExists) throw Error("Invalid or expired token.");
+
+  const user = await getGpoByEmail(data.email);
+
+  if (!user) throw new InvalidEmailError();
+
+  const hashedPassword = await hash(data.newPassword, 10);
+
+  const res = await updateGpoPassword(user.id, hashedPassword);
+
+  await invalidatePasswordResetToken(data.token);
+
+  return res;
 };

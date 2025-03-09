@@ -149,7 +149,7 @@ export const updateGpoPassword = async (
     },
   });
 
-  return gpo;
+  return { ok: true, gpo };
 };
 
 export const addCreditScoreToGpo = async (

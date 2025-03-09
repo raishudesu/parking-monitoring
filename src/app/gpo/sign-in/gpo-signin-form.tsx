@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { gpoLoginSchema } from "@/lib/zod";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
 
 const GpoSignInForm = () => {
   const [loginStatus, setLoginStatus] = useState<SignInResponse | undefined>(
@@ -123,6 +125,15 @@ const GpoSignInForm = () => {
                 />
               </FormControl>
               <FormMessage />
+              <FormDescription>
+                Forgot your password?{" "}
+                <Link
+                  href="/gpo/reset-password"
+                  className="text-primary hover:underline"
+                >
+                  Reset Password
+                </Link>
+              </FormDescription>
               <div className="pt-2 flex gap-2 items-center">
                 <Checkbox onCheckedChange={onShowPassword} />
                 <small className="text-sm text-muted-foreground">

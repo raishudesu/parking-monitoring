@@ -9,6 +9,11 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./app.db"
+// }
+
 enum AdminRole {
   ADMIN
   SUPERADMIN
@@ -64,7 +69,7 @@ enum SessionStatus {
 model GPOAccount {
   id             String                 @id @default(uuid())
   gatePassNumber String                 @unique
-  email          String?                @unique
+  email          String                 @unique
   password       String
   accountType    AccountType
   collegeName    College?               @relation(fields: [collegeId], references: [id])
@@ -260,4 +265,13 @@ model DowntimeLog {
   areViolationsWaived Boolean  @default(false)
   addedBy             Admin    @relation(fields: [adminId], references: [id])
   adminId             String
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  email     String
+  isUsed    Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
