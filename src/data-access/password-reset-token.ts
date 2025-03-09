@@ -9,10 +9,11 @@ export const createPasswordResetToken = async (data: TPasswordResetToken) => {
   return token;
 };
 
-export const findPasswordResetToken = async (token: string) => {
+export const findPasswordResetToken = async (token: string, email: string) => {
   const foundToken = prisma.passwordResetToken.findUnique({
     where: {
       token,
+      email,
       expiresAt: { gt: new Date() },
       isUsed: false,
     },

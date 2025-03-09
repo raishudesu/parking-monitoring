@@ -31,25 +31,6 @@ import emailjs from "@emailjs/browser";
 import { College } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
-const sendAccountDetailsToGpoEmail = async (
-  email: string,
-  gatePassNumber: string,
-  password: string
-) => {
-  try {
-    const emailRes = await emailjs.send(
-      process.env.NEXT_PUBLIC_SERVICE_KEY as string,
-      process.env.NEXT_PUBLIC_TEMPLATE_ID as string,
-      { to: email, email, gatePassNumber, password },
-      process.env.NEXT_PUBLIC_EMAILJS_API_KEY
-    );
-
-    return emailRes;
-  } catch (error) {
-    throw new Error(error as string);
-  }
-};
-
 const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
   const session = useSession();
   const { isPending, execute } = useServerAction(createGpoAccountAction);
@@ -108,12 +89,6 @@ const AccountCreationForm = ({ colleges }: { colleges: College[] }) => {
       });
 
       form.reset();
-
-      await sendAccountDetailsToGpoEmail(
-        data?.email as string,
-        data?.gatePassNumber as string,
-        values.password
-      );
     }
   };
 

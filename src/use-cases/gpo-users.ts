@@ -249,7 +249,7 @@ export const getCreditsScoreUseCase = async (accountId: string) => {
 };
 
 export const resetUserPassword = async (data: TPasswordResetData) => {
-  const tokenExists = await findPasswordResetToken(data.token);
+  const tokenExists = await findPasswordResetToken(data.token, data.email);
 
   if (!tokenExists) throw Error("Invalid or expired token.");
 
