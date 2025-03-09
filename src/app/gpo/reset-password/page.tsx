@@ -156,7 +156,7 @@ function PasswordReset() {
 
         // Redirect to login page after successful password reset
         setTimeout(() => {
-          router.push("/login");
+          router.push("/gpo/sign-in");
         }, 2000);
 
         return;
