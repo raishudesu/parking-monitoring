@@ -7,7 +7,10 @@ export const createGpoAccount = async (
   data: z.infer<typeof gpoAccountSchema>
 ) => {
   const gpo = await prisma.gPOAccount.create({
-    data,
+    data: {
+      ...data,
+      password: data.password as string,
+    },
   });
 
   return gpo;
