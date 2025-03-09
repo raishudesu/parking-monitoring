@@ -27,7 +27,6 @@ import { Switch } from "@/components/ui/switch";
 import { createGpoAccountAction } from "./actions";
 import { useServerAction } from "zsa-react";
 import { generateSecurePassword } from "@/lib/utils";
-import emailjs from "@emailjs/browser";
 import { College } from "@prisma/client";
 import { useSession } from "next-auth/react";
 

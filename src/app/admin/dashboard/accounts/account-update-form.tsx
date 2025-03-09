@@ -27,28 +27,8 @@ import { Switch } from "@/components/ui/switch";
 import { updateGpoAccountAction } from "./actions";
 import { useServerAction } from "zsa-react";
 import { generateSecurePassword } from "@/lib/utils";
-import emailjs from "@emailjs/browser";
 import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction } from "react";
-
-const sendUpdatedDetailsToGpoEmail = async (
-  email: string,
-  gatePassNumber: string,
-  password: string
-) => {
-  try {
-    const emailRes = await emailjs.send(
-      process.env.NEXT_PUBLIC_SERVICE_KEY as string,
-      process.env.NEXT_PUBLIC_TEMPLATE_ID as string,
-      { to: email, gatePassNumber, password },
-      process.env.NEXT_PUBLIC_EMAILJS_API_KEY
-    );
-
-    return emailRes;
-  } catch (error) {
-    throw new Error(error as string);
-  }
-};
 
 const AccountUpdateForm = ({
   accountId,
@@ -118,12 +98,6 @@ const AccountUpdateForm = ({
 
       form.reset();
       setOpen(false);
-
-      const res = await sendUpdatedDetailsToGpoEmail(
-        data?.email as string,
-        data?.gatePassNumber as string,
-        values.password
-      );
 
       // console.log(res);
     }

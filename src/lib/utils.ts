@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import emailjs from "@emailjs/browser";
 import {
   CategoryCounters,
   SurveyResponse,
@@ -106,21 +105,6 @@ export const evalPasswordStrength = (pwd: string): ReturnEvalPwdStrength => {
   }
 
   return pwdStatus;
-};
-
-export const sendEmailNotification = async (email: string) => {
-  try {
-    const emailRes = await emailjs.send(
-      process.env.NEXT_PUBLIC_SERVICE_KEY as string,
-      process.env.NEXT_PUBLIC_NOTIFICATION_TEMPLATE_ID as string,
-      { to: email },
-      process.env.NEXT_PUBLIC_EMAILJS_API_KEY
-    );
-
-    return emailRes;
-  } catch (error) {
-    throw new Error(error as string);
-  }
 };
 
 export function urlB64ToUint8Array(base64String: string): Uint8Array {
