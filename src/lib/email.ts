@@ -2,26 +2,47 @@ import { TEmailData } from "@/types/email";
 import nodemailer from "nodemailer";
 
 export const sendEmail = async (data: TEmailData) => {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
-    },
-    tls: {
-      // do not fail on invalid certs
-      rejectUnauthorized: process.env.REJECT_UNAUTHORIZED === "true",
-    },
-  });
+  try {
+    // Validate input
+    if (!data.to || !data.subject || !data.html) {
+      throw new Error("Missing required email fields");
+    }
 
-  const message = {
-    from: `PARKSU Admin <${process.env.SMTP_USER}>`,
-    to: data.to,
-    subject: data.subject,
-    html: data.html,
-  };
+    // Ensure environment variables are set
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+      throw new Error("SMTP credentials not configured");
+    }
 
-  await transporter.sendMail(message);
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: process.env.REJECT_UNAUTHORIZED !== "false",
+      },
+    });
 
-  return { ok: true };
+    const message = {
+      from: `PARKSU Admin <${process.env.SMTP_USER}>`,
+      to: data.to,
+      subject: data.subject,
+      html: data.html,
+    };
+
+    await Promise.race([
+      transporter.sendMail(message),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Email sending timed out")), 9000)
+      ),
+    ]);
+
+    console.log(`Email sent to ${data.to} with subject: ${data.subject}`);
+    return { ok: true };
+  } catch (error: any) {
+    console.error("Email sending failed:", error);
+    return { ok: false, error: error.message || "Failed to send email" };
+  }
 };
