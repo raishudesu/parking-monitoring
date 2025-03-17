@@ -1,6 +1,11 @@
 {
   "name": "ParkSU",
   "short_name": "ParkSU",
+  "description": "A Realtime University Parking Monitoring System for Palawan State University",
+  "start_url": "/gpo/sign-in",
+  "display": "standalone",
+  "theme_color": "#FE7D55",
+  "background_color": "#ffffff",
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
