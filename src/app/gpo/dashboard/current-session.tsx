@@ -72,6 +72,7 @@ const CurrentSession = async () => {
             gpoAccountId={serverSession.user.id}
             shouldEndAt={currentParkingSession.shouldEndAt as Date}
             parkingSpaceName={currentParkingSpace.name}
+            sessionId={currentParkingSession.id}
           />
         </div>
       </CardContent>

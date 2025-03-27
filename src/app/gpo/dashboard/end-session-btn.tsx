@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Timer from "./parking-timer";
 import RatingDialog from "./rating-dialog";
 import { endGpoSessionUseCase } from "@/use-cases/gpo-sessions";
+import { useRouter } from "next/navigation";
 
 export const TIMER_STORAGE_KEY = "activeParkingTimer";
 
@@ -17,53 +18,52 @@ const EndSessionBtn = ({
   gpoAccountId,
   shouldEndAt,
   parkingSpaceName,
+  sessionId,
 }: {
   gpoAccountId: string;
   shouldEndAt: Date;
   parkingSpaceName: string;
+  sessionId: string;
 }) => {
   const { isPending, execute } = useServerAction(endSessionAction);
-  const { startTimer, stopTimer } = useNotification();
-
-  const [open, setOpen] = useState<boolean>(false);
-  const [endedSession, setEndedSession] = useState<Awaited<
-    ReturnType<typeof endGpoSessionUseCase>
-  > | null>(null);
+  const router = useRouter();
+  // const { startTimer, stopTimer } = useNotification();
 
   // Start timer on mount if there's an active timer or session data
-  useEffect(() => {
-    const storedTimerData = JSON.parse(
-      localStorage.getItem(TIMER_STORAGE_KEY) || "{}"
-    );
+  // useEffect(() => {
+  //   const storedTimerData = JSON.parse(
+  //     localStorage.getItem(TIMER_STORAGE_KEY) || "{}"
+  //   );
 
-    const startTimerFn = async (endAt: Date, parkingName: string) => {
-      await startTimer(endAt, parkingName);
-    };
+  //   const startTimerFn = async (endAt: Date, parkingName: string) => {
+  //     await startTimer(endAt, parkingName);
+  //   };
 
-    if (storedTimerData?.shouldEndAt && storedTimerData?.parkingSpaceName) {
-      // Parse shouldEndAt date back from string
-      const endAt = new Date(storedTimerData.shouldEndAt);
+  //   if (storedTimerData?.shouldEndAt && storedTimerData?.parkingSpaceName) {
+  //     // Parse shouldEndAt date back from string
+  //     const endAt = new Date(storedTimerData.shouldEndAt);
 
-      if (endAt > new Date()) {
-        startTimerFn(endAt, storedTimerData.parkingSpaceName);
-      } else {
-        localStorage.removeItem(TIMER_STORAGE_KEY); // Clear if expired
-      }
-    } else {
-      // If no stored data, use provided props to start a new timer
-      startTimerFn(shouldEndAt, parkingSpaceName);
-      localStorage.setItem(
-        TIMER_STORAGE_KEY,
-        JSON.stringify({
-          shouldEndAt: shouldEndAt.toISOString(),
-          parkingSpaceName,
-        })
-      );
-    }
-  }, []);
+  //     if (endAt > new Date()) {
+  //       startTimerFn(endAt, storedTimerData.parkingSpaceName);
+  //     } else {
+  //       localStorage.removeItem(TIMER_STORAGE_KEY); // Clear if expired
+  //     }
+  //   } else {
+  //     // If no stored data, use provided props to start a new timer
+  //     startTimerFn(shouldEndAt, parkingSpaceName);
+  //     localStorage.setItem(
+  //       TIMER_STORAGE_KEY,
+  //       JSON.stringify({
+  //         shouldEndAt: shouldEndAt.toISOString(),
+  //         parkingSpaceName,
+  //       })
+  //     );
+  //   }
+  // }, []);
+
   const onEndSession = async () => {
     try {
-      const [data, err] = await execute(gpoAccountId);
+      const [data, err] = await execute({ sessionId, userId: gpoAccountId });
 
       if (err) {
         const parsedErrorData = await JSON.parse(err?.data);
@@ -78,15 +78,15 @@ const EndSessionBtn = ({
       }
 
       if (data) {
-        setEndedSession(data);
+        // stopTimer();
+        // localStorage.removeItem(TIMER_STORAGE_KEY);
+
         toast({
           title: "Parking session ended successfully.",
           description: "Thank you for using ParkSU!",
         });
-        stopTimer();
-        localStorage.removeItem(TIMER_STORAGE_KEY);
 
-        setOpen(true);
+        router.refresh();
       }
     } catch (error) {
       console.error(error);
@@ -109,11 +109,6 @@ const EndSessionBtn = ({
           <span className="text-xl font-bold">End Session</span>
         </div>
       </Button>
-      <RatingDialog
-        open={open}
-        setOpen={setOpen}
-        sessionId={endedSession?.id}
-      />
     </>
   );
 };

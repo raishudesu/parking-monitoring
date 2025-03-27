@@ -1,19 +1,41 @@
 "use server";
 
 import { createServerAction } from "zsa";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { endGpoSessionUseCase } from "@/use-cases/gpo-sessions";
 import { createParkingSessionRating } from "@/data-access/parking-session-rating";
 import { ratingSchema } from "@/schemas/parking-session-rating";
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export const endSessionAction = createServerAction()
-  .input(z.string())
+  .input(z.object({ sessionId: z.string(), userId: z.string() }))
   .handler(async ({ input }) => {
-    // console.log(input);
-    const res = await endGpoSessionUseCase(input);
+    try {
+      const res = await endGpoSessionUseCase(input.userId);
 
-    return res;
+      // Set a cookie to trigger the rating dialog
+      if (res) {
+        cookies().set(
+          "show_rating_dialog",
+          JSON.stringify({
+            sessionId: input.sessionId,
+            timestamp: new Date().toISOString(),
+          }),
+          {
+            httpOnly: true,
+            maxAge: 60 * 60, // 1 hour
+          }
+        );
+      }
+
+      revalidatePath("/");
+
+      return [res, null];
+    } catch (error) {
+      console.error("Error in endSessionAction:", error);
+      return [null, { message: "Failed to end session" }];
+    }
   });
 
 export const submitRatingAction = createServerAction()
@@ -24,7 +46,7 @@ export const submitRatingAction = createServerAction()
       sessionId: input.sessionId,
     });
 
-    if (res) revalidatePath("/gpo/dashboard/parking-spaces");
+    revalidatePath("/gpo/dashboard");
 
     return res;
   });
