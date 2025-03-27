@@ -3,8 +3,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getRecentSessionsUseCase } from "@/use-cases/gpo-sessions";
-import { AlertTriangle } from "lucide-react";
-import { GPOSession } from "@prisma/client";
+import { AlertTriangle, Star } from "lucide-react";
+import { GPOSession, ParkingSessionRating } from "@prisma/client";
 import { parseDate } from "@/lib/utils";
 
 // Define types for the session data
@@ -18,6 +18,7 @@ type Session = GPOSession & {
     email: string | null;
     gatePassNumber: string;
   };
+  rating: ParkingSessionRating | null;
 };
 
 const RecentTransactions = async () => {
@@ -51,7 +52,7 @@ const RecentTransactions = async () => {
         </p>
       ) : (
         sessions.map(
-          ({ id, status, parkingSpace, accountParked, startTime }) => (
+          ({ id, status, parkingSpace, accountParked, startTime, rating }) => (
             <Fragment key={id}>
               <div className="flex flex-col">
                 <div className="flex items-center">
@@ -81,10 +82,25 @@ const RecentTransactions = async () => {
                     {status}
                   </div>
                 </div>
-                <div className="mt-6">
+                <div className="mt-6 flex justify-between items-center flex-wrap">
                   <small className="text-xs text-gray-500">
                     {parseDate(startTime)}
                   </small>
+                  <div className="flex gap-1">
+                    {rating && (
+                      <>
+                        {Array.from({ length: rating.rating }).map(
+                          (_, index) => (
+                            <Star
+                              key={index}
+                              fill="#fe7d55"
+                              className="w-4 h-4 text-[#fe7d55]"
+                            />
+                          )
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
               <Separator />

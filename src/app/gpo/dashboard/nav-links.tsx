@@ -52,7 +52,7 @@ const NavLinks = ({
             <AccordionTrigger>
               <div className="flex gap-3 text-gray-700 dark:text-primary-foreground">
                 <BookOpenText />
-                Feedback & Reports
+                Reports
               </div>
             </AccordionTrigger>
             <AccordionContent>

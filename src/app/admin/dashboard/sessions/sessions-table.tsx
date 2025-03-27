@@ -38,11 +38,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { GPOAccount, GPOSession, ParkingSpace } from "@prisma/client";
+import type {
+  GPOAccount,
+  GPOSession,
+  ParkingSessionRating,
+  ParkingSpace,
+} from "@prisma/client";
 import { parseDate } from "@/lib/utils";
 
 export type SessionData = GPOSession & {
   parkingSpace: ParkingSpace;
+  rating: ParkingSessionRating | null;
   accountParked: Omit<GPOAccount, "password">;
 };
 
@@ -134,6 +140,13 @@ export const columns: ColumnDef<SessionData>[] = [
           row.getValue("endedProperly") ? "text-green-500" : "text-destructive"
         }`}
       >{`${row.getValue("endedProperly") ? "YES" : "NO"}`}</div>
+    ),
+  },
+  {
+    accessorKey: "rating",
+    header: "Rating",
+    cell: ({ row }) => (
+      <div>{row.original.rating ? `${row.original.rating.rating}` : "N/A"}</div>
     ),
   },
   //   {

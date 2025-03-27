@@ -1,18 +1,18 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["omitApi", "postgresqlExtensions"]
-}
-
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 // datasource db {
-//   provider = "sqlite"
-//   url      = "file:./app.db"
+//   provider  = "postgresql"
+//   url       = env("DATABASE_URL")
+//   directUrl = env("DIRECT_URL")
 // }
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./app.db"
+}
 
 enum AdminRole {
   ADMIN
@@ -86,21 +86,30 @@ model GPOAccount {
   isActive       Boolean                @default(true)
   createdAt      DateTime               @default(now())
   updatedAt      DateTime               @updatedAt
-  surveys        UserSurvey[]
+  // surveys        UserSurvey[]
   reports        DriverBehaviorReport[]
 }
 
 model GPOSession {
-  id             String        @id @default(uuid())
-  parkingSpace   ParkingSpace  @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
+  id             String                @id @default(uuid())
+  parkingSpace   ParkingSpace          @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
   parkingSpaceId String
-  accountParked  GPOAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountParked  GPOAccount            @relation(fields: [accountId], references: [id], onDelete: Cascade)
   accountId      String
-  startTime      DateTime      @default(now())
+  startTime      DateTime              @default(now())
   shouldEndAt    DateTime?
   endTime        DateTime?
-  status         SessionStatus @default(ONGOING)
+  status         SessionStatus         @default(ONGOING)
+  rating         ParkingSessionRating?
   endedProperly  Boolean?
+}
+
+model ParkingSessionRating {
+  id        String     @id @default(cuid())
+  sessionId String     @unique
+  session   GPOSession @relation(fields: [sessionId], references: [id])
+  rating    Int
+  createdAt DateTime   @default(now())
 }
 
 model GPOViolation {
@@ -206,18 +215,18 @@ model UserFeedback {
   submittedAt DateTime    @default(now())
 }
 
-model UserSurvey {
-  id                   String     @id @default(uuid())
-  overallExperience    Int
-  easeOfUse            String
-  realtimeFeatures     String
-  qrFunctionality      String
-  notificationFeedback String
-  suggestions          String
-  likelyToRecommend    String
-  user                 GPOAccount @relation(fields: [userId], references: [id])
-  userId               String
-}
+// model UserSurvey {
+//   id                   String     @id @default(uuid())
+//   overallExperience    Int
+//   easeOfUse            String
+//   realtimeFeatures     String
+//   qrFunctionality      String
+//   notificationFeedback String
+//   suggestions          String
+//   likelyToRecommend    String
+//   user                 GPOAccount @relation(fields: [userId], references: [id])
+//   userId               String
+// }
 
 enum ReportStatus {
   PENDING

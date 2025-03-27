@@ -24,11 +24,6 @@ export const gpoNavLinks = [
 
 export const feedbackAndReports = [
   {
-    name: "Submit Feedback",
-    icon: <MessageCircle />,
-    link: "/gpo/dashboard/feedback",
-  },
-  {
     name: "Submit Report",
     icon: <Flag />,
     link: "/gpo/dashboard/submit-report",

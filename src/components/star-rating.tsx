@@ -25,7 +25,7 @@ export function StarRating({ rating, onRatingChange }: StarRatingProps) {
           onMouseLeave={() => setHover(0)}
           aria-label={`Rate ${star} stars out of 5`}
         >
-          <Star className="w-8 h-8" />
+          <Star fill="#fe7d55" className="w-8 h-8" />
         </button>
       ))}
     </div>

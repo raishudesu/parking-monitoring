@@ -15,7 +15,7 @@ import {
   AlertTriangle,
   LucideIcon,
 } from "lucide-react";
-import { getSurveyCountUseCase } from "@/use-cases/user-survey";
+// import { getSurveyCountUseCase } from "@/use-cases/user-survey";
 
 type CardProps = {
   title: string;
@@ -29,14 +29,14 @@ const Overview = async () => {
     getParkingSpaceCountUseCase(),
     getGpoCountUseCase(),
     getActiveGpoCountUseCase(),
-    getSurveyCountUseCase(),
+    // getSurveyCountUseCase(),
   ]);
 
   const [
     parkingSpaceResult,
     gpoCountResult,
     activeGpoCountResult,
-    surveyCount,
+    // surveyCount,
   ] = results;
 
   const renderCard = ({ title, value, icon: Icon, error }: CardProps) => (
@@ -65,7 +65,7 @@ const Overview = async () => {
   return (
     <Tabs defaultValue="overview" className="space-y-4">
       <TabsContent value="overview" className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {renderCard({
             title: "Parking Spaces",
             value:
@@ -102,14 +102,14 @@ const Overview = async () => {
                 ? activeGpoCountResult.reason.message
                 : null,
           })}
-          {renderCard({
+          {/* {renderCard({
             title: "Survey Submissions",
             value:
               surveyCount.status === "fulfilled"
                 ? surveyCount.value
                 : "Not Available",
             icon: ClipboardMinus,
-          })}
+          })} */}
         </div>
       </TabsContent>
     </Tabs>
