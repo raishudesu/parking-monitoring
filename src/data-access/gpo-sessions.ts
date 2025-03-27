@@ -117,6 +117,7 @@ export const getAllGpoSessions = async () => {
           password: true,
         },
       },
+      rating: true,
     },
     orderBy: {
       startTime: "desc",
@@ -135,6 +136,7 @@ export const getGpoSessionsByGpoId = async (accountId: string) => {
     take: 10,
     include: {
       parkingSpace: true,
+      rating: true,
     },
     orderBy: {
       startTime: "desc",
@@ -211,6 +213,7 @@ export const getRecentSessions = async () => {
           name: true,
         },
       },
+      rating: true,
     },
   });
 
@@ -289,6 +292,7 @@ export const getAffectedSessionsByDowntime = async (downtimeLogId: string) => {
           password: true,
         },
       },
+      rating: true,
     },
     orderBy: {
       startTime: "desc",

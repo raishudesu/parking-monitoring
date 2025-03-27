@@ -6,8 +6,10 @@ import { endSessionAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
 import { SquareParkingOff } from "lucide-react";
 import { useNotification } from "@/hooks/notification-hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Timer from "./parking-timer";
+import RatingDialog from "./rating-dialog";
+import { endGpoSessionUseCase } from "@/use-cases/gpo-sessions";
 
 export const TIMER_STORAGE_KEY = "activeParkingTimer";
 
@@ -22,6 +24,11 @@ const EndSessionBtn = ({
 }) => {
   const { isPending, execute } = useServerAction(endSessionAction);
   const { startTimer, stopTimer } = useNotification();
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [endedSession, setEndedSession] = useState<Awaited<
+    ReturnType<typeof endGpoSessionUseCase>
+  > | null>(null);
 
   // Start timer on mount if there's an active timer or session data
   useEffect(() => {
@@ -71,12 +78,15 @@ const EndSessionBtn = ({
       }
 
       if (data) {
+        setEndedSession(data);
         toast({
           title: "Parking session ended successfully.",
           description: "Thank you for using ParkSU!",
         });
         stopTimer();
         localStorage.removeItem(TIMER_STORAGE_KEY);
+
+        setOpen(true);
       }
     } catch (error) {
       console.error(error);
@@ -99,6 +109,11 @@ const EndSessionBtn = ({
           <span className="text-xl font-bold">End Session</span>
         </div>
       </Button>
+      <RatingDialog
+        open={open}
+        setOpen={setOpen}
+        sessionId={endedSession?.id}
+      />
     </>
   );
 };

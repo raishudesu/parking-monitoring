@@ -88,11 +88,6 @@ export const othersTab = [
     link: "/admin/dashboard/contact-form-submissions",
   },
   {
-    name: "Survey Results",
-    icon: <ClipboardPlus />,
-    link: "/admin/dashboard/surveys",
-  },
-  {
     name: "Reports",
     icon: <Flag />,
     link: "/admin/dashboard/reports",
