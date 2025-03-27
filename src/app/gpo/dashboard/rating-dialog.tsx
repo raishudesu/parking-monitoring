@@ -50,12 +50,12 @@ const RatingDialog = ({
   });
 
   // Reset form when sessionId changes
-  useEffect(() => {
-    form.reset({
-      sessionId: sessionId || "",
-      rating: 5,
-    });
-  }, [sessionId, form]);
+  // useEffect(() => {
+  //   form.reset({
+  //     sessionId: sessionId || "",
+  //     rating: 5,
+  //   });
+  // }, [sessionId, form]);
 
   const onSubmit = async (values: z.infer<typeof ratingSchema>) => {
     try {
@@ -75,6 +75,9 @@ const RatingDialog = ({
         title: "Rating submitted successfully",
         description: "Thank you for your valuable feedback!",
       });
+
+      router.refresh();
+
       setOpen(false); // Close dialog on success
     } catch (error) {
       toast({
@@ -87,7 +90,7 @@ const RatingDialog = ({
   };
 
   const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen);
+    // setOpen(isOpen);
     if (!isOpen) {
       // Revalidate when dialog closes
       router.refresh(); // Refreshes the current page, triggering revalidation

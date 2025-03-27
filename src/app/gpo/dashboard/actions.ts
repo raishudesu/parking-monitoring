@@ -1,7 +1,6 @@
 "use server";
 
 import { createServerAction } from "zsa";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { endGpoSessionUseCase } from "@/use-cases/gpo-sessions";
 import { createParkingSessionRating } from "@/data-access/parking-session-rating";
@@ -26,8 +25,6 @@ export const submitRatingAction = createServerAction()
       rating: input.rating,
       sessionId: input.sessionId,
     });
-
-    if (res) revalidatePath("/gpo/dashboard");
 
     return res;
   });
