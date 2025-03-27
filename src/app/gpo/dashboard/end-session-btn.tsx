@@ -27,10 +27,8 @@ const EndSessionBtn = ({
   const { isPending, execute } = useServerAction(endSessionAction);
   const { startTimer, stopTimer } = useNotification();
 
-  const [open, setOpen] = useState<boolean>(false);
-  // const [endedSession, setEndedSession] = useState<Awaited<
-  //   ReturnType<typeof endGpoSessionUseCase>
-  // > | null>(null);
+  const [showRatingDialog, setShowRatingDialog] = useState(false);
+  const [dialogSessionId, setDialogSessionId] = useState<string | null>(null);
 
   // Start timer on mount if there's an active timer or session data
   useEffect(() => {
@@ -81,15 +79,14 @@ const EndSessionBtn = ({
       }
 
       if (data) {
-        // setEndedSession(data);
+        setShowRatingDialog(true);
+        setDialogSessionId(sessionId);
         toast({
           title: "Parking session ended successfully.",
           description: "Thank you for using ParkSU!",
         });
         stopTimer();
         localStorage.removeItem(TIMER_STORAGE_KEY);
-
-        setOpen(true);
       }
     } catch (error) {
       console.error(error);
@@ -112,7 +109,13 @@ const EndSessionBtn = ({
           <span className="text-xl font-bold">End Session</span>
         </div>
       </Button>
-      <RatingDialog open={open} setOpen={setOpen} sessionId={sessionId} />
+      {showRatingDialog && (
+        <RatingDialog
+          open={true}
+          setOpen={setShowRatingDialog}
+          sessionId={dialogSessionId!}
+        />
+      )}
     </>
   );
 };
