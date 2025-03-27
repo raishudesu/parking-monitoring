@@ -3,16 +3,16 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
-// datasource db {
-//   provider  = "postgresql"
-//   url       = env("DATABASE_URL")
-//   directUrl = env("DIRECT_URL")
-// }
-
 datasource db {
-  provider = "sqlite"
-  url      = "file:./app.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./app.db"
+// }
 
 enum AdminRole {
   ADMIN
