@@ -6,6 +6,7 @@ import { AuthProvider } from "@/providers/session-provider";
 import { NotificationProvider } from "@/providers/notification-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import Pwa from "@/components/pwa";
+import RatingDialog from "./gpo/dashboard/rating-dialog";
 
 // const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({ weight: "500", subsets: ["latin"] });
@@ -45,6 +46,7 @@ export default async function RootLayout({
           <AuthProvider>
             <NotificationProvider>
               <main>{children}</main>
+              <RatingDialog />
               <Toaster />
             </NotificationProvider>
           </AuthProvider>

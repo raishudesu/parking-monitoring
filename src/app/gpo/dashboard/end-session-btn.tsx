@@ -27,9 +27,6 @@ const EndSessionBtn = ({
   const { isPending, execute } = useServerAction(endSessionAction);
   // const { startTimer, stopTimer } = useNotification();
 
-  const [showRatingDialog, setShowRatingDialog] = useState(false);
-  const [dialogSessionId, setDialogSessionId] = useState<string | null>(null);
-
   // Start timer on mount if there's an active timer or session data
   // useEffect(() => {
   //   const storedTimerData = JSON.parse(
@@ -64,7 +61,7 @@ const EndSessionBtn = ({
 
   const onEndSession = async () => {
     try {
-      const [data, err] = await execute(gpoAccountId);
+      const [data, err] = await execute({ sessionId, userId: gpoAccountId });
 
       if (err) {
         const parsedErrorData = await JSON.parse(err?.data);
@@ -79,9 +76,6 @@ const EndSessionBtn = ({
       }
 
       if (data) {
-        setShowRatingDialog(true);
-        setDialogSessionId(sessionId);
-
         // stopTimer();
         // localStorage.removeItem(TIMER_STORAGE_KEY);
 
@@ -111,13 +105,6 @@ const EndSessionBtn = ({
           <span className="text-xl font-bold">End Session</span>
         </div>
       </Button>
-      {showRatingDialog && (
-        <RatingDialog
-          open={true}
-          setOpen={setShowRatingDialog}
-          sessionId={dialogSessionId!}
-        />
-      )}
     </>
   );
 };

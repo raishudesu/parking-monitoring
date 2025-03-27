@@ -22,45 +22,55 @@ import { useServerAction } from "zsa-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { submitRatingAction } from "./actions";
 import { toast } from "@/components/ui/use-toast";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { ratingSchema } from "@/schemas/parking-session-rating";
 import { useRouter } from "next/navigation";
 import { StarRating } from "@/components/star-rating";
 
-const RatingDialog = ({
-  sessionId,
-  open,
-  setOpen,
-}: {
-  sessionId?: string; // Make it optional
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
+const RatingDialog = () => {
   const { isPending, execute } = useServerAction(submitRatingAction);
   const router = useRouter();
+  const [dialogData, setDialogData] = useState<{
+    sessionId: string;
+    timestamp: string;
+  } | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const checkRatingDialogCookie = async () => {
+      try {
+        const response = await fetch("/api/check-rating-dialog");
+        const data = await response.json();
+
+        if (data.showDialog) {
+          setDialogData({
+            sessionId: data.sessionId,
+            timestamp: data.timestamp,
+          });
+          form.setValue("sessionId", data.sessionId);
+          setIsOpen(true);
+        }
+      } catch (error) {
+        console.error("Error checking rating dialog:", error);
+      }
+    };
+
+    checkRatingDialogCookie();
+  }, []);
 
   const form = useForm<z.infer<typeof ratingSchema>>({
     resolver: zodResolver(ratingSchema),
     defaultValues: {
-      sessionId: sessionId || "",
+      sessionId: dialogData?.sessionId,
       rating: 5,
     },
   });
 
-  // Reset form when sessionId changes
-  // useEffect(() => {
-  //   form.reset({
-  //     sessionId: sessionId || "",
-  //     rating: 5,
-  //   });
-  // }, [sessionId, form]);
-
   const onSubmit = async (values: z.infer<typeof ratingSchema>) => {
     try {
       const [data, err] = await execute(values);
-
       if (err) {
         toast({
           title: "Oops... Something went wrong",
@@ -76,9 +86,11 @@ const RatingDialog = ({
         description: "Thank you for your valuable feedback!",
       });
 
-      router.refresh();
+      // Clear the rating dialog cookie
+      await fetch("/api/clear-rating-dialog", { method: "POST" });
 
-      setOpen(false); // Close dialog on success
+      router.refresh();
+      setIsOpen(false);
     } catch (error) {
       toast({
         title: "Error",
@@ -89,16 +101,19 @@ const RatingDialog = ({
     }
   };
 
-  const handleOpenChange = (isOpen: boolean) => {
-    // setOpen(isOpen);
-    if (!isOpen) {
-      // Revalidate when dialog closes
-      router.refresh(); // Refreshes the current page, triggering revalidation
+  const handleOpenChange = async (open: boolean) => {
+    if (!open) {
+      // Clear the rating dialog cookie when manually closed
+      await fetch("/api/clear-rating-dialog", { method: "POST" });
+      setIsOpen(false);
+      router.refresh();
     }
   };
 
+  if (!dialogData) return null;
+
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>How was your parking experience?</DialogTitle>
@@ -107,69 +122,60 @@ const RatingDialog = ({
             experience.
           </DialogDescription>
         </DialogHeader>
-        {sessionId ? (
-          <div className="flex flex-col items-center gap-4">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <FormField
-                  control={form.control}
-                  name="sessionId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          value={sessionId}
-                          className="hidden"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="rating"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Rate your parking experience</FormLabel>
-                      <FormControl>
-                        <Controller
-                          name="rating"
-                          control={form.control}
-                          render={({ field }) => (
-                            <StarRating
-                              rating={field.value}
-                              onRatingChange={(rating) =>
-                                field.onChange(rating)
-                              }
-                            />
-                          )}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full" disabled={isPending}>
-                  {isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit Feedback"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </div>
-        ) : (
-          <p>Loading session data...</p>
-        )}
+        <div className="flex flex-col items-center gap-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="sessionId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={dialogData.sessionId}
+                        className="hidden"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="rating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rate your parking experience</FormLabel>
+                    <FormControl>
+                      <Controller
+                        name="rating"
+                        control={form.control}
+                        render={({ field }) => (
+                          <StarRating
+                            rating={field.value}
+                            onRatingChange={(rating) => field.onChange(rating)}
+                          />
+                        )}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Feedback"
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   );
