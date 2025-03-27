@@ -25,42 +25,42 @@ const EndSessionBtn = ({
   sessionId: string;
 }) => {
   const { isPending, execute } = useServerAction(endSessionAction);
-  const { startTimer, stopTimer } = useNotification();
+  // const { startTimer, stopTimer } = useNotification();
 
   const [showRatingDialog, setShowRatingDialog] = useState(false);
   const [dialogSessionId, setDialogSessionId] = useState<string | null>(null);
 
   // Start timer on mount if there's an active timer or session data
-  useEffect(() => {
-    const storedTimerData = JSON.parse(
-      localStorage.getItem(TIMER_STORAGE_KEY) || "{}"
-    );
+  // useEffect(() => {
+  //   const storedTimerData = JSON.parse(
+  //     localStorage.getItem(TIMER_STORAGE_KEY) || "{}"
+  //   );
 
-    const startTimerFn = async (endAt: Date, parkingName: string) => {
-      await startTimer(endAt, parkingName);
-    };
+  //   const startTimerFn = async (endAt: Date, parkingName: string) => {
+  //     await startTimer(endAt, parkingName);
+  //   };
 
-    if (storedTimerData?.shouldEndAt && storedTimerData?.parkingSpaceName) {
-      // Parse shouldEndAt date back from string
-      const endAt = new Date(storedTimerData.shouldEndAt);
+  //   if (storedTimerData?.shouldEndAt && storedTimerData?.parkingSpaceName) {
+  //     // Parse shouldEndAt date back from string
+  //     const endAt = new Date(storedTimerData.shouldEndAt);
 
-      if (endAt > new Date()) {
-        startTimerFn(endAt, storedTimerData.parkingSpaceName);
-      } else {
-        localStorage.removeItem(TIMER_STORAGE_KEY); // Clear if expired
-      }
-    } else {
-      // If no stored data, use provided props to start a new timer
-      startTimerFn(shouldEndAt, parkingSpaceName);
-      localStorage.setItem(
-        TIMER_STORAGE_KEY,
-        JSON.stringify({
-          shouldEndAt: shouldEndAt.toISOString(),
-          parkingSpaceName,
-        })
-      );
-    }
-  }, []);
+  //     if (endAt > new Date()) {
+  //       startTimerFn(endAt, storedTimerData.parkingSpaceName);
+  //     } else {
+  //       localStorage.removeItem(TIMER_STORAGE_KEY); // Clear if expired
+  //     }
+  //   } else {
+  //     // If no stored data, use provided props to start a new timer
+  //     startTimerFn(shouldEndAt, parkingSpaceName);
+  //     localStorage.setItem(
+  //       TIMER_STORAGE_KEY,
+  //       JSON.stringify({
+  //         shouldEndAt: shouldEndAt.toISOString(),
+  //         parkingSpaceName,
+  //       })
+  //     );
+  //   }
+  // }, []);
 
   const onEndSession = async () => {
     try {
@@ -81,12 +81,14 @@ const EndSessionBtn = ({
       if (data) {
         setShowRatingDialog(true);
         setDialogSessionId(sessionId);
+
+        // stopTimer();
+        // localStorage.removeItem(TIMER_STORAGE_KEY);
+
         toast({
           title: "Parking session ended successfully.",
           description: "Thank you for using ParkSU!",
         });
-        stopTimer();
-        localStorage.removeItem(TIMER_STORAGE_KEY);
       }
     } catch (error) {
       console.error(error);
