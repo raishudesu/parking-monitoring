@@ -18,8 +18,6 @@ const nextConfig = {
       },
     ],
   },
-  reactStrictMode: false,
-  swcMinify: true,
 };
 
 // const withPWA = withPWAInit({
