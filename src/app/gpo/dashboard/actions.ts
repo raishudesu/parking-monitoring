@@ -29,7 +29,7 @@ export const endSessionAction = createServerAction()
         );
       }
 
-      revalidatePath("/gpo/dashboard");
+      revalidatePath("/");
 
       return [res, null];
     } catch (error) {

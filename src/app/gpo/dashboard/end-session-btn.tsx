@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Timer from "./parking-timer";
 import RatingDialog from "./rating-dialog";
 import { endGpoSessionUseCase } from "@/use-cases/gpo-sessions";
+import { useRouter } from "next/navigation";
 
 export const TIMER_STORAGE_KEY = "activeParkingTimer";
 
@@ -25,6 +26,7 @@ const EndSessionBtn = ({
   sessionId: string;
 }) => {
   const { isPending, execute } = useServerAction(endSessionAction);
+  const router = useRouter();
   // const { startTimer, stopTimer } = useNotification();
 
   // Start timer on mount if there's an active timer or session data
@@ -83,6 +85,8 @@ const EndSessionBtn = ({
           title: "Parking session ended successfully.",
           description: "Thank you for using ParkSU!",
         });
+
+        router.refresh();
       }
     } catch (error) {
       console.error(error);
