@@ -17,18 +17,20 @@ const EndSessionBtn = ({
   gpoAccountId,
   shouldEndAt,
   parkingSpaceName,
+  sessionId,
 }: {
   gpoAccountId: string;
   shouldEndAt: Date;
   parkingSpaceName: string;
+  sessionId: string;
 }) => {
   const { isPending, execute } = useServerAction(endSessionAction);
   const { startTimer, stopTimer } = useNotification();
 
   const [open, setOpen] = useState<boolean>(false);
-  const [endedSession, setEndedSession] = useState<Awaited<
-    ReturnType<typeof endGpoSessionUseCase>
-  > | null>(null);
+  // const [endedSession, setEndedSession] = useState<Awaited<
+  //   ReturnType<typeof endGpoSessionUseCase>
+  // > | null>(null);
 
   // Start timer on mount if there's an active timer or session data
   useEffect(() => {
@@ -61,6 +63,7 @@ const EndSessionBtn = ({
       );
     }
   }, []);
+
   const onEndSession = async () => {
     try {
       const [data, err] = await execute(gpoAccountId);
@@ -78,7 +81,7 @@ const EndSessionBtn = ({
       }
 
       if (data) {
-        setEndedSession(data);
+        // setEndedSession(data);
         toast({
           title: "Parking session ended successfully.",
           description: "Thank you for using ParkSU!",
@@ -109,11 +112,7 @@ const EndSessionBtn = ({
           <span className="text-xl font-bold">End Session</span>
         </div>
       </Button>
-      <RatingDialog
-        open={open}
-        setOpen={setOpen}
-        sessionId={endedSession?.id}
-      />
+      <RatingDialog open={open} setOpen={setOpen} sessionId={sessionId} />
     </>
   );
 };

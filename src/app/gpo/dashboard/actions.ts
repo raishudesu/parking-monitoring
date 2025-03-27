@@ -10,10 +10,13 @@ import { ratingSchema } from "@/schemas/parking-session-rating";
 export const endSessionAction = createServerAction()
   .input(z.string())
   .handler(async ({ input }) => {
-    // console.log(input);
-    const res = await endGpoSessionUseCase(input);
-
-    return res;
+    try {
+      const res = await endGpoSessionUseCase(input);
+      return [res, null];
+    } catch (error) {
+      console.error("Error in endSessionAction:", error);
+      return [null, { message: "Failed to end session" }];
+    }
   });
 
 export const submitRatingAction = createServerAction()
@@ -24,7 +27,7 @@ export const submitRatingAction = createServerAction()
       sessionId: input.sessionId,
     });
 
-    if (res) revalidatePath("/gpo/dashboard/parking-spaces");
+    if (res) revalidatePath("/gpo/dashboard");
 
     return res;
   });
