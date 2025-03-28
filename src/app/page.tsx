@@ -12,6 +12,7 @@ import Image from "next/image";
 import FeedbackForm from "@/components/feedback-form";
 import { ModeToggle } from "@/components/mode-toggle";
 import Logo from "@/components/logo";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 export default function Home() {
   const textAnimation = `animate-text bg-gradient-to-r from-[#FE7D55] via-purple-400 to-orange-500 bg-clip-text font-black text-transparent`;
@@ -68,8 +69,13 @@ export default function Home() {
         </nav>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        <section
+          className="w-full py-12 md:py-24 lg:py-32 relative flex justify-center
+        bg-[url('/form-bg.png')]
+        bg-cover bg-center bg-no-repeat"
+        >
+          <div className="absolute inset-0 bg-sidebar/30 dark:bg-sidebar-foreground/10 backdrop-blur-sm"></div>
+          <div className="container px-4 md:px-6 z-10 max-w-screen-lg flex justify-center mx-auto">
             <div className="grid gap-6 text-center">
               <div className="flex flex-col justify-center items-center space-y-4">
                 <div className="flex flex-col items-center gap-6 text-center space-y-2">
@@ -80,10 +86,10 @@ export default function Home() {
                     Real-Time Parking Monitoring with Analytics and
                     Visualization
                   </h1>
-                  <p className="text-center text-muted-foreground md:text-xl">
+                  <p className="text-center text-primary-foreground md:text-xl">
                     Our web-based parking monitoring system provides real-time
                     data on parking availability, occupancy, and trends to help
-                    you optimize your parking infrastructure.
+                    you optimize parking infrastructure.
                   </p>
                 </div>
                 <div className="flex flex-col md:flex-row gap-2">
@@ -119,27 +125,27 @@ export default function Home() {
         >
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2 text-center md:text-start">
+              <div className="space-y-2 text-center">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   Real-Time Parking Monitoring
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our system provides real-time data on parking availability,
-                  occupancy, and trends to help you make informed decisions
-                  about your parking infrastructure.
+                  ParkSU provides real-time data on parking availability,
+                  occupancy, and trends.
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-2 lg:gap-12">
-              <Image
-                src={"/realtime.png"}
-                alt="Real-Time Monitoring"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-                width="550"
-                height="310"
-              />
+            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:gap-12">
+              <AspectRatio ratio={16 / 9} className="bg-muted">
+                <Image
+                  src="/realtime.png"
+                  alt="Realtime Parking Dashboard"
+                  fill
+                  className="h-full w-full rounded-md object-cover"
+                />
+              </AspectRatio>
               <div className="flex flex-col justify-center space-y-4">
-                <ul className="grid gap-6 text-center md:text-start ">
+                <ul className="grid gap-6 text-center">
                   <li>
                     <div className="grid gap-1">
                       <h3 className="text-xl font-bold">
@@ -147,7 +153,7 @@ export default function Home() {
                       </h3>
                       <p className="text-muted-foreground">
                         Monitor the availability of parking spaces in real-time
-                        to optimize your parking infrastructure.
+                        to optimize parking infrastructure.
                       </p>
                     </div>
                   </li>
@@ -174,23 +180,22 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section id="analytics" className="w-full py-12 md:py-24 lg:py-32">
+        <section
+          id="analytics"
+          className="w-full py-12 md:py-24 lg:py-32 max-w-screen-lg flex justify-center mx-auto"
+        >
           <div className="container px-4 md:px-6">
-            <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
-              <div className="text-center md:text-start space-y-2">
+            <div className="grid items-center gap-6 lg:gap-12">
+              <div className="text-center space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                   Powerful Data Analytics
                 </h2>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Our data analytics dashboard provides deep insights into your
                   parking usage, helping you make informed decisions to optimize
-                  your infrastructure.
+                  parking infrastructure.
                 </p>
-                <ul className="grid gap-2 py-4 text-center md:text-start ">
-                  <li>
-                    <CheckIcon className="mr-2 inline-block h-4 w-4" />
-                    Customizable dashboards and reports
-                  </li>
+                <ul className="grid gap-2 py-4 text-center">
                   <li>
                     <CheckIcon className="mr-2 inline-block h-4 w-4" />
                     Historical trend analysis
@@ -201,13 +206,14 @@ export default function Home() {
                   </li>
                 </ul>
               </div>
-              <Image
-                src={"/analytics.png"}
-                alt="Data Analytics"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-                width="550"
-                height="310"
-              />
+              <AspectRatio ratio={16 / 9} className="bg-muted">
+                <Image
+                  src="/analytics.png"
+                  alt="Analytics Dashboard"
+                  fill
+                  className="h-full w-full rounded-md object-cover"
+                />
+              </AspectRatio>
             </div>
           </div>
         </section>
@@ -215,36 +221,33 @@ export default function Home() {
           id="visualization"
           className="w-full py-12 md:py-24 lg:py-32 bg-muted"
         >
-          <div className="container px-4 md:px-6">
-            <div className="grid items-center gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
-              <Image
-                src={"/mapping.png"}
-                alt="Data Visualization"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-                width="550"
-                height="310"
-              />
-              <div className="text-center md:text-start space-y-2">
+          <div className="container px-4 md:px-6 max-w-screen-lg flex justify-center mx-auto">
+            <div className="grid items-center gap-6">
+              <AspectRatio ratio={16 / 9} className="bg-muted">
+                <Image
+                  src="/mapping.png"
+                  alt="Parking Spaces Mapping"
+                  fill
+                  className="h-full w-full rounded-md object-cover"
+                />
+              </AspectRatio>
+              <div className="text-center space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                   Intuitive Data Visualization
                 </h2>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Our data visualization tools make it easy to understand and
                   interpret your parking data, with interactive charts, graphs,
                   and maps.
                 </p>
-                <ul className="grid gap-2 py-4 text-center md:text-start ">
+                <ul className="grid gap-2 py-4 text-center ">
                   <li>
                     <CheckIcon className="mr-2 inline-block h-4 w-4" />
                     Interactive charts and graphs
                   </li>
                   <li>
                     <CheckIcon className="mr-2 inline-block h-4 w-4" />
-                    Geospatial mapping of parking locations
-                  </li>
-                  <li>
-                    <CheckIcon className="mr-2 inline-block h-4 w-4" />
-                    Customizable dashboards
+                    Mapping of parking locations
                   </li>
                 </ul>
               </div>
@@ -252,19 +255,19 @@ export default function Home() {
           </div>
         </section>
         <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <div className="text-center md:text-start flex flex-col items-center justify-center space-y-4">
+          <div className="container px-4 md:px-6 max-w-screen-lg flex justify-center mx-auto">
+            <div className="text-center flex flex-col items-center justify-center space-y-4">
               <div className=" space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
                   What Our Users Say
                 </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Hear from our satisfied users about how our parking monitoring
                   system has helped them optimize their parking experience.
                 </p>
               </div>
               <div className="grid max-w-5xl gap-6 sm:grid-cols-2 md:grid-cols-3">
-                <div className="flex flex-col items-center md:items-start  space-y-4 rounded-lg bg-background p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-4 rounded-lg bg-background p-6 shadow-sm">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8 border">
                       <AvatarImage
@@ -282,7 +285,7 @@ export default function Home() {
                     recommended!&ldquo;
                   </p>
                 </div>
-                <div className="flex flex-col items-center md:items-start  space-y-4 rounded-lg bg-background p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-4 rounded-lg bg-background p-6 shadow-sm">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8 border">
                       <AvatarImage
@@ -299,7 +302,7 @@ export default function Home() {
                     game-changer for an organization.&ldquo;
                   </p>
                 </div>
-                <div className="flex flex-col items-center md:items-start space-y-4 rounded-lg bg-background p-6 shadow-sm">
+                <div className="flex flex-col items-center space-y-4 rounded-lg bg-background p-6 shadow-sm">
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8 border">
                       <AvatarImage
