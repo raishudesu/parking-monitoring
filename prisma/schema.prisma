@@ -157,13 +157,19 @@ model ParkingSpace {
   relatedReports       DriverBehaviorReport[]
 }
 
+enum ParkingSpaceImageType {
+  DEFAULT
+  PANORAMIC
+}
+
 model ParkingSpaceImage {
-  id             String       @id @default(uuid())
+  id             String                @id @default(uuid())
   url            String
   path           String
   parkingSpaceId String
-  parkingSpace   ParkingSpace @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
-  uploadedAt     DateTime     @default(now())
+  parkingSpace   ParkingSpace          @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
+  type           ParkingSpaceImageType @default(DEFAULT)
+  uploadedAt     DateTime              @default(now())
 }
 
 model Admin {
