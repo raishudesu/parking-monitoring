@@ -155,6 +155,7 @@ const ParkingSpaceUpdateForm = ({
         form.setValue(fieldName, {
           url: publicUrl.data.publicUrl,
           path: result.path,
+          type: "DEFAULT",
         });
 
         toast({
@@ -244,51 +245,7 @@ const ParkingSpaceUpdateForm = ({
             </FormItem>
           )}
         />
-        {/* <FormItem>
-          <FormLabel>Location</FormLabel>
-          <MapPicker
-            onLocationPicked={handleLocationPicked}
-            isLoaded={isLoaded}
-          />
-        </FormItem>
-        <FormField
-          control={form.control}
-          name="longitude"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Longitude</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter longitude"
-                  disabled={isPending}
-                  readOnly
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="latitude"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Latitude</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  className="w-full"
-                  placeholder="Enter Latitude"
-                  disabled={isPending}
-                  readOnly
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+
         <FormItem>
           <FormLabel>Polygon & Location</FormLabel>
           <PolygonCreator
@@ -373,7 +330,7 @@ const ParkingSpaceUpdateForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-semibold">
-                    Parking Space Panorama
+                    Parking Space Image
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -432,6 +389,37 @@ const ParkingSpaceUpdateForm = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name={`images.${index}.type`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">
+                    Parking Image Type
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={isAdmin || isPending}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Parking Space Image Type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="DEFAULT">DEFAULT</SelectItem>
+                      <SelectItem value="PANORAMIC">PANORAMIC</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* <FormDescription>
+                                Upload an image for tier {index + 1} reward.
+                              </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button
               type="button"
               variant="secondary"
@@ -449,6 +437,7 @@ const ParkingSpaceUpdateForm = ({
             append({
               url: "",
               path: "",
+              type: "DEFAULT",
             })
           }
           className="mt-4 self-start"

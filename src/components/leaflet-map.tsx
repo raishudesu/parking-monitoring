@@ -17,7 +17,6 @@ import {
   parsePolygonCoordinates,
 } from "@/utils/leaflet-map-utils";
 import "leaflet/dist/leaflet.css";
-import PanellumViewerDialog from "@/app/gpo/dashboard/map/panellum-viewer-dialog";
 import { useState, useEffect, Fragment, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import RoutingComponent from "./routing-component";
@@ -34,6 +33,7 @@ import {
 } from "@/components/ui/drawer";
 import PanToLocationButton from "./pan-to-user-location";
 import { useSession } from "next-auth/react";
+import ImageViewerDialog from "@/app/gpo/dashboard/map/image-viewer";
 
 export interface LatLng {
   lat: number;
@@ -220,7 +220,7 @@ const LeafletMap = ({
                       {parkingSpace.reservedCapacity}
                     </div>
                     <div className="w-full mt-6">
-                      <PanellumViewerDialog
+                      <ImageViewerDialog
                         parkingName={parkingSpace.name}
                         images={parkingSpace.images}
                       />

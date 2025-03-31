@@ -81,6 +81,7 @@ export const parkingSpaceSchema = z.object({
       url: z.string(),
       parkingSpaceId: z.string().optional(),
       path: z.string(),
+      type: z.enum(["DEFAULT", "PANORAMIC"]),
     })
   ),
 });
@@ -107,6 +108,7 @@ export const parkingSpaceFormSchema = z.object({
       url: z.string(),
       parkingSpaceId: z.string().optional(),
       path: z.string(),
+      type: z.enum(["DEFAULT", "PANORAMIC"]),
     })
   ),
 });
