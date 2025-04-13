@@ -150,11 +150,11 @@ export default function UserDetails({
           <div className="mt-6">
             <CreditScore creditScore={user.creditScore as number} />
           </div>
-          <div className="mt-6 flex md:justify-end">
+          <div className="mt-6 flex">
             {/* <Button onClick={() => setIsEditing(!isEditing)}>
               {isEditing ? "Save Changes" : "Edit Profile"}
             </Button> */}
-            <div className="flex gap-2">
+            <div className="w-full flex gap-2 flex-col justify-center md:flex-row">
               <AccountUpdateDialog
                 accountId={user.id}
                 data={user}
