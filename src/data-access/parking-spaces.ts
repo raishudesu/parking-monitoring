@@ -67,10 +67,17 @@ export const updateParkingSpaceById = async (
     },
   });
 
+  await prisma.parkingSpaceImage.deleteMany({
+    where: {
+      parkingSpaceId,
+    },
+  });
+
   await prisma.parkingSpaceImage.createMany({
     data: images.map((image) => ({
       url: image.url,
       path: image.path,
+      type: image.type,
       parkingSpaceId,
     })),
   });
