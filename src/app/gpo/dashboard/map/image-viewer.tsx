@@ -50,7 +50,7 @@ const ImageViewerDialog = ({
         <DialogHeader>
           <DialogTitle>{parkingName} Images</DialogTitle>
         </DialogHeader>
-        <div className="w-full min-h-[32rem]">
+        <div className="w-full min-h-[32rem] flex items-center">
           {images && images.length > 0 ? (
             <>
               {images[currentImageIndex].type === "DEFAULT" ? (
