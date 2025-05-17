@@ -240,9 +240,13 @@ export const driverBehaviorReportSchema = z.object({
   parkingSpaceId: z.string(),
   reportType: z.enum([
     "UNAUTHORIZED_PARKING",
-    "BLOCKING_OTHER_VEHICLES",
-    "PROLONGED_PARKING",
     "RECKLESS_DRIVING",
+    "IMPROPER_PARKING",
+    "DOUBLE_PARKING",
+    "NO_GATE_PASS",
+    "WRONG_PARKING_TYPE",
+    "VEHICLE_ABANDONMENT",
+    "VANDALISM",
     "OTHER",
   ]),
   otherDescription: z

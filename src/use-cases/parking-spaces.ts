@@ -8,6 +8,7 @@ import {
   updateParkingSpaceById,
 } from "@/data-access/parking-spaces";
 import { parkingSpaceSchema } from "@/lib/zod";
+import { ParkingSpaceType } from "@prisma/client";
 import { z } from "zod";
 
 export const createParkingSpaceUseCase = async (
@@ -42,34 +43,29 @@ export const getParkingSpaceOptionsUseCase = async () => {
   return options;
 };
 
-export const getAllParkingSpacesUseCase = async () => {
-  const parkingSpaces = await getAllParkingSpaces();
+export const getAllParkingSpacesUseCase = async ({
+  page = 1,
+  limit = 10,
+  nameFilter = "",
+  spaceTypeFilter = undefined,
+}: {
+  page?: number;
+  limit?: number;
+  nameFilter?: string;
+  spaceTypeFilter?: ParkingSpaceType;
+}) => {
+  const skip = (page - 1) * limit;
 
-  return parkingSpaces;
-};
-
-export const getAvailableSpacesUseCase = async () => {
-  const parkingSpaces = await getAllParkingSpaces();
-
-  const availableSpaces = parkingSpaces.filter((space) => {
-    if (space.currCapacity) {
-      return space.currCapacity < space.maxCapacity;
-    }
-
-    return space;
+  const { parkingSpaces, totalCount } = await getAllParkingSpaces({
+    skip,
+    take: limit,
+    nameFilter,
+    spaceTypeFilter,
   });
 
-  return availableSpaces;
-};
+  const pageCount = Math.ceil(totalCount / limit);
 
-export const getUnavailableSpacesUseCase = async () => {
-  const parkingSpaces = await getAllParkingSpaces();
-
-  const unavailableSpaces = parkingSpaces.filter(
-    (space) => space.currCapacity === space.maxCapacity
-  );
-
-  return unavailableSpaces;
+  return { data: parkingSpaces, totalCount, pageCount };
 };
 
 export const updateParkingSpaceByIdUseCase = async (

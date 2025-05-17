@@ -1,9 +1,9 @@
-import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
 import SideSheetMap from "./side-sheet-map";
 import LeafletMap from "@/components/leaflet-map";
+import { getAllParkingSpacesForGpo } from "@/data-access/parking-spaces";
 
 const MapPage = async () => {
-  const parkingSpaces = await getAllParkingSpacesUseCase();
+  const parkingSpaces = await getAllParkingSpacesForGpo();
 
   return (
     <div className="relative w-full flex flex-col">

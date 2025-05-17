@@ -1,26 +1,57 @@
 import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
 import { ParkingSpaceTable } from "./parking-space-table";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
 import dynamic from "next/dynamic";
-import { ParkingSpaceWithImages } from "@/types/map";
+import { ParkingSpaceType } from "@prisma/client";
+import { Suspense } from "react";
+import LoadingTable from "@/components/loading-table";
+import { getAllParkingSpacesForGpo } from "@/data-access/parking-spaces";
 
 const LeafletMap = dynamic(() => import("@/components/leaflet-map"), {
   ssr: false,
 });
 
-const ParkingSpacesPage = async () => {
-  let parkingSpaces: ParkingSpaceWithImages[] | null = null;
-  let error: string | null = null;
+const ParkingSpaceTableWithData = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    page?: string;
+    name?: string;
+    spaceType?: ParkingSpaceType;
+  }>;
+}) => {
+  const awaitedParams = await searchParams;
+  const currentPage = Number(awaitedParams.page) || 1;
+  const pageSize = 10;
+  const nameFilter = awaitedParams.name || "";
+  const spaceTypeFilter = awaitedParams.spaceType || undefined;
 
-  try {
-    const fetchedParkingSpaces = await getAllParkingSpacesUseCase();
-    parkingSpaces = fetchedParkingSpaces as ParkingSpaceWithImages[];
-  } catch (err) {
-    console.error("Error fetching data:", err);
-    error =
-      "There was an error fetching the colleges data. Please try again later.";
-  }
+  const { data, totalCount, pageCount } = await getAllParkingSpacesUseCase({
+    page: currentPage,
+    limit: pageSize,
+    nameFilter,
+    spaceTypeFilter,
+  });
+
+  return (
+    <ParkingSpaceTable
+      data={data}
+      totalCount={totalCount}
+      pageCount={pageCount}
+      currentPage={currentPage}
+    />
+  );
+};
+
+const ParkingSpacesPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    page?: string;
+    name?: string;
+    spaceType?: ParkingSpaceType;
+  }>;
+}) => {
+  const parkingSpaces = await getAllParkingSpacesForGpo();
 
   return (
     <div className="w-full flex flex-col p-6">
@@ -32,29 +63,11 @@ const ParkingSpacesPage = async () => {
           Parking Spaces
         </h1>
       </div>
-      {error ? (
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : parkingSpaces ? (
-        <>
-          <ParkingSpaceTable data={parkingSpaces} />
-          <h2 className="py-6 text-muted-foreground scroll-m-20 text-2xl tracking-tight lg:text-3xl">
-            Parking Space Visualization
-          </h2>
-          <LeafletMap parkingSpaces={parkingSpaces} />
-        </>
-      ) : (
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>No Data</AlertTitle>
-          <AlertDescription>
-            No parking space data available at the moment.
-          </AlertDescription>
-        </Alert>
-      )}
+
+      <Suspense fallback={<LoadingTable />}>
+        <ParkingSpaceTableWithData searchParams={searchParams} />
+        <LeafletMap parkingSpaces={parkingSpaces} />
+      </Suspense>
     </div>
   );
 };

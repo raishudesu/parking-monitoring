@@ -32,13 +32,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "next/image";
+import { ReportType as ReportTypePrisma } from "@prisma/client";
 
-type ReportType =
-  | "UNAUTHORIZED_PARKING"
-  | "BLOCKING_OTHER_VEHICLES"
-  | "PROLONGED_PARKING"
-  | "RECKLESS_DRIVING"
-  | "OTHER";
+type ReportType = ReportTypePrisma;
 
 interface Report {
   reportedByAccount: {
@@ -85,10 +81,14 @@ interface ReportCard {
 }
 
 const reportTypeLabels: Record<ReportType, string> = {
-  UNAUTHORIZED_PARKING: "Unauthorized Parking",
-  BLOCKING_OTHER_VEHICLES: "Blocking Other Vehicles",
-  PROLONGED_PARKING: "Prolonged Parking",
+  UNAUTHORIZED_PARKING: "Unauthorized Parking (PWD, VIP, Reserved)",
   RECKLESS_DRIVING: "Reckless Driving",
+  IMPROPER_PARKING: "Improper Parking",
+  DOUBLE_PARKING: "Double Parking",
+  NO_GATE_PASS: "No Gate Pass",
+  WRONG_PARKING_TYPE: "Wrong Parking Type",
+  VEHICLE_ABANDONMENT: "Vehicle Abandonment",
+  VANDALISM: "Vandalism",
   OTHER: "Other",
 };
 

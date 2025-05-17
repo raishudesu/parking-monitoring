@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
 import { getDowntimeLogById } from "./downtime-log";
+import { SessionStatus } from "@prisma/client";
 
 // LIMITED TO ONE PARKING SESSION
 // GPO SESSION CREATION
@@ -108,23 +109,56 @@ export const getOngoingGpoSession = async (accountId: string) => {
 };
 
 // GETTING ALL GPO SESSIONS
-export const getAllGpoSessions = async () => {
-  const allGpoSessions = await prisma.gPOSession.findMany({
-    include: {
-      parkingSpace: true,
+export const getAllGpoSessions = async ({
+  skip = 0,
+  take = 10,
+  emailFilter = "",
+  statusFilter = undefined,
+}: {
+  skip?: number;
+  take?: number;
+  emailFilter?: string;
+  statusFilter?: SessionStatus;
+}) => {
+  const where = {
+    ...(emailFilter && {
       accountParked: {
-        omit: {
-          password: true,
+        email: {
+          contains: emailFilter,
         },
       },
-      rating: true,
-    },
-    orderBy: {
-      startTime: "desc",
-    },
-  });
+    }),
+    ...(statusFilter && {
+      status: {
+        equals: statusFilter,
+      },
+    }),
+  };
 
-  return allGpoSessions;
+  const [sessions, totalCount] = await Promise.all([
+    prisma.gPOSession.findMany({
+      where,
+      skip,
+      take,
+      include: {
+        parkingSpace: true,
+        accountParked: {
+          omit: {
+            password: true,
+          },
+        },
+        rating: true,
+      },
+      orderBy: {
+        startTime: "desc",
+      },
+    }),
+    prisma.gPOSession.count({
+      where,
+    }),
+  ]);
+
+  return { sessions, totalCount };
 };
 
 // GET ALL SESSIONS OF A GPO
@@ -267,37 +301,70 @@ export const getEndingSessions = async (minutesBeforeEnd = 30) => {
   return endingSessions;
 };
 
-export const getAffectedSessionsByDowntime = async (downtimeLogId: string) => {
-  const downtimeLog = await getDowntimeLogById(downtimeLogId);
+export const getAffectedSessionsByDowntime = async ({
+  downTimeLogId,
+  skip = 0,
+  take = 10,
+  emailFilter = "",
+  statusFilter = undefined,
+}: {
+  downTimeLogId: string;
+  skip?: number;
+  take?: number;
+  emailFilter?: string;
+  statusFilter?: SessionStatus;
+}) => {
+  const downtimeLog = await getDowntimeLogById(downTimeLogId);
 
   if (!downtimeLog) {
     throw new Error("Downtime log not found");
   }
 
-  // Find sessions that should have ended during the downtime but were ended after the downtime
-  const affectedSessions = await prisma.gPOSession.findMany({
-    where: {
-      shouldEndAt: {
-        gte: downtimeLog.startedAt,
-        lte: downtimeLog.endedAt,
-      },
-      endTime: {
-        gt: downtimeLog.endedAt, // Session was ended after the downtime
-      },
-    },
-    include: {
-      parkingSpace: true,
+  const where = {
+    ...(emailFilter && {
       accountParked: {
-        omit: {
-          password: true,
+        email: {
+          contains: emailFilter,
         },
       },
-      rating: true,
+    }),
+    ...(statusFilter && {
+      status: {
+        equals: statusFilter,
+      },
+    }),
+    shouldEndAt: {
+      gte: downtimeLog.startedAt,
+      lte: downtimeLog.endedAt,
     },
-    orderBy: {
-      startTime: "desc",
+    endTime: {
+      gt: downtimeLog.endedAt, // Session was ended after the downtime
     },
-  });
+  };
 
-  return affectedSessions;
+  // Find sessions that should have ended during the downtime but were ended after the downtime
+  const [affectedSessions, totalCount] = await Promise.all([
+    prisma.gPOSession.findMany({
+      where,
+      skip,
+      take,
+      include: {
+        parkingSpace: true,
+        accountParked: {
+          omit: {
+            password: true,
+          },
+        },
+        rating: true,
+      },
+      orderBy: {
+        startTime: "desc",
+      },
+    }),
+    prisma.gPOSession.count({
+      where,
+    }),
+  ]);
+
+  return { affectedSessions, totalCount };
 };

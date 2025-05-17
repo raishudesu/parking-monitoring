@@ -1,34 +1,45 @@
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { getAffectedSessionsByDowntimeUseCase } from "@/use-cases/gpo-violations";
 import { getDowntimeLogByIdUseCase } from "@/use-cases/downtime-log";
 import { DowntimeLogCard } from "./downtime-log-card";
 import { SessionsTable } from "../../sessions/sessions-table";
 import WaiveCreditDeductionsBtn from "./waive-credit-deductions-btn";
-import { Badge } from "@/components/ui/badge";
-import { AlertTriangleIcon, CheckCircleIcon } from "lucide-react";
+import { Suspense } from "react";
+import LoadingTable from "@/components/loading-table";
+import { SessionStatus } from "@prisma/client";
 
-const DowntimeLogPage = async ({ params }: { params: Params }) => {
-  const { id } = params;
+const SessionsTableWithData = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    id: string;
+    page?: string;
+    email?: string;
+    status?: SessionStatus;
+  }>;
+}) => {
+  const awaitedParams = await searchParams;
+  const currentPage = Number(awaitedParams.page) || 1;
+  const pageSize = 10;
+  const emailFilter = awaitedParams.email || "";
+  const statusFilter = awaitedParams.status || undefined;
 
   const [downtimeLog, affectedSessions] = await Promise.all([
-    getDowntimeLogByIdUseCase(id),
-    getAffectedSessionsByDowntimeUseCase(id),
+    getDowntimeLogByIdUseCase(awaitedParams.id),
+    getAffectedSessionsByDowntimeUseCase({
+      downTimeLogId: awaitedParams.id,
+      page: currentPage,
+      limit: pageSize,
+      emailFilter,
+      statusFilter,
+    }),
   ]);
 
-  const accountIds = affectedSessions
+  const accountIds = affectedSessions.data
     .filter((session) => session.accountParked) // Ensure session has an accountParked object
     .map((session) => session.accountParked.id); // Extract the id from accountParked
 
   return (
-    <div className="w-full flex flex-col p-6">
-      <div className="pb-6 flex flex-col gap-3">
-        <div className="text-lg text-muted-foreground">
-          Administrator Dashboard
-        </div>
-        <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
-          Downtime Log
-        </h1>
-      </div>
+    <>
       <DowntimeLogCard downtimeLog={downtimeLog} />
       <div className="mt-6 flex justify-between flex-wrap items-center">
         <div>
@@ -42,10 +53,46 @@ const DowntimeLogPage = async ({ params }: { params: Params }) => {
           </small>
         </div>
         {downtimeLog?.areViolationsWaived ? null : (
-          <WaiveCreditDeductionsBtn logId={id} accountIds={accountIds} />
+          <WaiveCreditDeductionsBtn
+            logId={awaitedParams.id}
+            accountIds={accountIds}
+          />
         )}
       </div>
-      <SessionsTable data={affectedSessions} />
+      <SessionsTable
+        data={affectedSessions.data}
+        totalCount={affectedSessions.totalCount}
+        pageCount={affectedSessions.pageCount}
+        currentPage={currentPage}
+      />
+    </>
+  );
+};
+
+const DowntimeLogPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    id: string;
+    page?: string;
+    email?: string;
+    status?: SessionStatus;
+  }>;
+}) => {
+  return (
+    <div className="w-full flex flex-col p-6">
+      <div className="pb-6 flex flex-col gap-3">
+        <div className="text-lg text-muted-foreground">
+          Administrator Dashboard
+        </div>
+        <h1 className="text-primary scroll-m-20 text-4xl tracking-tight lg:text-5xl">
+          Downtime Log
+        </h1>
+      </div>
+
+      <Suspense fallback={<LoadingTable />}>
+        <SessionsTableWithData searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 };
