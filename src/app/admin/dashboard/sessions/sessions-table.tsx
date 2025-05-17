@@ -19,7 +19,6 @@ import {
 import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -45,6 +44,7 @@ import type {
   ParkingSpace,
 } from "@prisma/client";
 import { parseDate } from "@/lib/utils";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export type SessionData = GPOSession & {
   parkingSpace: ParkingSpace;
@@ -169,7 +169,21 @@ export const columns: ColumnDef<SessionData>[] = [
   //   },
 ];
 
-export function SessionsTable({ data }: { data: SessionData[] }) {
+export function SessionsTable({
+  data,
+  totalCount = 0,
+  pageCount = 1,
+  currentPage = 1,
+}: {
+  data: SessionData[];
+  totalCount: number;
+  pageCount: number;
+  currentPage: number;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -177,6 +191,119 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  const [emailFilter, setEmailFilter] = React.useState<string>(
+    searchParams.get("email") || ""
+  );
+
+  const [statusFilter, setStatusFilter] = React.useState<string | undefined>(
+    searchParams.get("status") || ""
+  );
+
+  // Update URL with filters and pagination
+  const createQueryString = React.useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+
+      Object.entries(params).forEach(([name, value]) => {
+        if (value === null) {
+          newSearchParams.delete(name);
+        } else {
+          newSearchParams.set(name, String(value));
+        }
+      });
+
+      return newSearchParams.toString();
+    },
+    [searchParams]
+  );
+
+  // Handle filter changes with debounce
+  const handleEmailFilterChange = (value: string) => {
+    setEmailFilter(value);
+
+    const timeout = setTimeout(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          page: 1, // Reset to first page on filter change
+          email: value || null,
+          status: statusFilter || null,
+        })}`
+      );
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  };
+
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+
+    const timeout = setTimeout(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          page: 1, // Reset to first page on filter change
+          email: emailFilter || null,
+          status: value || null,
+        })}`
+      );
+    }, 200);
+
+    return () => clearTimeout(timeout);
+  };
+
+  // Navigate to specific page
+  const goToPage = (page: number) => {
+    router.push(
+      `${pathname}?${createQueryString({
+        page,
+        email: emailFilter || null,
+        status: statusFilter || null,
+      })}`
+    );
+  };
+
+  // Generate page numbers for pagination
+  const generatePagination = (currentPage: number, pageCount: number) => {
+    // Show up to 5 page numbers
+    const maxVisible = 5;
+    let pages: (number | string)[] = [];
+
+    if (pageCount <= maxVisible) {
+      // Show all pages if there are 5 or fewer
+      pages = Array.from({ length: pageCount }, (_, i) => i + 1);
+    } else {
+      // Always show first and last page
+      if (currentPage <= 3) {
+        // Near start
+        pages = [1, 2, 3, 4, "...", pageCount];
+      } else if (currentPage >= pageCount - 2) {
+        // Near end
+        pages = [
+          1,
+          "...",
+          pageCount - 3,
+          pageCount - 2,
+          pageCount - 1,
+          pageCount,
+        ];
+      } else {
+        // Middle
+        pages = [
+          1,
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          pageCount,
+        ];
+      }
+    }
+
+    return pages;
+  };
+
+  const pageNumbers = generatePagination(currentPage, pageCount);
 
   const table = useReactTable({
     data,
@@ -202,19 +329,15 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
       <div className="flex flex-col md:flex-row items-center gap-4 py-4">
         <Input
           placeholder="Filter by Corporate Email"
-          value={
-            (table.getColumn("accountParked")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("accountParked")?.setFilterValue(event.target.value)
-          }
+          value={emailFilter}
+          onChange={(event) => handleEmailFilterChange(event.target.value)}
           className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="md:max-w-sm">
-              {table.getColumn("status")?.getFilterValue()
-                ? `Status: ${table.getColumn("status")?.getFilterValue()}`
+              {statusFilter !== ""
+                ? `Status: ${statusFilter}`
                 : "Filter by Status"}
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
@@ -226,13 +349,7 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
               <DropdownMenuRadioItem
                 key={status}
                 value={status}
-                onSelect={() =>
-                  table.getColumn("status")?.setFilterValue(
-                    table.getColumn("status")?.getFilterValue() === status
-                      ? null // Toggle off if already selected
-                      : status
-                  )
-                }
+                onSelect={() => handleStatusFilterChange(status)}
                 // Remove the 'checked' prop
               >
                 {status}
@@ -241,7 +358,7 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
             <DropdownMenuSeparator />
             <DropdownMenuRadioItem
               value="clear"
-              onSelect={() => table.getColumn("status")?.setFilterValue(null)}
+              onSelect={() => handleStatusFilterChange("")}
             >
               Clear Filter
             </DropdownMenuRadioItem>
@@ -324,29 +441,59 @@ export function SessionsTable({ data }: { data: SessionData[] }) {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+      <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 py-4">
+        <div className="text-sm text-muted-foreground">
+          Showing <span className="font-medium">{data.length}</span> of{" "}
+          <span className="font-medium">{totalCount}</span> results.
+          {pageCount > 1 && (
+            <>
+              {" "}
+              Page <span className="font-medium">{currentPage}</span> of{" "}
+              <span className="font-medium">{pageCount}</span>.
+            </>
+          )}
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+
+        {pageCount > 1 && (
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage <= 1}
+            >
+              Previous
+            </Button>
+
+            <div className="hidden md:flex items-center space-x-1">
+              {pageNumbers.map((page, i) => (
+                <React.Fragment key={i}>
+                  {typeof page === "number" ? (
+                    <Button
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="icon"
+                      className="w-8 h-8"
+                      onClick={() => goToPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  ) : (
+                    <span className="px-2">...</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage >= pageCount}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

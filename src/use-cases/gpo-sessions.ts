@@ -19,6 +19,7 @@ import {
   deactivateGpoAccount,
   getUserPrioritiesById,
 } from "@/data-access/gpo-users";
+import { SessionStatus } from "@prisma/client";
 
 // CREATE GPO SESSION
 export const createGpoSessionUseCase = async (
@@ -186,10 +187,30 @@ export const endGpoSessionUseCase = async (accountId: string) => {
 };
 
 // GET ALL GPO SESSIONS FOR ADMIN DASHBOARD
-export const getAllGpoSessionsUseCase = async () => {
-  const gpoSessions = await getAllGpoSessions();
+export const getAllGpoSessionsUseCase = async ({
+  page = 1,
+  limit = 10,
+  emailFilter = "",
+  statusFilter = undefined,
+}: {
+  page?: number;
+  limit?: number;
+  emailFilter?: string;
+  lastNameFilter?: string;
+  statusFilter?: SessionStatus;
+}) => {
+  const skip = (page - 1) * limit;
 
-  return gpoSessions;
+  const { sessions, totalCount } = await getAllGpoSessions({
+    skip,
+    take: limit,
+    emailFilter,
+    statusFilter,
+  });
+
+  const pageCount = Math.ceil(totalCount / limit);
+
+  return { data: sessions, totalCount, pageCount };
 };
 
 export const getRecentSessionsUseCase = async () => {

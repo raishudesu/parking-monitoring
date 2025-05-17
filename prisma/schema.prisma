@@ -242,9 +242,13 @@ enum ReportStatus {
 
 enum ReportType {
   UNAUTHORIZED_PARKING // Parking in spaces like PWD, VIP, or reserved areas without authorization
-  BLOCKING_OTHER_VEHICLES // Parking in a way that blocks other vehicles
-  PROLONGED_PARKING // Exceeding the allowed parking time
   RECKLESS_DRIVING // Driving recklessly in the parking area
+  IMPROPER_PARKING // Not parking within designated lines/spaces
+  DOUBLE_PARKING // Parking beside another parked vehicle
+  NO_GATE_PASS // Parking without valid permit/pass
+  WRONG_PARKING_TYPE // Parking in space not meant for vehicle type
+  VEHICLE_ABANDONMENT // Leaving vehicle for extended periods
+  VANDALISM // Damaging parking facilities or other vehicles
   OTHER // Any other behavior not listed above
 }
 
