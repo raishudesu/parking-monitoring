@@ -42,12 +42,9 @@ import { toast } from "@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
 import DeleteReportDialog from "@/app/gpo/dashboard/my-reports/delete-report-dialog";
 
-type ReportType =
-  | "UNAUTHORIZED_PARKING"
-  | "BLOCKING_OTHER_VEHICLES"
-  | "PROLONGED_PARKING"
-  | "RECKLESS_DRIVING"
-  | "OTHER";
+import { ReportType as ReportTypePrisma } from "@prisma/client";
+
+type ReportType = ReportTypePrisma;
 
 interface Report {
   reportedByAccount: {
@@ -80,10 +77,14 @@ interface Report {
 }
 
 const reportTypeLabels: Record<ReportType, string> = {
-  UNAUTHORIZED_PARKING: "Unauthorized Parking",
-  BLOCKING_OTHER_VEHICLES: "Blocking Other Vehicles",
-  PROLONGED_PARKING: "Prolonged Parking",
+  UNAUTHORIZED_PARKING: "Unauthorized Parking (PWD, VIP, Reserved)",
   RECKLESS_DRIVING: "Reckless Driving",
+  IMPROPER_PARKING: "Improper Parking",
+  DOUBLE_PARKING: "Double Parking",
+  NO_GATE_PASS: "No Gate Pass",
+  WRONG_PARKING_TYPE: "Wrong Parking Type",
+  VEHICLE_ABANDONMENT: "Vehicle Abandonment",
+  VANDALISM: "Vandalism",
   OTHER: "Other",
 };
 

@@ -1,22 +1,48 @@
+import LoadingTable from "@/components/loading-table";
 import { AdminLogsTable, AdminLogsData } from "./admin-logs-table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getAdminLogsUseCase } from "@/use-cases/admin-log";
+import { AdminAction } from "@prisma/client";
 import { AlertTriangle } from "lucide-react";
+import { Suspense } from "react";
 
-const AuditLogsPage = async () => {
-  let logs: AdminLogsData[] | null = null;
-  let error: string | null = null;
+const AdminLogsTableWithData = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    page?: string;
+    actionType?: AdminAction | undefined;
+  }>;
+}) => {
+  const awaitedParams = await searchParams;
+  const currentPage = Number(awaitedParams.page) || 1;
+  const pageSize = 10;
+  const actionFilter = awaitedParams.actionType || undefined;
 
-  try {
-    const fetchedAuditLogs = await getAdminLogsUseCase();
+  const { data, totalCount, pageCount } = await getAdminLogsUseCase({
+    page: currentPage,
+    limit: pageSize,
+    actionFilter,
+  });
 
-    logs = fetchedAuditLogs as AdminLogsData[];
-  } catch (err) {
-    console.error("Error fetching data:", err);
-    error =
-      " There was an error fetching the audit logs data. Please try again later.";
-  }
+  return (
+    <AdminLogsTable
+      data={data}
+      totalCount={totalCount}
+      pageCount={pageCount}
+      currentPage={currentPage}
+    />
+  );
+};
 
+const AuditLogsPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    page?: string;
+    adminType?: AdminAction;
+  }>;
+}) => {
   return (
     <div className="w-full flex flex-col p-6">
       <div className="pb-6 flex flex-col gap-3">
@@ -27,23 +53,9 @@ const AuditLogsPage = async () => {
           Admin Logs
         </h1>
       </div>
-      {error ? (
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : logs ? (
-        <AdminLogsTable data={logs} />
-      ) : (
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>No Data</AlertTitle>
-          <AlertDescription>
-            No audit logs data available at the moment.
-          </AlertDescription>
-        </Alert>
-      )}
+      <Suspense fallback={<LoadingTable />}>
+        <AdminLogsTableWithData searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 };

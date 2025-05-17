@@ -4,6 +4,7 @@ import {
   getAllGpoViolations,
   restoreCreditScoresByDowntime,
 } from "@/data-access/gpo-violations";
+import { SessionStatus } from "@prisma/client";
 
 export const createGpoViolationUseCase = async (
   accountId: string,
@@ -34,8 +35,30 @@ export const restoreCreditScoresByDowntimeUseCase = async (
   return resolved;
 };
 
-export const getAffectedSessionsByDowntimeUseCase = async (logId: string) => {
-  const affectedSessions = await getAffectedSessionsByDowntime(logId);
+export const getAffectedSessionsByDowntimeUseCase = async ({
+  downTimeLogId,
+  page = 1,
+  limit = 10,
+  emailFilter = "",
+  statusFilter = undefined,
+}: {
+  downTimeLogId: string;
+  page?: number;
+  limit?: number;
+  emailFilter?: string;
+  statusFilter?: SessionStatus;
+}) => {
+  const skip = (page - 1) * limit;
 
-  return affectedSessions;
+  const { affectedSessions, totalCount } = await getAffectedSessionsByDowntime({
+    downTimeLogId,
+    skip,
+    take: limit,
+    emailFilter,
+    statusFilter,
+  });
+
+  const pageCount = Math.ceil(totalCount / limit);
+
+  return { data: affectedSessions, totalCount, pageCount };
 };

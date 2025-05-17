@@ -1,7 +1,5 @@
 import { getAllGpoSessionsUseCase } from "@/use-cases/gpo-sessions";
-import { SessionData, SessionsTable } from "./sessions-table";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { SessionsTable } from "./sessions-table";
 import { SessionStatus } from "@prisma/client";
 import { Suspense } from "react";
 import LoadingTable from "@/components/loading-table";
