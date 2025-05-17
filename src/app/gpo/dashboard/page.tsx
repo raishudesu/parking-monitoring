@@ -5,14 +5,14 @@ import CurrentSession from "./current-session";
 import SessionHistory from "./session-history";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { getAllParkingSpacesUseCase } from "@/use-cases/parking-spaces";
+import { getAllParkingSpacesForGpo } from "@/data-access/parking-spaces";
 
 const GpoDashboardPage = async () => {
   const session = await getServerSession(authOptions);
 
   const [creditScore, parkingSpaces] = await Promise.all([
     getCreditScore(session?.user.id as string),
-    getAllParkingSpacesUseCase(),
+    getAllParkingSpacesForGpo(),
     // getUnavailableSpacesUseCase(),
   ]);
 

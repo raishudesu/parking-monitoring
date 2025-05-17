@@ -1,6 +1,6 @@
 import prisma from "@/lib/db";
 import { parkingSpaceSchema } from "@/lib/zod";
-import { ParkingSpace } from "@prisma/client";
+import { ParkingSpace, ParkingSpaceType } from "@prisma/client";
 import { z } from "zod";
 
 export const createParkingSpace = async (
@@ -22,7 +22,7 @@ export const createParkingSpace = async (
   return parkingSpace;
 };
 
-export const getAllParkingSpaces = async () => {
+export const getAllParkingSpacesForGpo = async () => {
   const parkingSpaces = await prisma.parkingSpace.findMany({
     include: {
       images: true,
@@ -30,6 +30,47 @@ export const getAllParkingSpaces = async () => {
   });
 
   return parkingSpaces;
+};
+
+export const getAllParkingSpaces = async ({
+  skip = 0,
+  take = 10,
+  nameFilter = "",
+  spaceTypeFilter = undefined,
+}: {
+  skip?: number;
+  take?: number;
+  nameFilter?: string;
+  spaceTypeFilter?: ParkingSpaceType;
+}) => {
+  const where = {
+    ...(nameFilter && {
+      name: {
+        contains: nameFilter,
+      },
+    }),
+    ...(spaceTypeFilter && {
+      spaceType: {
+        equals: spaceTypeFilter,
+      },
+    }),
+  };
+
+  const [parkingSpaces, totalCount] = await Promise.all([
+    prisma.parkingSpace.findMany({
+      where,
+      skip,
+      take,
+      include: {
+        images: true,
+      },
+    }),
+    prisma.parkingSpace.count({
+      where,
+    }),
+  ]);
+
+  return { parkingSpaces, totalCount };
 };
 
 export const getParkingSpaceOptions = async () => {
