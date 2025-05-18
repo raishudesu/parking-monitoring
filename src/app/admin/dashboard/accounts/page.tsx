@@ -1,38 +1,59 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { getAllCollegesUseCase } from "@/use-cases/colleges";
 import { AccountsTable, GPOAccountData } from "./accounts-table";
 import { getAllGpoAccountsUseCase } from "@/use-cases/gpo-users";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
-import { College } from "@prisma/client";
+import { AccountType, College } from "@prisma/client";
+import LoadingTable from "@/components/loading-table";
 
-const AccountsPage = async () => {
-  let gpoAccounts: GPOAccountData[] | null = null;
-  let colleges: College[] | null = null;
-  let error: string | null = null;
+const AccountsTableWithData = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    page?: string;
+    gatePassNumber?: string;
+    email?: string;
+    accountType?: AccountType;
+  }>;
+}) => {
+  const awaitedParams = await searchParams;
+  const currentPage = Number(awaitedParams.page) || 1;
+  const pageSize = 10;
+  const gatePassNumberFilter = awaitedParams.gatePassNumber || "";
+  const emailFilter = awaitedParams.email || undefined;
+  const accountTypeFilter = awaitedParams.accountType || undefined;
 
-  try {
-    const [fetchedAccounts, fetchedColleges] = await Promise.all([
-      getAllGpoAccountsUseCase(),
-      getAllCollegesUseCase(),
-    ]);
+  const [fetchedAccounts, fetchedColleges] = await Promise.all([
+    getAllGpoAccountsUseCase({
+      page: currentPage,
+      limit: pageSize,
+      gpoNumberFilter: gatePassNumberFilter,
+      emailFilter,
+      accountTypeFilter,
+    }),
+    getAllCollegesUseCase(),
+  ]);
 
-    gpoAccounts = fetchedAccounts as GPOAccountData[];
-    colleges = fetchedColleges as College[];
+  return (
+    <AccountsTable
+      data={fetchedAccounts.data}
+      colleges={fetchedColleges as College[]}
+      totalCount={fetchedAccounts.totalCount}
+      currentPage={currentPage}
+      pageCount={fetchedAccounts.pageCount}
+    />
+  );
+};
 
-    // Ensure colleges is not null and all items have the correct shape
-    // if (
-    //   !colleges ||
-    //   colleges.some((college) => !college.id || !college.collegeName)
-    // ) {
-    //   throw new Error("Invalid college data received");
-    // }
-  } catch (err) {
-    console.error("Error fetching data:", err);
-    error =
-      "There was an error fetching the accounts data. Please try again later.";
-  }
-
+const AccountsPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    page?: string;
+    gatePassNumber?: string;
+    email?: string;
+    accountType?: AccountType;
+  }>;
+}) => {
   return (
     <div className="w-full flex flex-col p-6">
       <div className="pb-6 flex flex-col gap-3">
@@ -43,23 +64,9 @@ const AccountsPage = async () => {
           Gate Pass Owners
         </h1>
       </div>
-      {error ? (
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : gpoAccounts ? (
-        <AccountsTable data={gpoAccounts} colleges={colleges as College[]} />
-      ) : (
-        <Alert>
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>No Data</AlertTitle>
-          <AlertDescription>
-            No accounts data available at the moment.
-          </AlertDescription>
-        </Alert>
-      )}
+      <Suspense fallback={<LoadingTable />}>
+        <AccountsTableWithData searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 };

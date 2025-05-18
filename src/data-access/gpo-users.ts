@@ -1,6 +1,7 @@
 import { z } from "zod";
 import prisma from "../lib/db";
 import { gpoAccountSchema } from "../lib/zod";
+import { AccountType } from "@prisma/client";
 
 // GPO ACCOUNT CREATION
 export const createGpoAccount = async (
@@ -16,17 +17,55 @@ export const createGpoAccount = async (
   return gpo;
 };
 
-export const getAllGpoAccounts = async () => {
-  const gpoAccounts = await prisma.gPOAccount.findMany({
-    include: {
-      collegeName: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+export const getAllGpoAccounts = async ({
+  skip = 0,
+  take = 10,
+  gpoNumberFilter = "",
+  emailFilter = "",
+  accountTypeFilter = undefined,
+}: {
+  skip?: number;
+  take?: number;
+  gpoNumberFilter?: string;
+  emailFilter?: string;
+  accountTypeFilter?: AccountType;
+}) => {
+  const where = {
+    ...(gpoNumberFilter && {
+      gatePassNumber: {
+        contains: gpoNumberFilter,
+      },
+    }),
+    ...(emailFilter && {
+      email: {
+        contains: emailFilter,
+      },
+    }),
+    ...(accountTypeFilter && {
+      accountType: {
+        equals: accountTypeFilter,
+      },
+    }),
+  };
 
-  return gpoAccounts;
+  const [gpoAccounts, totalCount] = await Promise.all([
+    prisma.gPOAccount.findMany({
+      where,
+      skip,
+      take,
+      include: {
+        collegeName: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+    prisma.gPOAccount.count({
+      where,
+    }),
+  ]);
+
+  return { gpoAccounts, totalCount };
 };
 
 export const getCurrentGpoSessionByGpoId = async (gpoAccountId: string) => {
