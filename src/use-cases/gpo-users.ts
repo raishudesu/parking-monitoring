@@ -19,7 +19,7 @@ import { InvalidEmailError, LoginError } from "./errors";
 import { z } from "zod";
 import { accountCreationSchema, gpoAccountSchema } from "@/lib/zod";
 import { createAdminLog } from "@/data-access/admin-log";
-import { GPOAccount } from "@prisma/client";
+import { AccountType, GPOAccount } from "@prisma/client";
 import { TPasswordResetData } from "@/types/password-reset-token";
 import {
   findPasswordResetToken,
@@ -57,10 +57,32 @@ export const getGpoByIdUseCase = async (accountId: string) => {
 };
 
 // GET ALL GPO ACCOUNTS
-export const getAllGpoAccountsUseCase = async () => {
-  const gpoAccounts = await getAllGpoAccounts();
+export const getAllGpoAccountsUseCase = async ({
+  page = 1,
+  limit = 10,
+  gpoNumberFilter = "",
+  emailFilter = "",
+  accountTypeFilter = undefined,
+}: {
+  page?: number;
+  limit?: number;
+  gpoNumberFilter?: string;
+  emailFilter?: string;
+  accountTypeFilter?: AccountType;
+}) => {
+  const skip = (page - 1) * limit;
 
-  return gpoAccounts;
+  const { gpoAccounts, totalCount } = await getAllGpoAccounts({
+    skip,
+    take: limit,
+    gpoNumberFilter,
+    emailFilter,
+    accountTypeFilter,
+  });
+
+  const pageCount = Math.ceil(totalCount / limit);
+
+  return { data: gpoAccounts, totalCount, pageCount };
 };
 
 // GPO ACCOUNT CREATION USE CASE
